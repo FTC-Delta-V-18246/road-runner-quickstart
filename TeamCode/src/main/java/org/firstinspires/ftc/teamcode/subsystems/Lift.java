@@ -29,6 +29,7 @@ public class Lift implements Subsystem {
 
 
     //o
+    //a
     public State state = State.INTAKE;
 
     public enum State {INTAKE, EXTEND, DEPOSIT, RETRACT}
