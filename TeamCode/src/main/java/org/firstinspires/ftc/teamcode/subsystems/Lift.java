@@ -27,6 +27,8 @@ public class Lift implements Subsystem {
     PIDController control = new PIDController(0.0, 0, 0);
     ElapsedTime time;
 
+
+    //o
     public State state = State.INTAKE;
 
     public enum State {INTAKE, EXTEND, DEPOSIT, RETRACT}
