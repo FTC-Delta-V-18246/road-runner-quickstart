@@ -17,7 +17,7 @@ public class BasicArm implements Subsystem {
 
     public static double MID = 180;
     public static double LOW = 220;
-    public static double SHARED = 200;
+    public static double SHARED = 90;
     public static double INTAKE = 0;
     public static double HOLD = 140;
 
@@ -51,7 +51,7 @@ public class BasicArm implements Subsystem {
     public void init(HardwareMap hw) {
         arm = hw.get(DcMotor.class, "arm");
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        // arm.setDirection(DcMotorSimple.Direction.REVERSE);
+         arm.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     public void armReset() {
@@ -93,14 +93,6 @@ public class BasicArm implements Subsystem {
                     wasPressedA = false;
                     state = State.SHARED;
                 }
-                break;
-            case LOW:
-                armLow();
-
-                break;
-            case MID:
-                armMid();
-
                 break;
             case SHARED:
                 armShared();
