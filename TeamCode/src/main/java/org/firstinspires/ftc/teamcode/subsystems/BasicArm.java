@@ -112,6 +112,38 @@ public class BasicArm implements Subsystem {
         updatePID(target);
     }
 
+    public void updateTest() {
+        switch(state) {
+            case INTAKE:
+                armIntake();
+
+                if (gamepad1.a) {
+                    wasPressedA = true;
+                }
+
+                if (!gamepad1.a && wasPressedA) {
+                    wasPressedA = false;
+                    state = State.SHARED;
+                }
+                break;
+            case SHARED:
+                armShared();
+
+                if (gamepad1.a) {
+                    wasPressedA = true;
+                }
+
+                if (!gamepad1.a && wasPressedA) {
+                    wasPressedA = false;
+                    armShared();
+                    state = State.SHARED;
+                }
+                break;
+        }
+
+        updatePID(target);
+    }
+
     public void updatePID(double target) {
         double error = target - encoderTicksToDegrees(arm.getCurrentPosition());
         double p = kP*error;

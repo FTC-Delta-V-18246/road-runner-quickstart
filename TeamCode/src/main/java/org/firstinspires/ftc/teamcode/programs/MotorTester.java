@@ -6,26 +6,21 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+import org.firstinspires.ftc.teamcode.subsystems.BasicArm;
+
 @TeleOp
 @Config
 public class MotorTester extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        DcMotor arm = hardwareMap.get(DcMotor.class, "arm");
+        BasicArm arm = new BasicArm(gamepad1, gamepad2);
+        arm.init(hardwareMap);
+
         waitForStart();
 
-        while(opModeIsActive()) {
-            if(gamepad1.dpad_up) {
-                arm.setPower(0.1);
-            } else {
-                arm.setPower(0);
-            }
 
-            if(gamepad1.dpad_down) {
-                arm.setPower(-0.1);
-            } else {
-                arm.setPower(0);
-            }
+        while(opModeIsActive()) {
+            arm.updateTest();
         }
     }
 }
