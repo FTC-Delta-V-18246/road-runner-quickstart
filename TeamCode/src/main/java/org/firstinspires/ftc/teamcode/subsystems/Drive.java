@@ -31,10 +31,10 @@ public class Drive implements Subsystem {
     @Override
     public void init(HardwareMap hw) {
         drive = new SampleMecanumDrive(hw);
-        rightOdo = hw.get(Servo.class, "rightOdo");
-        leftOdo = hw.get(Servo.class, "leftOdo");
-        centerOdo = hw.get(Servo.class, "centerOdo");
-        odoRetract();
+//        rightOdo = hw.get(Servo.class, "rightOdo");
+//        leftOdo = hw.get(Servo.class, "leftOdo");
+//        centerOdo = hw.get(Servo.class, "centerOdo");
+//        odoRetract();
     }
 
     @Override
@@ -47,15 +47,15 @@ public class Drive implements Subsystem {
         drive.update();
     }
 
-    public void odoRetract() {
-        rightOdo.setPosition(odoRUp);
-        leftOdo.setPosition(odoLUp);
-        centerOdo.setPosition(odoCUp);
-    }
-
-    public void odoLower() {
-        rightOdo.setPosition(odoRDown);
-        leftOdo.setPosition(odoLDown);
-        centerOdo.setPosition(odoCDown);
-    }
+//    public void odoRetract() {
+//        rightOdo.setPosition(odoRUp);
+//        leftOdo.setPosition(odoLUp);
+//        centerOdo.setPosition(odoCUp);
+//    }
+//
+//    public void odoLower() {
+//        rightOdo.setPosition(odoRDown);
+//        leftOdo.setPosition(odoLDown);
+//        centerOdo.setPosition(odoCDown);
+//    }
 }

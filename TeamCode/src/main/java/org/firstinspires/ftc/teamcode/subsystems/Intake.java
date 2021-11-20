@@ -27,8 +27,8 @@ public class Intake implements Subsystem {
     @Override
     public void init(HardwareMap hw) {
         intakeMotor = hw.get(DcMotor.class, "intake");
-        droptakeLeft = hw.get(Servo.class, "droptakeL");
-        droptakeRight = hw.get(Servo.class, "droptakeR");
+//        droptakeLeft = hw.get(Servo.class, "droptakeL");
+//        droptakeRight = hw.get(Servo.class, "droptakeR");
 
     }
 

@@ -11,7 +11,7 @@ public class Carousel implements Subsystem {
     Gamepad gamepad1;
     Gamepad gamepad2;
     DcMotor carouselMotor;
-    boolean isSideRed;
+    boolean isSideRed = false;
 
     public Carousel(Gamepad g1, Gamepad g2) {
         gamepad1 = g1;
@@ -22,7 +22,6 @@ public class Carousel implements Subsystem {
     @Override
     public void init(HardwareMap hw) {
         carouselMotor = hw.get(DcMotor.class, "carousel");
-
     }
 
     @Override
@@ -45,7 +44,5 @@ public class Carousel implements Subsystem {
         } else {
             isSideRed = false;
         }
-
     }
-
 }

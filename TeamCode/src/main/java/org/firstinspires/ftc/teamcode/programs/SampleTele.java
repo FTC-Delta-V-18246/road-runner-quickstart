@@ -12,7 +12,7 @@ public class SampleTele extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-
+            robot.carousel.side(true);
             robot.update();
         }
 
