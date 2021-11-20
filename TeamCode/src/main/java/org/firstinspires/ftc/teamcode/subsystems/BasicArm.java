@@ -17,15 +17,15 @@ public class BasicArm implements Subsystem {
 
     public static double MID = 180;
     public static double LOW = 220;
-    public static double SHARED = 90;
+    public static double SHARED = 140;
     public static double INTAKE = 0;
-    public static double HOLD = 140;
+    public static double HOLD = 70;
 
-    public static final double TICKS_PER_REV = 28*19.2;
-    public static final double GEAR_RATIO = 2.0/3.0;
+    public static final double TICKS_PER_REV = 28 * 19.2;
+    public static final double GEAR_RATIO = 2.0 / 3.0;
 
-    public static double kP = 0.01;
-    public static double kF = 0.01;
+    public static double kP = 0.015;
+    public static double kF = 0.03;
 
     public Gamepad gamepad1;
     public Gamepad gamepad2;
@@ -51,7 +51,8 @@ public class BasicArm implements Subsystem {
     public void init(HardwareMap hw) {
         arm = hw.get(DcMotor.class, "arm");
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-         arm.setDirection(DcMotorSimple.Direction.REVERSE);
+        arm.setDirection(DcMotorSimple.Direction.REVERSE);
+        armReset();
     }
 
     public void armReset() {
@@ -81,7 +82,7 @@ public class BasicArm implements Subsystem {
 
     @Override
     public void update(Robot robot) {
-        switch(state) {
+        switch (state) {
             case INTAKE:
                 armIntake();
 
@@ -91,6 +92,19 @@ public class BasicArm implements Subsystem {
 
                 if (!gamepad1.a && wasPressedA) {
                     wasPressedA = false;
+                    state = State.HOLD;
+                }
+                break;
+            case HOLD:
+                armHold();
+
+                if (gamepad1.a) {
+                    wasPressedA = true;
+                }
+
+                if (!gamepad1.a && wasPressedA) {
+                    wasPressedA = false;
+                    armShared();
                     state = State.SHARED;
                 }
                 break;
@@ -104,7 +118,7 @@ public class BasicArm implements Subsystem {
                 if (!gamepad1.a && wasPressedA) {
                     wasPressedA = false;
                     armShared();
-                    state = State.SHARED;
+                    state = State.INTAKE;
                 }
                 break;
         }
@@ -113,7 +127,7 @@ public class BasicArm implements Subsystem {
     }
 
     public void updateTest() {
-        switch(state) {
+        switch (state) {
             case INTAKE:
                 armIntake();
 
@@ -146,10 +160,13 @@ public class BasicArm implements Subsystem {
 
     public void updatePID(double target) {
         double error = target - encoderTicksToDegrees(arm.getCurrentPosition());
-        double p = kP*error;
+        double p = kP * error;
         double f = Math.copySign(kF, error);
-        double power = p+f;
-        power = Range.clip(power, -0.3, 0.3);
+        double power = p + f;
+        if (Math.abs(error) < 1.5) {
+            power = 0;
+        }
+        power = Range.clip(power, -0.35, 0.3);
         arm.setPower(power);
     }
 

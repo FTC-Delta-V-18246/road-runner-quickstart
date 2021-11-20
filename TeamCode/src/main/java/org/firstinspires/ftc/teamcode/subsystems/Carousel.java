@@ -26,7 +26,7 @@ public class Carousel implements Subsystem {
 
     @Override
     public void update(Robot robot) {
-        if (isSideRed == true && gamepad1.a) {
+        /*if (isSideRed == true && gamepad1.b) {
             carouselMotor.setPower(1);
         } else {
             carouselMotor.setPower(0);
@@ -35,9 +35,17 @@ public class Carousel implements Subsystem {
             carouselMotor.setPower(-1);
         } else {
             carouselMotor.setPower(0);
-        }
+        }*/
     }
-
+        public void updateCaro(double speed) {
+            if(gamepad1.left_bumper) {
+                carouselMotor.setPower(-speed);
+            } else if(gamepad1.right_bumper) {
+                carouselMotor.setPower(speed);
+            } else {
+                carouselMotor.setPower(0);
+            }
+        }
     public void side(boolean isRed) {
         if (isRed == true) {
             isSideRed = true;

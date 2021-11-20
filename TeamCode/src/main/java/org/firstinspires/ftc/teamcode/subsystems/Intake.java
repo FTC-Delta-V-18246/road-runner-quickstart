@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -27,6 +28,7 @@ public class Intake implements Subsystem {
     @Override
     public void init(HardwareMap hw) {
         intakeMotor = hw.get(DcMotor.class, "intake");
+        intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 //        droptakeLeft = hw.get(Servo.class, "droptakeL");
 //        droptakeRight = hw.get(Servo.class, "droptakeR");
 

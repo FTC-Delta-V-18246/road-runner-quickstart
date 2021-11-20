@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.programs;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import org.firstinspires.ftc.teamcode.Robot;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.Robot;
+@TeleOp
 public class SampleTele extends LinearOpMode {
 
     @Override
@@ -12,7 +14,7 @@ public class SampleTele extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            robot.carousel.side(true);
+            robot.carousel.updateCaro(-0.8);
             robot.update();
         }
 //token

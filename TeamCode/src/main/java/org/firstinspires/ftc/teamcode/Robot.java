@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Subsystem;
 import org.firstinspires.ftc.teamcode.subsystems.V4b;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Robot {
@@ -24,11 +25,12 @@ public class Robot {
     public BasicArm arm;
 
     public Robot(HardwareMap hw, Gamepad g1, Gamepad g2) {
+        subsystems = new ArrayList<>();
         drive = new Drive(g1, g2);
         intake = new Intake(g1, g2);
         carousel = new Carousel(g1, g2);
-        claw = new Claw(g1, g2);
-        v4b = new V4b(g1, g2);
+//        claw = new Claw(g1, g2);
+//        v4b = new V4b(g1, g2);
         arm = new BasicArm(g1, g2);
 
         subsystems.add(drive);
