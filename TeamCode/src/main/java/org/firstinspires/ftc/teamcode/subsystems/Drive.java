@@ -8,10 +8,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
+
 public class Drive implements Subsystem {
     Gamepad gamepad1;
     Gamepad gamepad2;
-    SampleMecanumDrive drive;
+    public SampleMecanumDrive drive;
     Servo rightOdo;
     Servo leftOdo;
     Servo centerOdo;

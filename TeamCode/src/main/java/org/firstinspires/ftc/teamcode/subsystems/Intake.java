@@ -31,13 +31,11 @@ public class Intake implements Subsystem {
         intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 //        droptakeLeft = hw.get(Servo.class, "droptakeL");
 //        droptakeRight = hw.get(Servo.class, "droptakeR");
-
     }
 
     @Override
     public void update(Robot robot) {
         intakeMotor.setPower(gamepad1.right_trigger - gamepad1.left_trigger);
-
     }
 
 

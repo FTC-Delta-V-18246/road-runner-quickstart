@@ -166,7 +166,7 @@ public class BasicArm implements Subsystem {
         if (Math.abs(error) < 1.5) {
             power = 0;
         }
-        power = Range.clip(power, -0.35, 0.3);
+        power = Range.clip(power, -0.35, 0.25);
         arm.setPower(power);
     }
 

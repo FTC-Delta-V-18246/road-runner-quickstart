@@ -14,7 +14,7 @@ public class SampleTele extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            robot.carousel.updateCaro(-0.8);
+            robot.carousel.updateCaro(-0.9);
             robot.update();
         }
 //token
