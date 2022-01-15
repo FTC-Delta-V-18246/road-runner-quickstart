@@ -6,21 +6,21 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.teamcode.subsystems.BasicArm;
+import org.firstinspires.ftc.teamcode.subsystems.BasicLift;
 
 @TeleOp
 @Config
 public class MotorTester extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        BasicArm arm = new BasicArm(gamepad1, gamepad2);
-        arm.init(hardwareMap);
+        BasicLift lift = new BasicLift(gamepad1, gamepad2);
+        lift.init(hardwareMap);
 
         waitForStart();
 
 
         while(opModeIsActive()) {
-            arm.updateTest();
+            //BasicLift.update();
         }
     }
 }

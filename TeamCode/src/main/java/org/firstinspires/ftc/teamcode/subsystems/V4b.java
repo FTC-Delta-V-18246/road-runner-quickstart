@@ -4,9 +4,11 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.acmerobotics.dashboard.config.Config;
 
 import org.firstinspires.ftc.teamcode.Robot;
 
+@Config
 public class V4b implements Subsystem{
 
     Gamepad gamepad1;
@@ -14,9 +16,9 @@ public class V4b implements Subsystem{
     Servo v4bLeft;
     Servo v4bRight;
 
-    public static double deposit;
-    public static double hold;
-    public static double intake;
+    public static double deposit = 0;
+    public static double hold = 0.73;
+    public static double intake = 0.7;
 
     public V4b(Gamepad g1, Gamepad g2) {
         gamepad1 = g1;
@@ -27,6 +29,7 @@ public class V4b implements Subsystem{
     public void init(HardwareMap hw) {
         v4bLeft = hw.get(Servo.class, "v4bLeft");
         v4bRight = hw.get(Servo.class, "v4bRight");
+        hold();
     }
 
     @Override

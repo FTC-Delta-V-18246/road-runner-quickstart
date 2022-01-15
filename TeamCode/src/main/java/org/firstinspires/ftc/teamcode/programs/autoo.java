@@ -22,6 +22,7 @@ public class autoo extends LinearOpMode {
         Trajectory park = robot.drive.drive.trajectoryBuilder(startPose, true)
                 .forward(67)
                 .build();
+        
         sleep(20000);
         robot.drive.drive.followTrajectory(park);
     }

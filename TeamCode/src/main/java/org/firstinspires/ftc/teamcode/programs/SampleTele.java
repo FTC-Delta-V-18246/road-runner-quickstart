@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.subsystems.Drive;
+
 @TeleOp
 public class SampleTele extends LinearOpMode {
 
@@ -14,9 +16,16 @@ public class SampleTele extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            robot.carousel.updateCaro(-0.9);
+            robot.carousel.updateCaro(-0.6);
+            robot.deposit.turretNeutral();
+            robot.deposit.close();
+            robot.v4b.intake();
+
+            if (gamepad1.dpad_left) {
+                robot.v4b.deposit();
+            }
+
             robot.update();
         }
-//token
     }
 }

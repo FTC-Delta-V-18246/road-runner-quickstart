@@ -1,122 +1,94 @@
-//package org.firstinspires.ftc.teamcode.subsystems;
-//
-//import com.qualcomm.robotcore.hardware.DcMotor;
-//import com.qualcomm.robotcore.hardware.Gamepad;
-//import com.qualcomm.robotcore.hardware.HardwareMap;
-//import com.qualcomm.robotcore.util.ElapsedTime;
-//
-//import org.firstinspires.ftc.teamcode.Robot;
-//
-//public class Lift implements Subsystem {
-//    Gamepad gamepad1;
-//    Gamepad gamepad2;
-//    DcMotor liftRight;
-//    DcMotor liftLeft;
-//
-//    public static double intake;
-//    public static double levelOne;
-//    public static double levelTwo;
-//    public static double levelThree;
-//    public static double DUMP_TIME;
-//
-//    ElapsedTime time;
-//
-//
-//    //o
-//    //a
-//    public State state = State.INTAKE;
-//
-//    public enum State {INTAKE, EXTEND, DEPOSIT, RETRACT}
-//
-//    public Lift(Gamepad g1, Gamepad g2) {
-//        gamepad1 = g1;
-//        gamepad2 = g2;
-//    }
-//
-//    @Override
-//    public void init(HardwareMap hw) {
-//        liftLeft = hw.get(DcMotor.class, "liftLeft");
-//        liftRight = hw.get(DcMotor.class, "liftRight");
-//        time = new ElapsedTime();
-//    }
-//
-//    @Override
-//    public void update(Robot robot) {
-//        switch (state) {
-//            case INTAKE:
-//                robot.v4b.intake();
-//                intakePosition();
-//                robot.claw.open();
-//                robot.intake.intakeDown();
-//                if (gamepad1.x) {
-//                    robot.claw.close();
-//                    robot.v4b.hold();
-//                    depositThree();
-//                    state = state.EXTEND;
-//                }
-//                if (gamepad1.y) {
-//                    robot.claw.close();
-//                    robot.v4b.hold();
-//                    depositTwo();
-//                    state = state.EXTEND;
-//                }
-//                break;
-//            case EXTEND:
-//                if (Math.abs(liftRight.getCurrentPosition() - levelTwo) < 10) {
-//                    robot.v4b.deposit();
-//                    if (gamepad1.dpad_left) {
-//                        robot.claw.open();
-//                    }
-//                    time.reset();
-//                    state = state.DEPOSIT;
-//                }
-//                break;
-//            case DEPOSIT:
-//                if (time.seconds() >= DUMP_TIME) {
-//                    // The robot waited long enough, time to start
-//                    // retracting the lift
-//                    robot.v4b.intake();
-//                    depositThree();
-//                    state = state.RETRACT;
-//                }
-//                break;
-//            case RETRACT:
-//                if (Math.abs(liftRight.getCurrentPosition() - levelOne) < 10) {
-//                    state = state.INTAKE;
-//                }
-//                break;
-//            default:
-//                // should never be reached, as liftState should never be null
-//                state = state.INTAKE;
-//        }
-//    }
-//
-//
-////    public void intakePosition() {
-////        double command = control.update(intake,
-////                liftLeft.getCurrentPosition());
-////        liftLeft.setPower(command);
-////        liftRight.setPower(-command);
-////    }
-////
-////    public void depositOne() {
-////        double command = control.update(levelOne,
-////                liftLeft.getCurrentPosition());
-////        liftLeft.setPower(command);
-////        liftRight.setPower(-command);
-////    }
-////
-////    public void depositTwo() {
-////        double command = control.update(levelTwo,
-////                liftLeft.getCurrentPosition());
-////        liftLeft.setPower(command);
-////        liftRight.setPower(-command);
-////    }
-////
-////    public void depositThree() {
-////        double command = control.update(levelThree,
-////                liftLeft.getCurrentPosition());
-////        liftLeft.setPower(command);
-////        liftRight.setPower(-command);
-////    }
-//}
+/*package org.firstinspires.ftc.teamcode.subsystems;
+
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.control.PIDCoefficients;
+import com.acmerobotics.roadrunner.control.PIDFController;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+
+@Config
+public class Lift {
+    DcMotor motor1;
+    DcMotor motor2;
+
+    // lift positions
+    public static double highPos = 20;
+    public static double midPos = 10;
+    public static double lowPos = 0;
+
+    public static PIDCoefficients coeffs = new PIDCoefficients(0, 0, 0);
+    public static double kF = 0;
+
+    PIDFController controller;
+
+    // lift constants
+    public static double SPOOL_SIZE_IN = 20.0/25.4;
+    public static double MOTOR_RATIO = 5.2;
+    public static double TICKS_PER_REV = MOTOR_RATIO * 28.0;
+    public static double GEAR_RATIO = 20.0/24.0;
+
+
+    public static double targetPosition = 0;
+
+    public enum Levels {
+        HOME,
+        LOW,
+        MID,
+        HIGH
+    }
+
+    Levels levels = Levels.HOME;
+
+    public Lift(HardwareMap hardwareMap) {
+        motor1 = hardwareMap.get(DcMotor.class, "m1");
+        motor2 = hardwareMap.get(DcMotor.class, "m2");
+
+        // if you need to make sure to reverse as necessary
+
+//        motor1.setDirection(DcMotorSimple.Direction.REVERSE);
+//        motor2.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        motor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        motor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        motor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        controller = new PIDFController(coeffs, 0, 0, kF);
+    }
+
+    public void update() {
+        switch(levels) {
+            case HOME:
+                targetPosition = 0;
+                break;
+            case LOW:
+                targetPosition = 1;
+                break;
+            case MID:
+                targetPosition = 2;
+                break;
+            case HIGH:
+                targetPosition = 3;
+                break;
+        }
+
+        updatePID(targetPosition);
+    }
+
+    public void updatePID(double target) {
+        double leftError = target - encoderTicksToInches(motor1.getCurrentPosition());
+        double rightError = target - encoderTicksToInches(motor2.getCurrentPosition());
+
+
+    }
+
+    public static double encoderTicksToInches(double ticks) {
+        return SPOOL_SIZE_IN * 2 * Math.PI * GEAR_RATIO * ticks / TICKS_PER_REV;
+    }
+} */

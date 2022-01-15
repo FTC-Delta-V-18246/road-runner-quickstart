@@ -5,47 +5,52 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-
 import org.firstinspires.ftc.teamcode.Robot;
+import com.acmerobotics.dashboard.config.Config;
 
+@Config
 public class Intake implements Subsystem {
+    private static Servo droptakeRight;
+    private static Servo droptakeLeft;
     Gamepad gamepad1;
     Gamepad gamepad2;
     DcMotor intakeMotor;
-    Servo droptakeLeft;
-    Servo droptakeRight;
 
-    public static double dropTakeDown;
-    public static double dropTakeUp;
+
+    public static double dropTakeDown = 0.4;
+    public static double dropTakeUp = 0;
 
 
     public Intake(Gamepad g1, Gamepad g2) {
         gamepad1 = g1;
         gamepad2 = g2;
-
     }
 
     @Override
     public void init(HardwareMap hw) {
         intakeMotor = hw.get(DcMotor.class, "intake");
         intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-//        droptakeLeft = hw.get(Servo.class, "droptakeL");
-//        droptakeRight = hw.get(Servo.class, "droptakeR");
+
+        droptakeLeft = hw.get(Servo.class, "droptakeL");
+        droptakeRight = hw.get(Servo.class, "droptakeR");
+
+        intakeDown();
     }
 
     @Override
     public void update(Robot robot) {
-        intakeMotor.setPower(gamepad1.right_trigger - gamepad1.left_trigger);
+        intakeMotor.setPower(1.0 * (gamepad1.right_trigger - gamepad1.left_trigger));
+
+
     }
 
-
-    public void intakeUp() {
+    public static void intakeUp() {
         droptakeRight.setPosition(dropTakeDown);
         droptakeLeft.setPosition(1 - dropTakeDown);
     }
 
-    public void intakeDown() {
-        droptakeRight.setPosition(dropTakeUp);
-        droptakeLeft.setPosition(1 - dropTakeUp);
+    public static void intakeDown() {
+        droptakeRight.setPosition(dropTakeDown);
+        droptakeLeft.setPosition(1 - dropTakeDown);
     }
 }

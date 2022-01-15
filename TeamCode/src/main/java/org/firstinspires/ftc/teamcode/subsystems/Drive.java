@@ -4,11 +4,11 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import com.acmerobotics.dashboard.config.Config;
 
-
+@Config
 public class Drive implements Subsystem {
     Gamepad gamepad1;
     Gamepad gamepad2;
@@ -17,12 +17,12 @@ public class Drive implements Subsystem {
     Servo leftOdo;
     Servo centerOdo;
 
-    public static double odoRDown;
-    public static double odoLDown;
-    public static double odoCDown;
-    public static double odoRUp;
-    public static double odoLUp;
-    public static double odoCUp;
+    public static double odoRDown = 0.5;
+    public static double odoLDown = 0.5;
+    public static double odoCDown = 0.5;
+    public static double odoRUp = 1;
+    public static double odoLUp = 0;
+    public static double odoCUp = 0;
 
     public Drive(Gamepad g1, Gamepad g2) {
         gamepad1 = g1;
@@ -32,10 +32,10 @@ public class Drive implements Subsystem {
     @Override
     public void init(HardwareMap hw) {
         drive = new SampleMecanumDrive(hw);
-//        rightOdo = hw.get(Servo.class, "rightOdo");
-//        leftOdo = hw.get(Servo.class, "leftOdo");
-//        centerOdo = hw.get(Servo.class, "centerOdo");
-//        odoRetract();
+        rightOdo = hw.get(Servo.class, "rightOdo");
+        leftOdo = hw.get(Servo.class, "leftOdo");
+      centerOdo = hw.get(Servo.class, "centerOdo");
+
     }
 
     @Override
@@ -48,15 +48,15 @@ public class Drive implements Subsystem {
         drive.update();
     }
 
-//    public void odoRetract() {
-//        rightOdo.setPosition(odoRUp);
-//        leftOdo.setPosition(odoLUp);
-//        centerOdo.setPosition(odoCUp);
-//    }
-//
-//    public void odoLower() {
-//        rightOdo.setPosition(odoRDown);
-//        leftOdo.setPosition(odoLDown);
-//        centerOdo.setPosition(odoCDown);
-//    }
+    public void odoRetract() {
+        rightOdo.setPosition(odoRUp);
+        leftOdo.setPosition(odoLUp);
+        centerOdo.setPosition(odoCUp);
+    }
+
+    public void odoLower() {
+        rightOdo.setPosition(odoRDown);
+        leftOdo.setPosition(odoLDown);
+        centerOdo.setPosition(odoCDown);
+    }
 }
