@@ -16,7 +16,7 @@ public class SampleTele extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            robot.carousel.updateCaro(-0.6);
+            robot.carousel.updateCaro(-0.5);
             robot.deposit.turretNeutral();
             robot.deposit.close();
             robot.v4b.intake();

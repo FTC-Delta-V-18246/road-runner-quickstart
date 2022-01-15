@@ -52,11 +52,8 @@ public class BasicLift implements Subsystem {
     }
 
     public enum TurretState {Neutral, Blue, Red}
-
     public enum TrapDoorState {OPEN, CLOSE}
-
     static BasicLift.liftState state = BasicLift.liftState.INTAKE;
-
     public BasicLift(Gamepad g1, Gamepad g2) {
         gamepad1 = g1;
         gamepad2 = g2;
@@ -120,6 +117,7 @@ public class BasicLift implements Subsystem {
 
         double currentloop = System.currentTimeMillis();
         robot.drive.odoRetract();
+        target = INTAKE;
 
         switch (state) {
             case INTAKE:
@@ -174,7 +172,7 @@ public class BasicLift implements Subsystem {
                     goDown = true;
                 }
                 if (timer.milliseconds() > 10 && goDown == true) {
-                    robot.v4b.hold();
+                    robot.v4b.intake();
                 }
                 if (timer.milliseconds() > 710 && goDown == true) {
                     liftIntake();
