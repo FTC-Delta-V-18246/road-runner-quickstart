@@ -3,7 +3,9 @@ package org.firstinspires.ftc.teamcode.programs;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.subsystems.BasicLift;
 import org.firstinspires.ftc.teamcode.subsystems.Drive;
 
 @TeleOp
@@ -16,15 +18,15 @@ public class SampleTele extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            robot.carousel.updateCaro(-0.5);
+            robot.carousel.updateCaro(-0.45);
             robot.deposit.turretNeutral();
-            robot.deposit.close();
-            robot.v4b.intake();
 
             if (gamepad1.dpad_left) {
                 robot.v4b.deposit();
             }
 
+            robot.lift.ttelemetry(this);
+            telemetry.update();
             robot.update();
         }
     }

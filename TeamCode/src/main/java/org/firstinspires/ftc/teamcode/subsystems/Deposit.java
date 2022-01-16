@@ -17,7 +17,7 @@ public class Deposit implements Subsystem {
 
     public static double doorOpen = 0.7;
     public static double doorClose = 0.45;
-    public static double turretNEUTRAL = 0.55;
+    public static double turretNEUTRAL = 0.61;
     public static double turretREDPOS = 0.9;
     public static double turretBLUEPOS = 0.3;
 
