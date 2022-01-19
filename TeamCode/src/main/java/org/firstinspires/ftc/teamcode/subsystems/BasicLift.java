@@ -27,7 +27,6 @@ public class BasicLift implements Subsystem {
     public static double kF = -0.001;
     public Gamepad gamepad1;
     public Gamepad gamepad2;
-    private LinearOpMode opMode;
     boolean wasPressedA = false;
     boolean wasPressedB = false;
     private double error = 0;
@@ -45,7 +44,10 @@ public class BasicLift implements Subsystem {
         MID,
         HIGH,
         SHARED,
-        DEPOSIT
+        DEPOSIT,
+        OPENBOX,
+        RETRACTV4B,
+        DOWN
     }
 
     public enum TurretState {Neutral, Blue, Red}
@@ -143,20 +145,30 @@ public class BasicLift implements Subsystem {
                 if (gamepad1.b) {
                     robot.v4b.deposit();
                 }
-                if (gamepad1.dpad_right) {
+                state = liftState.RETRACTV4B;
+            break;
+
+            case OPENBOX:
+                if (gamepad1.b) {
                     robot.deposit.open();
                 }
-                if (gamepad1.a) {
+                state = liftState.RETRACTV4B;
+            break;
+
+            case RETRACTV4B:
+                if (gamepad1.b) {
                     robot.deposit.close();
                     robot.v4b.intake();
-                    //state = liftState.INTAKE;
-
+                    state = liftState.DOWN;
                 }
-                if (gamepad1.dpad_down) {
+            break;
+
+            case DOWN:
+                if (gamepad1.b) {
                     wasPressedA = false;
                     state = liftState.INTAKE;
                 }
-                break;
+            break;
         }
         updatePID(target);
 

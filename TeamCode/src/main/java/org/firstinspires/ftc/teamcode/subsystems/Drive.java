@@ -17,6 +17,7 @@ public class Drive implements Subsystem {
     Servo leftOdo;
     Servo centerOdo;
 
+    //RETUNE ALL VALUES
     public static double odoRDown = 0.5;
     public static double odoLDown = 0.5;
     public static double odoCDown = 0.5;

@@ -41,7 +41,6 @@ public class Intake implements Subsystem {
     public void update(Robot robot) {
         intakeMotor.setPower(1.0 * (gamepad1.right_trigger - gamepad1.left_trigger));
 
-
     }
 
     public static void intakeUp() {

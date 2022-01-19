@@ -19,14 +19,10 @@ public class SampleTele extends LinearOpMode {
 
         while (opModeIsActive()) {
             robot.carousel.updateCaro(-0.45);
-            robot.deposit.turretNeutral();
-
-            if (gamepad1.dpad_left) {
-                robot.v4b.deposit();
-            }
 
             robot.lift.ttelemetry(this);
             telemetry.update();
+
             robot.update();
         }
     }
