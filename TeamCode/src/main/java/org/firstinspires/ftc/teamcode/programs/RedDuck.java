@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.subsystems.BasicLift;
 import org.firstinspires.ftc.teamcode.util.Vision;
 import org.firstinspires.ftc.teamcode.util.VisionPipeline;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -31,6 +32,7 @@ public class RedDuck extends LinearOpMode {
     OpenCvCamera camera;
     Vision vision;
     VisionPipeline position;
+    BasicLift lift;
 
     State currentState = State.IDLE;
 
@@ -46,15 +48,22 @@ public class RedDuck extends LinearOpMode {
                 .build();
         Trajectory Dump = robot.drive.drive.trajectoryBuilder(Duck.end())
                 .lineToConstantHeading(new Vector2d(-32, -24))
-                .addDisplacementMarker(88, () -> {
+                .addDisplacementMarker(80, () -> {
+                    robot.v4b.deposit();
                 })
                 .build();
         Trajectory Intake = robot.drive.drive.trajectoryBuilder(Dump.end())
                 .splineToLinearHeading(new Pose2d(-40, -56, Math.toRadians(240)), Math.toRadians(180))
                 .lineToConstantHeading(new Vector2d(-48, -56))
+                .addDisplacementMarker(100, () -> {
+                    lift.liftIntake();
+                })
                 .build();
         Trajectory Dump2 = robot.drive.drive.trajectoryBuilder(Intake.end())
                 .lineToLinearHeading(new Pose2d(-32, -24, Math.toRadians(180)))
+                .addDisplacementMarker(144, () -> {
+                    robot.v4b.deposit();
+                })
                 .build();
         Trajectory Park = robot.drive.drive.trajectoryBuilder(Dump2.end())
                 .splineToLinearHeading(new Pose2d(-62, -36, Math.toRadians(0)), Math.toRadians(180))
@@ -62,6 +71,8 @@ public class RedDuck extends LinearOpMode {
 
         double DuckTime = 3;
         ElapsedTime DuckTimer = new ElapsedTime();
+        double ArmTime = 2;
+        ElapsedTime ArmTimer = new ElapsedTime();
         double DumpTime = 1.5;
         ElapsedTime DumpTimer = new ElapsedTime();
 
@@ -71,6 +82,7 @@ public class RedDuck extends LinearOpMode {
 
         waitForStart();
 
+        VisionPipeline.POS position = vision.detector.getPosition();
         currentState = State.DUCK;
 
         switch (currentState) {
@@ -89,35 +101,45 @@ public class RedDuck extends LinearOpMode {
                 break;
             case DUMP:
                 robot.drive.drive.followTrajectory(Dump);
+                if (position == VisionPipeline.POS.LEFT) {
+                    lift.liftShared();
+                } else if (position == VisionPipeline.POS.CENTER) {
+                    lift.liftMid();
+                } else {
+                    lift.liftHigh();
+                }
                 if (!robot.drive.drive.isBusy()) {
                     currentState = State.WAITDUMP;
                 }
                 break;
             case WAITDUMP:
-                robot.deposit.open();
+                //v4b temporal marker, scroll up to traj
                 DumpTimer.reset();
                 if (DumpTimer.seconds() >= DumpTime) {
+                    robot.deposit.open();
                     currentState = State.INTAKE;
                 }
                 break;
             case INTAKE:
                 robot.intake.on();
+                robot.v4b.intake();
                 robot.drive.drive.followTrajectoryAsync(Intake);
                 if (!robot.drive.drive.isBusy()) {
                     currentState = State.DUMP2;
                 }
                 break;
             case DUMP2:
+                lift.liftHigh();
                 robot.drive.drive.followTrajectoryAsync(Dump2);
                 if (!robot.drive.drive.isBusy()) {
                     currentState = State.WAITDUMP2;
                 }
                 break;
             case WAITDUMP2:
-                robot.deposit.open();
                 DumpTimer.reset();
                 if (DumpTimer.seconds() >= DumpTime) {
-                    currentState = State.IDLE;
+                    robot.deposit.open();
+                    currentState = State.PARK;
                 }
                 break;
             case PARK:

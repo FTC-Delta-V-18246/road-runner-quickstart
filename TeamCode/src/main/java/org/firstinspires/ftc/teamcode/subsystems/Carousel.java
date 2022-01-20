@@ -53,4 +53,7 @@ public class Carousel implements Subsystem {
             isSideRed = false;
         }
     }
+    public void on() {
+        carouselMotor.setPower(0.4);
+    }
 }
