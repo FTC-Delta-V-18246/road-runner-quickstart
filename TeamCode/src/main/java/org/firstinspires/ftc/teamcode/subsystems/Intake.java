@@ -47,6 +47,9 @@ public class Intake implements Subsystem {
         droptakeRight.setPosition(dropTakeDown);
         droptakeLeft.setPosition(1 - dropTakeDown);
     }
+    public void on() {
+        intakeMotor.setPower(1.0);
+    }
 
     public static void intakeDown() {
         droptakeRight.setPosition(dropTakeDown);
