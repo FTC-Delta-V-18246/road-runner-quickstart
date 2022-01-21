@@ -15,16 +15,14 @@ import org.firstinspires.ftc.teamcode.util.VisionPipeline;
 import org.openftc.easyopencv.OpenCvCamera;
 
 
-@Autonomous(name = "RedDuck")
-public class RedDuck extends LinearOpMode {
+@Autonomous(name = "RedCycle")
+public class RedCycle extends LinearOpMode {
     enum State {
-        DUCK,           // go to carousel
-        WAITDUCK,       // wait x seconds to spin
-        DUMP,           // go to dump position (need if statement)
-        WAITDUMP,       // wait x seconds to dump
+        DUMPLOADED,           // go to dump position (need if statement)
+        WAITDUMPLOADED,       // wait x seconds to dump
         INTAKE,         // go to intake duck
-        DUMP2,          // go to dump high
-        WAITDUMP2,      // wait to dump high
+        DUMP,          // go to dump high
+        WAITDUMP,      // wait to dump high
         PARK,           //go to park
         DONE            // nothing
     }
@@ -41,45 +39,28 @@ public class RedDuck extends LinearOpMode {
         Pose2d startPose = new Pose2d(-32, -65, Math.toRadians(90));
         robot.drive.drive.setPoseEstimate(startPose);
 
-        Trajectory Duck = robot.drive.drive.trajectoryBuilder(startPose)
-                .splineToLinearHeading(new Pose2d(-48, -44, Math.toRadians(180)), Math.toRadians(180))
-                .splineToLinearHeading(new Pose2d(-56, -48, Math.toRadians(180)), Math.toRadians(180))
-                .build();
-        Trajectory Dump = robot.drive.drive.trajectoryBuilder(Duck.end())
-                .lineToConstantHeading(new Vector2d(-32, -24))
-                .addDisplacementMarker(60, () -> {
+        Trajectory DumpLoaded = robot.drive.drive.trajectoryBuilder(startPose)
+                .splineToLinearHeading(new Pose2d(2, -38, Math.toRadians(315)), Math.toRadians(135))
+                .addDisplacementMarker(16, () -> {
                     robot.v4b.deposit();
                 })
                 .build();
-        Trajectory Intake = robot.drive.drive.trajectoryBuilder(Dump.end())
-                .splineToLinearHeading(new Pose2d(-40, -56, Math.toRadians(240)), Math.toRadians(180))
-                .lineToConstantHeading(new Vector2d(-48, -56))
-                .addDisplacementMarker(88, () -> {
-                    robot.v4b.intake();
-                    robot.deposit.close();
-                })
-                .addDisplacementMarker(100, () -> {
-                    lift.liftIntake();
-                })
+        Trajectory Intake = robot.drive.drive.trajectoryBuilder(DumpLoaded.end())
+                .splineToLinearHeading(new Pose2d(12, -63, Math.toRadians(0)), Math.toRadians(0))
+                .lineToLinearHeading(new Pose2d(48, -63, Math.toRadians(0)))
                 .build();
-        Trajectory Dump2 = robot.drive.drive.trajectoryBuilder(Intake.end())
-                .lineToLinearHeading(new Pose2d(-32, -24, Math.toRadians(180)))
-                .addDisplacementMarker(144, () -> {
-                    robot.v4b.deposit();
-                })
+        Trajectory Dump = robot.drive.drive.trajectoryBuilder(Intake.end())
+                .lineToSplineHeading(new Pose2d(12, -63, Math.toRadians(0)))
+                .splineToSplineHeading(new Pose2d(2, -38, Math.toRadians(315)), Math.toRadians(135))
                 .build();
-        Trajectory Park = robot.drive.drive.trajectoryBuilder(Dump2.end())
-                .addDisplacementMarker(164, () -> {
-                    robot.v4b.intake();
-                    robot.deposit.close();
-                })
+        Trajectory Park = robot.drive.drive.trajectoryBuilder(Dump.end())
                 .splineToLinearHeading(new Pose2d(-62, -36, Math.toRadians(0)), Math.toRadians(180))
                 .build();
         //timers
-        double DuckTime = 3;
-        ElapsedTime DuckTimer = new ElapsedTime();
         double DumpTime = 1.5;
         ElapsedTime DumpTimer = new ElapsedTime();
+        double ArmTime = 3;
+        ElapsedTime ArmTimer = new ElapsedTime();
         //vision
         vision = new Vision(hardwareMap, telemetry);
         vision.setPipeline();
@@ -87,24 +68,12 @@ public class RedDuck extends LinearOpMode {
         VisionPipeline.POS position = vision.detector.getPosition();
 
         waitForStart();
-        currentState = State.DUCK;
+        currentState = State.DUMP;
+        robot.deposit.turretNeutral();
 
         switch (currentState) {
-            case DUCK:
-                robot.drive.drive.followTrajectory(Duck);
-                if (!robot.drive.drive.isBusy()) {
-                    currentState = State.WAITDUCK;
-                }
-                break;
-            case WAITDUCK:
-                robot.carousel.on();
-                DuckTimer.reset();
-                if (DuckTimer.seconds() >= DuckTime) {
-                    currentState = State.DUMP;
-                }
-                break;
-            case DUMP:
-                robot.drive.drive.followTrajectory(Dump);
+            case DUMPLOADED:
+                robot.drive.drive.followTrajectory(DumpLoaded);
                 if (position == VisionPipeline.POS.LEFT) {
                     lift.liftShared();
                 } else if (position == VisionPipeline.POS.CENTER) {
@@ -116,8 +85,7 @@ public class RedDuck extends LinearOpMode {
                     currentState = State.WAITDUMP;
                 }
                 break;
-            case WAITDUMP:
-                //v4b temporal marker, scroll up to traj
+            case WAITDUMPLOADED:
                 DumpTimer.reset();
                 if (DumpTimer.seconds() >= DumpTime) {
                     robot.deposit.open();
@@ -125,21 +93,34 @@ public class RedDuck extends LinearOpMode {
                 }
                 break;
             case INTAKE:
+                DumpTimer.reset();
+                if (DumpTimer.seconds() >= DumpTime) {
+                    robot.v4b.intake();
+                    robot.deposit.close();
+                }
+                ArmTimer.reset();
+                if (ArmTimer.seconds() >= ArmTime) {
+                    lift.liftIntake();
+                }
                 robot.intake.intakeDown();
                 robot.intake.on();
                 robot.drive.drive.followTrajectoryAsync(Intake);
                 if (!robot.drive.drive.isBusy()) {
-                    currentState = State.DUMP2;
+                    currentState = State.DUMP;
                 }
                 break;
-            case DUMP2:
+            case DUMP:
                 lift.liftHigh();
-                robot.drive.drive.followTrajectoryAsync(Dump2);
+                ArmTimer.reset();
+                if (ArmTimer.seconds() >= ArmTime) {
+                    robot.deposit.open();
+                }
+                robot.drive.drive.followTrajectoryAsync(Dump);
                 if (!robot.drive.drive.isBusy()) {
-                    currentState = State.WAITDUMP2;
+                    currentState = State.WAITDUMP;
                 }
                 break;
-            case WAITDUMP2:
+            case WAITDUMP:
                 DumpTimer.reset();
                 if (DumpTimer.seconds() >= DumpTime) {
                     robot.deposit.open();
@@ -158,3 +139,4 @@ public class RedDuck extends LinearOpMode {
         }
     }
 }
+
