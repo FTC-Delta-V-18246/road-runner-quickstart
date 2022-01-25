@@ -8,15 +8,15 @@ import com.acmerobotics.dashboard.config.Config;
 
 import org.firstinspires.ftc.teamcode.Robot;
 
-
-public class V4b implements Subsystem{
+@Config
+public class V4b implements Subsystem {
 
     Gamepad gamepad1;
     Gamepad gamepad2;
     Servo v4bLeft;
     Servo v4bRight;
 
-    public static double deposit = 0; //RETUNE TO NOT STALL SERVOS
+    public static double deposit = 0.33; //RETUNE TO NOT STALL SERVOS
     public double intake = 0.87;
 
     public V4b(Gamepad g1, Gamepad g2) {
@@ -41,6 +41,7 @@ public class V4b implements Subsystem{
         v4bLeft.setPosition(intake);
         v4bRight.setPosition(1 - intake);
     }
+
     public void deposit() {
         v4bLeft.setPosition(deposit);
         v4bRight.setPosition(1 - deposit);

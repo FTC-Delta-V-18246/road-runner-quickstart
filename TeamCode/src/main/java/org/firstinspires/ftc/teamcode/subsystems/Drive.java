@@ -4,11 +4,13 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+
 import com.acmerobotics.dashboard.config.Config;
 
-
+@Config
 public class Drive implements Subsystem {
     Gamepad gamepad1;
     Gamepad gamepad2;
@@ -17,11 +19,10 @@ public class Drive implements Subsystem {
     Servo leftOdo;
     Servo centerOdo;
 
-    //RETUNE ALL VALUES
     public static double odoRDown = 0.5;
     public static double odoLDown = 0.5;
     public static double odoCDown = 0.5;
-    public static double odoRUp = .94;
+    public static double odoRUp = 0.94;
     public static double odoLUp = 0.065;
     public static double odoCUp = 0.97;
 
@@ -35,7 +36,7 @@ public class Drive implements Subsystem {
         drive = new SampleMecanumDrive(hw);
         rightOdo = hw.get(Servo.class, "rightOdo");
         leftOdo = hw.get(Servo.class, "leftOdo");
-      centerOdo = hw.get(Servo.class, "centerOdo");
+        centerOdo = hw.get(Servo.class, "centerOdo");
 
     }
 

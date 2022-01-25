@@ -5,10 +5,12 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+
 import org.firstinspires.ftc.teamcode.Robot;
+
 import com.acmerobotics.dashboard.config.Config;
 
-
+@Config
 public class Intake implements Subsystem {
     public static Servo droptakeRight;
     public static Servo droptakeLeft;
@@ -17,8 +19,8 @@ public class Intake implements Subsystem {
     DcMotor intakeMotor;
 
 
-    public static double dropTakeDown = 0.36;
-    public static double dropTakeUp = 0;
+    public static double dropTakeDown = 0.34;
+    public static double dropTakeUp = 0.1;
 
 
     public Intake(Gamepad g1, Gamepad g2) {
@@ -33,19 +35,19 @@ public class Intake implements Subsystem {
 
         droptakeLeft = hw.get(Servo.class, "droptakeL");
         droptakeRight = hw.get(Servo.class, "droptakeR");
-
+        intakeUp();
     }
 
     @Override
     public void update(Robot robot) {
         intakeMotor.setPower(1.0 * (gamepad1.right_trigger - gamepad1.left_trigger));
-
     }
 
     public void intakeUp() {
         droptakeRight.setPosition(dropTakeDown);
         droptakeLeft.setPosition(1 - dropTakeDown);
     }
+
     public void on() {
         intakeMotor.setPower(1.0);
     }

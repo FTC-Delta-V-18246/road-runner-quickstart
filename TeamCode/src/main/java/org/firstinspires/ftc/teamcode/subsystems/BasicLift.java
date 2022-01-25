@@ -15,7 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.programs.RedDuck;
 
-
+@Config
 public class BasicLift implements Subsystem {
     DcMotor lift1;
     DcMotor lift2;
@@ -135,7 +135,7 @@ public class BasicLift implements Subsystem {
                     state = liftState.MID;
                 }
                 if (gamepad1.a) {
-                    state = liftState.DEPOSIT;
+                    state = liftState.SHARED;
                 }
                 break;
 
@@ -144,6 +144,9 @@ public class BasicLift implements Subsystem {
                 robot.intake.intakeUp();
                 if (LiftTimer.seconds() >= LiftTime) {
                     state = liftState.DEPOSIT;
+                }
+                if (gamepad1.dpad_down) {
+                    state = liftState.RETRACTV4B;
                 }
                 break;
             case MID:
@@ -180,6 +183,7 @@ public class BasicLift implements Subsystem {
 
             case RETRACTV4B:
                 robot.v4b.intake();
+                robot.deposit.close();
                 if (DumpTimer.seconds() >= DumpTime) {
                     state = liftState.INTAKE;
                 }

@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Robot;
 
-
+@Config
 public class Deposit implements Subsystem {
 
     Gamepad gamepad1;
@@ -25,8 +25,8 @@ public class Deposit implements Subsystem {
     public static double turretREDPOS = 0.9;
     public static double turretBLUEPOS = 0.3;
     public static double distanceMin = 0;
-    public static double distanceMax = 1.75;
-    public double depositSensor = 5;
+    public static double distanceMax = 2.25;
+    public static double depositSensor = 5;
 
     public State state = State.INTAKE;
     public enum State {INTAKE, NEUTRAL, REDSHARED, BLUESHARED}
@@ -79,11 +79,7 @@ public class Deposit implements Subsystem {
     public void close() {
         trapDoor.setPosition(doorClose);
     }
-    /*public void hasBlock(){
-        if ((distanceMax >= depositSensor && depositSensor >= distanceMin)) {
-            block = !false;
-        }
-    }*/
+
     public void turretNeutral() {
         turret.setPosition(turretNEUTRAL);
     }
