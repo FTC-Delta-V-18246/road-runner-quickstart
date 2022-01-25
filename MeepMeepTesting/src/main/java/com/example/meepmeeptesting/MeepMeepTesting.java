@@ -18,7 +18,7 @@ public class MeepMeepTesting {
                 .setColorScheme(new ColorSchemeBlueDark())
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 10)
                 .followTrajectorySequence(start ->
-                                /*start.trajectorySequenceBuilder(new Pose2d(-32, -65, Math.toRadians(90)))
+                                start.trajectorySequenceBuilder(new Pose2d(-32, -65, Math.toRadians(90)))
                                         //duck
                                         .splineToLinearHeading(new Pose2d(-48, -44, Math.toRadians(180)), Math.toRadians(180))
                                         .splineToLinearHeading(new Pose2d(-56, -48, Math.toRadians(180)), Math.toRadians(180))
@@ -41,9 +41,9 @@ public class MeepMeepTesting {
 
                                         //park
                                         .splineToLinearHeading(new Pose2d(-62, -36, Math.toRadians(0)), Math.toRadians(180))
-                                        .build()*/
-
-                        start.trajectorySequenceBuilder(new Pose2d(10, -63, Math.toRadians(90)))
+                                        .build()
+                );
+                        /*start.trajectorySequenceBuilder(new Pose2d(10, -63, Math.toRadians(90)))
                                 //deposit preloaded, adjust by 2" for low/mid/high
                                 .addDisplacementMarker(16, () -> {
                                 })
@@ -63,7 +63,7 @@ public class MeepMeepTesting {
                                 //looop after
                                 .build()
                 );
-
+*/
         RoadRunnerBotEntity blue = new DefaultBotBuilder(meepMeep)
                 .setColorScheme(new ColorSchemeRedDark())
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 10)

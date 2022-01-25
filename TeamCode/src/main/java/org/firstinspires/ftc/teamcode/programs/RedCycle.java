@@ -14,7 +14,6 @@ import org.firstinspires.ftc.teamcode.util.Vision;
 import org.firstinspires.ftc.teamcode.util.VisionPipeline;
 import org.openftc.easyopencv.OpenCvCamera;
 
-
 @Autonomous(name = "RedCycle")
 public class RedCycle extends LinearOpMode {
     enum State {
@@ -84,6 +83,7 @@ public class RedCycle extends LinearOpMode {
                 if (!robot.drive.drive.isBusy()) {
                     currentState = State.WAITDUMP;
                 }
+
                 break;
             case WAITDUMPLOADED:
                 DumpTimer.reset();

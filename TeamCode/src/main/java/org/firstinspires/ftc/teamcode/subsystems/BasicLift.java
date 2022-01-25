@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import android.hardware.Sensor;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -9,7 +11,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.programs.RedDuck;
 
 @Config
 public class BasicLift implements Subsystem {
@@ -27,15 +31,13 @@ public class BasicLift implements Subsystem {
     public static double kF = -0.001;
     public Gamepad gamepad1;
     public Gamepad gamepad2;
-    boolean wasPressedA = false;
-    boolean wasPressedB = false;
     private double error = 0;
     private double power = 0;
     public ElapsedTime rruntime;
 
     public Timer extendTimer;
 
-    public static liftState getState() {
+    public liftState getState() {
         return state;
     }
 
@@ -51,8 +53,11 @@ public class BasicLift implements Subsystem {
     }
 
     public enum TurretState {Neutral, Blue, Red}
+
     public enum TrapDoorState {OPEN, CLOSE}
-    static BasicLift.liftState state = BasicLift.liftState.INTAKE;
+
+    BasicLift.liftState state = BasicLift.liftState.INTAKE;
+
     public BasicLift(Gamepad g1, Gamepad g2) {
         gamepad1 = g1;
         gamepad2 = g2;
@@ -72,12 +77,12 @@ public class BasicLift implements Subsystem {
         lift2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lift2.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        // IMPORTANT
         lift2.setDirection(DcMotor.Direction.REVERSE);
         target = INTAKE;
         timer = new ElapsedTime();
         rruntime = new ElapsedTime();
         liftReset();
+        state = liftState.INTAKE;
     }
 
     public void liftReset() {
@@ -104,6 +109,10 @@ public class BasicLift implements Subsystem {
         target = INTAKE;
     }
 
+    double LiftTime = .7;
+    ElapsedTime LiftTimer = new ElapsedTime();
+    double DumpTime = 1;
+    ElapsedTime DumpTimer = new ElapsedTime();
 
     @Override
     public void update(Robot robot) {
@@ -114,68 +123,85 @@ public class BasicLift implements Subsystem {
             case INTAKE:
                 liftIntake();
                 robot.v4b.intake();
-                robot.intake.intakeDown();
                 robot.deposit.close();
-
+                robot.intake.intakeDown();
+                LiftTimer.reset();
+                robot.deposit.depositSensor = robot.deposit.ssensor.getDistance(DistanceUnit.INCH);
+                if ((robot.deposit.distanceMax >= robot.deposit.depositSensor && robot.deposit.depositSensor >= robot.deposit.distanceMin)) {
+                    state = liftState.HIGH;
+                }
                 if (gamepad1.y) {
-                    liftHigh();
-
-                    //extendTimer = new Timer(rruntime, 3.0);
-
-                    state = liftState.DEPOSIT;
+                    state = liftState.HIGH;
                 }
-                //if(state == liftState.HIGH&&extendTimer.timeUp()){robot.v4b.deposit();}
-                //if(state == liftState.MID&&extendTimer.timeUp()){robot.v4b.deposit();}
-                //if(state == liftState.SHARED&&extendTimer.timeUp()){robot.v4b.deposit();}
-
                 if (gamepad1.x) {
-                    liftMid();
-                    robot.v4b.deposit();
+                    state = liftState.MID;
+                }
+                if (gamepad1.a) {
                     state = liftState.DEPOSIT;
                 }
-                /*if (gamepad1.a){
-                    robot.v4b.deposit();
-                    //extendTimer = new Timer(rruntime, 3.0);
-                    liftShared();
-                    state = liftState.DEPOSIT;
-                }*/
                 break;
 
-            case DEPOSIT:
-                if (gamepad1.b) {
-                    robot.v4b.deposit();
+            case HIGH:
+                liftHigh();
+                robot.intake.intakeUp();
+                if (LiftTimer.seconds() >= LiftTime) {
+                    state = liftState.DEPOSIT;
                 }
-                state = liftState.RETRACTV4B;
-            break;
+                break;
+            case MID:
+                liftMid();
+                robot.intake.intakeUp();
+                if (gamepad1.y) {
+                    state = liftState.HIGH;
+                }
+                if (LiftTimer.seconds() >= LiftTime) {
+                    state = liftState.DEPOSIT;
+                }
+                break;
+            case SHARED:
+                liftShared();
+                robot.intake.intakeUp();
+                if (LiftTimer.seconds() >= LiftTime) {
+                    state = liftState.DEPOSIT;
+                }
+                break;
+            case DEPOSIT:
+                robot.v4b.deposit();
+                if (gamepad1.b) {
+                    state = liftState.OPENBOX;
+                }
+                break;
 
             case OPENBOX:
-                if (gamepad1.b) {
-                    robot.deposit.open();
+                robot.deposit.open();
+                DumpTimer.reset();
+                if (gamepad1.dpad_down) {
+                    state = liftState.RETRACTV4B;
                 }
-                state = liftState.RETRACTV4B;
-            break;
+                break;
 
             case RETRACTV4B:
-                if (gamepad1.b) {
-                    robot.deposit.close();
-                    robot.v4b.intake();
-                    state = liftState.DOWN;
-                }
-            break;
-
-            case DOWN:
-                if (gamepad1.b) {
-                    wasPressedA = false;
+                robot.v4b.intake();
+                if (DumpTimer.seconds() >= DumpTime) {
                     state = liftState.INTAKE;
                 }
-            break;
+                break;
+
+            /*case DOWN:
+                liftIntake();
+                if (gamepad1.b) {
+                    state = liftState.INTAKE;
+                }
+                break;*/
         }
+
         updatePID(target);
 
     }
+
     public void updatePID(double target) {
         error = target - encoderTicksToDegrees(lift1.getCurrentPosition());
-        power = error * kP + Math.signum(error)*kF;
+        power = error * kP + Math.signum(error) * kF;
 
         if (Math.abs(error) < 75) {
             power = 0;
@@ -189,9 +215,10 @@ public class BasicLift implements Subsystem {
     public static double encoderTicksToDegrees(double ticks) {
         return ((ticks / TICKS_PER_REV) * GEAR_RATIO * 360.0);
     }
-    public void ttelemetry(LinearOpMode opMode){
-        opMode.telemetry.addData("",power);
-        opMode.telemetry.addData("",error);
+
+    public void ttelemetry(LinearOpMode opMode) {
+        opMode.telemetry.addData("", power);
+        opMode.telemetry.addData("", error);
         opMode.telemetry.addData("", lift2.getCurrentPosition());
         opMode.telemetry.addData("", lift1.getCurrentPosition());
     }

@@ -2,9 +2,12 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Robot;
 
 @Config
@@ -14,12 +17,16 @@ public class Deposit implements Subsystem {
     Gamepad gamepad2;
     Servo turret;
     Servo trapDoor;
+    DistanceSensor ssensor;
 
-    public static double doorOpen = 0.7;
-    public static double doorClose = 0.45;
+    public static double doorOpen = 0.9;
+    public static double doorClose = 0.67;
     public static double turretNEUTRAL = 0.61;
     public static double turretREDPOS = 0.9;
     public static double turretBLUEPOS = 0.3;
+    public static double distanceMin = 0;
+    public static double distanceMax = 1.75;
+    public static double depositSensor = 5;
 
     public State state = State.INTAKE;
     public enum State {INTAKE, NEUTRAL, REDSHARED, BLUESHARED}
@@ -33,6 +40,7 @@ public class Deposit implements Subsystem {
     public void init(HardwareMap hw) {
         turret = hw.get(Servo.class, "turret");
         trapDoor = hw.get(Servo.class, "trapDoor");
+        ssensor = hw.get(DistanceSensor.class, "sensor");
 
         turretNeutral();
         close();
@@ -64,7 +72,6 @@ public class Deposit implements Subsystem {
                 break;
         }
     }
-
     public void open() {
         trapDoor.setPosition(doorOpen);
     }
@@ -72,7 +79,11 @@ public class Deposit implements Subsystem {
     public void close() {
         trapDoor.setPosition(doorClose);
     }
-
+    /*public void hasBlock(){
+        if ((distanceMax >= depositSensor && depositSensor >= distanceMin)) {
+            block = !false;
+        }
+    }*/
     public void turretNeutral() {
         turret.setPosition(turretNEUTRAL);
     }

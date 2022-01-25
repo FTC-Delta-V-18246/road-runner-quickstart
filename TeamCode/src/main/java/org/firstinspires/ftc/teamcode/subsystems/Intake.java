@@ -10,14 +10,14 @@ import com.acmerobotics.dashboard.config.Config;
 
 @Config
 public class Intake implements Subsystem {
-    private static Servo droptakeRight;
-    private static Servo droptakeLeft;
+    public static Servo droptakeRight;
+    public static Servo droptakeLeft;
     Gamepad gamepad1;
     Gamepad gamepad2;
     DcMotor intakeMotor;
 
 
-    public static double dropTakeDown = 0.35;
+    public static double dropTakeDown = 0.36;
     public static double dropTakeUp = 0;
 
 
@@ -34,7 +34,6 @@ public class Intake implements Subsystem {
         droptakeLeft = hw.get(Servo.class, "droptakeL");
         droptakeRight = hw.get(Servo.class, "droptakeR");
 
-        intakeDown();
     }
 
     @Override
@@ -43,7 +42,7 @@ public class Intake implements Subsystem {
 
     }
 
-    public static void intakeUp() {
+    public void intakeUp() {
         droptakeRight.setPosition(dropTakeDown);
         droptakeLeft.setPosition(1 - dropTakeDown);
     }
@@ -51,7 +50,7 @@ public class Intake implements Subsystem {
         intakeMotor.setPower(1.0);
     }
 
-    public static void intakeDown() {
+    public void intakeDown() {
         droptakeRight.setPosition(dropTakeDown);
         droptakeLeft.setPosition(1 - dropTakeDown);
     }

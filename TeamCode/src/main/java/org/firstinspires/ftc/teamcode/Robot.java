@@ -10,6 +10,8 @@ import org.firstinspires.ftc.teamcode.subsystems.Drive;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Subsystem;
 import org.firstinspires.ftc.teamcode.subsystems.V4b;
+import org.firstinspires.ftc.teamcode.util.Vision;
+import org.firstinspires.ftc.teamcode.util.VisionPipeline;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +25,8 @@ public class Robot {
     public Deposit deposit;
     public V4b v4b;
     public BasicLift lift;
+    public Vision vision;
+    public VisionPipeline visionPipeline;
 
     public Robot(HardwareMap hw, Gamepad g1, Gamepad g2) {
         subsystems = new ArrayList<>();
