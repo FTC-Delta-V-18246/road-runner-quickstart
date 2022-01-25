@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.Robot;
 import com.acmerobotics.dashboard.config.Config;
 
-@Config
+
 public class Intake implements Subsystem {
     public static Servo droptakeRight;
     public static Servo droptakeLeft;

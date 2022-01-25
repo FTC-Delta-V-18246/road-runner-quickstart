@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import com.acmerobotics.dashboard.config.Config;
 
-@Config
+
 public class Drive implements Subsystem {
     Gamepad gamepad1;
     Gamepad gamepad2;
