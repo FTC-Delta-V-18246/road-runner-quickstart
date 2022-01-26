@@ -19,15 +19,15 @@ import org.firstinspires.ftc.teamcode.programs.RedDuck;
 public class BasicLift implements Subsystem {
     DcMotor lift1;
     DcMotor lift2;
-    public double target = 0;
-    public double MID = -450;
-    public double HIGH = -670;
-    public double SHARED = 400;
-    public double INTAKE = 0;
+    public static double target = 0;
+    public static double MID = -450;
+    public static double HIGH = -677;
+    public static double SHARED = 400;
+    public static double INTAKE = 0;
 
     public static final double TICKS_PER_REV = 28 * 13.7;
     public static final double GEAR_RATIO = 1;
-    public static double kP = -0.0017;
+    public static double kP = -0.0014;
     public static double kF = -0.001;
     public Gamepad gamepad1;
     public Gamepad gamepad2;
