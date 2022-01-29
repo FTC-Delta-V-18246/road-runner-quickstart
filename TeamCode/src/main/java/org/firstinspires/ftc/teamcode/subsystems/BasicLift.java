@@ -20,10 +20,11 @@ public class BasicLift implements Subsystem {
     DcMotor lift1;
     DcMotor lift2;
     public static double target = 0;
-    public static double MID = -450;
-    public static double HIGH = -677;
-    public static double SHARED = 400;
+    public static double MID = -475;
+    public static double HIGH = -650;
+    public static double SHARED = -450;
     public static double INTAKE = 0;
+    public static double HOLD = -200;
 
     public static final double TICKS_PER_REV = 28 * 13.7;
     public static final double GEAR_RATIO = 1;
@@ -43,6 +44,7 @@ public class BasicLift implements Subsystem {
 
     public enum liftState {
         INTAKE,
+        HOLD,
         MID,
         HIGH,
         SHARED,
@@ -99,6 +101,11 @@ public class BasicLift implements Subsystem {
         target = MID;
     }
 
+    public void liftHold() {
+        target = HOLD;
+    }
+
+
     public void liftShared() {
         target = SHARED;
     }
@@ -107,9 +114,9 @@ public class BasicLift implements Subsystem {
         target = INTAKE;
     }
 
-    double LiftTime = .7;
+    double LiftTime = .5;
     ElapsedTime LiftTimer = new ElapsedTime();
-    double DumpTime = 1;
+    double DumpTime = .8;
     ElapsedTime DumpTimer = new ElapsedTime();
 
     @Override
@@ -123,11 +130,18 @@ public class BasicLift implements Subsystem {
                 robot.v4b.intake();
                 robot.deposit.close();
                 robot.intake.intakeDown();
-                LiftTimer.reset();
                 robot.deposit.depositSensor = robot.deposit.ssensor.getDistance(DistanceUnit.INCH);
                 if ((robot.deposit.distanceMax >= robot.deposit.depositSensor && robot.deposit.depositSensor >= robot.deposit.distanceMin)) {
-                    state = liftState.HIGH;
+                    state = liftState.HOLD;
                 }
+                break;
+
+            case HOLD:
+                liftHold();
+                robot.v4b.intake();
+                robot.deposit.close();
+                robot.intake.intakeDown();
+                LiftTimer.reset();
                 if (gamepad1.y) {
                     state = liftState.HIGH;
                 }
@@ -137,16 +151,15 @@ public class BasicLift implements Subsystem {
                 if (gamepad1.a) {
                     state = liftState.SHARED;
                 }
+                if (gamepad1.dpad_down) {
+                    state = liftState.RETRACTV4B;
+                }
                 break;
-
             case HIGH:
                 liftHigh();
                 robot.intake.intakeUp();
                 if (LiftTimer.seconds() >= LiftTime) {
                     state = liftState.DEPOSIT;
-                }
-                if (gamepad1.dpad_down) {
-                    state = liftState.RETRACTV4B;
                 }
                 break;
             case MID:

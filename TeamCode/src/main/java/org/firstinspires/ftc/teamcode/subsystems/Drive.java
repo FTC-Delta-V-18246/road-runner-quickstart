@@ -23,7 +23,7 @@ public class Drive implements Subsystem {
     public static double odoLDown = 0.5;
     public static double odoCDown = 0.5;
     public static double odoRUp = 0.94;
-    public static double odoLUp = 0.065;
+    public static double odoLUp = 0.08;
     public static double odoCUp = 0.97;
 
     public Drive(Gamepad g1, Gamepad g2) {
