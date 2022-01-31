@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.subsystems.BasicLift;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.util.Vision;
 import org.firstinspires.ftc.teamcode.util.VisionPipeline;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -38,21 +39,15 @@ public class RedCycle extends LinearOpMode {
         Pose2d startPose = new Pose2d(-32, -65, Math.toRadians(90));
         robot.drive.drive.setPoseEstimate(startPose);
 
-        Trajectory DumpLoaded = robot.drive.drive.trajectoryBuilder(startPose)
+        TrajectorySequence seq = robot.drive.drive.trajectorySequenceBuilder(startPose)
                 .splineToLinearHeading(new Pose2d(2, -38, Math.toRadians(315)), Math.toRadians(135))
                 .addDisplacementMarker(16, () -> {
                     robot.v4b.deposit();
                 })
-                .build();
-        Trajectory Intake = robot.drive.drive.trajectoryBuilder(DumpLoaded.end())
-                .splineToLinearHeading(new Pose2d(12, -63, Math.toRadians(0)), Math.toRadians(0))
-                .lineToLinearHeading(new Pose2d(48, -63, Math.toRadians(0)))
-                .build();
-        Trajectory Dump = robot.drive.drive.trajectoryBuilder(Intake.end())
+                .splineToSplineHeading(new Pose2d(12, -63, Math.toRadians(0)), Math.toRadians(0))
+                .lineToSplineHeading(new Pose2d(48, -63, Math.toRadians(0)))
                 .lineToSplineHeading(new Pose2d(12, -63, Math.toRadians(0)))
                 .splineToSplineHeading(new Pose2d(2, -38, Math.toRadians(315)), Math.toRadians(135))
-                .build();
-        Trajectory Park = robot.drive.drive.trajectoryBuilder(Dump.end())
                 .splineToLinearHeading(new Pose2d(-62, -36, Math.toRadians(0)), Math.toRadians(180))
                 .build();
         //timers
@@ -66,13 +61,15 @@ public class RedCycle extends LinearOpMode {
         vision.startStreaming();
         VisionPipeline.POS position = vision.detector.getPosition();
 
+        robot.drive.drive.followTrajectorySequenceAsync(seq);
+
         waitForStart();
+
         currentState = State.DUMP;
         robot.deposit.turretNeutral();
 
         switch (currentState) {
             case DUMPLOADED:
-                robot.drive.drive.followTrajectory(DumpLoaded);
                 if (position == VisionPipeline.POS.LEFT) {
                     lift.liftShared();
                 } else if (position == VisionPipeline.POS.CENTER) {

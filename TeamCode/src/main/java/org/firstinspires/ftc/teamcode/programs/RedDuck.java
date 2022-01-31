@@ -43,7 +43,7 @@ public class RedDuck extends LinearOpMode {
 
         Trajectory Duck = robot.drive.drive.trajectoryBuilder(startPose)
                 .splineToLinearHeading(new Pose2d(-48, -44, Math.toRadians(180)), Math.toRadians(180))
-                .splineToLinearHeading(new Pose2d(-56, -48, Math.toRadians(180)), Math.toRadians(180))
+                .splineToLinearHeading(new Pose2d(-56, -48), Math.toRadians(180))
                 .build();
         Trajectory Dump = robot.drive.drive.trajectoryBuilder(Duck.end())
                 .lineToConstantHeading(new Vector2d(-32, -24))
@@ -52,8 +52,8 @@ public class RedDuck extends LinearOpMode {
                 })
                 .build();
         Trajectory Intake = robot.drive.drive.trajectoryBuilder(Dump.end())
-                .splineToLinearHeading(new Pose2d(-40, -56, Math.toRadians(240)), Math.toRadians(180))
-                .lineToConstantHeading(new Vector2d(-48, -56))
+                .splineToSplineHeading(new Pose2d(-40, -56, Math.toRadians(240)), Math.toRadians(180))
+                .lineToSplineHeading(new Pose2d(-48, -56, Math.toRadians(240)))
                 .addDisplacementMarker(88, () -> {
                     robot.v4b.intake();
                     robot.deposit.close();

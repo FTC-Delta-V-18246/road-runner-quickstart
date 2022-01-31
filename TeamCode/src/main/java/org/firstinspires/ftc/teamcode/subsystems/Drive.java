@@ -22,9 +22,9 @@ public class Drive implements Subsystem {
     public static double odoRDown = 0.5;
     public static double odoLDown = 0.5;
     public static double odoCDown = 0.5;
-    public static double odoRUp = 0.94;
+    public static double odoRUp = 0.98;
     public static double odoLUp = 0.08;
-    public static double odoCUp = 0.97;
+    public static double odoCUp = 0.98;
 
     public Drive(Gamepad g1, Gamepad g2) {
         gamepad1 = g1;
@@ -42,6 +42,12 @@ public class Drive implements Subsystem {
 
     @Override
     public void update(Robot robot) {
+        if (gamepad1.dpad_up) {
+            odoRetract();
+        }
+        else {
+            odoLower();
+        }
         drive.setWeightedDrivePower(new Pose2d(
                 -gamepad1.left_stick_y,
                 -gamepad1.left_stick_x,

@@ -34,8 +34,8 @@ public class MeepMeepTesting {
                                         .addDisplacementMarker(164, () -> {
                                         })
                                         //intake duck
-                                        .splineToLinearHeading(new Pose2d(-40, -56, Math.toRadians(240)), Math.toRadians(180))
-                                        .lineToConstantHeading(new Vector2d(-48, -56))
+                                        .splineToSplineHeading(new Pose2d(-40, -56, Math.toRadians(240)), Math.toRadians(180))
+                                        .lineToSplineHeading(new Pose2d(-48, -56, Math.toRadians(240)))
                                         //deposit duck
                                         .lineToLinearHeading(new Pose2d(-32, -24, Math.toRadians(180)))
 
