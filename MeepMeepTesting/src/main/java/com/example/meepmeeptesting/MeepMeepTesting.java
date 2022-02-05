@@ -1,4 +1,4 @@
-package com.example.meepmeeptesting;
+ package com.example.meepmeeptesting;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -20,8 +20,10 @@ public class MeepMeepTesting {
                 .followTrajectorySequence(start ->
                                 start.trajectorySequenceBuilder(new Pose2d(-32, -65, Math.toRadians(90)))
                                         //duck
-                                        .splineToLinearHeading(new Pose2d(-48, -44, Math.toRadians(180)), Math.toRadians(180))
-                                        .splineToLinearHeading(new Pose2d(-56, -48, Math.toRadians(180)), Math.toRadians(180))
+                                        //.splineToSplineHeading(new Pose2d(-48, -44, Math.toRadians(180)), Math.toRadians(180))
+                                        //.splineToSplineHeading(new Pose2d(-56, -48, Math.toRadians(180)), Math.toRadians(180))
+                                        .splineTo(new Vector2d(-48, -44), Math.toRadians(180))
+                                        .splineTo(new Vector2d(-56,-48), Math.toRadians(180))
                                         .waitSeconds(1)
                                         //deposit preloaded, adjust by 2" for low/mid/high
                                         .lineToConstantHeading(new Vector2d(-32, -24))
@@ -34,7 +36,7 @@ public class MeepMeepTesting {
                                         .addDisplacementMarker(164, () -> {
                                         })
                                         //intake duck
-                                        .splineToSplineHeading(new Pose2d(-40, -56, Math.toRadians(240)), Math.toRadians(180))
+                                        .splineToSplineHeading(new Pose2d(-32, -56, Math.toRadians(240)), Math.toRadians(180))
                                         .lineToSplineHeading(new Pose2d(-48, -56, Math.toRadians(240)))
                                         //deposit duck
                                         .lineToLinearHeading(new Pose2d(-32, -24, Math.toRadians(180)))
@@ -88,8 +90,8 @@ public class MeepMeepTesting {
                                 //deposit preloaded, adjust by 2" for low/mid/high
                                 .splineToLinearHeading(new Pose2d(2, 38, Math.toRadians(45)), Math.toRadians(270))
                                 //intake1
-                                .splineToLinearHeading(new Pose2d(12, 63, Math.toRadians(0)), Math.toRadians(0))
-                                .lineToLinearHeading(new Pose2d(48, 63, Math.toRadians(0)))
+                                .splineToSplineHeading(new Pose2d(12, 63, Math.toRadians(0)), Math.toRadians(0))
+                                .lineToSplineHeading(new Pose2d(48, 63, Math.toRadians(0)))
                                 .waitSeconds(1)
                                 //deposit1
                                 .lineToSplineHeading(new Pose2d(12, 63, Math.toRadians(0)))

@@ -1,17 +1,20 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Robot;
-
+@Config
 public class Carousel implements Subsystem {
 
     Gamepad gamepad1;
     Gamepad gamepad2;
     DcMotor carouselMotor;
     boolean isSideRed = false;
+
+    public static double carouselpower = 0.25;
 
     public Carousel(Gamepad g1, Gamepad g2) {
         gamepad1 = g1;
@@ -39,9 +42,9 @@ public class Carousel implements Subsystem {
     }
         public void updateCaro(double speed) {
             if(gamepad1.left_bumper) {
-                carouselMotor.setPower(-speed);
+                carouselMotor.setPower(-carouselpower);
             } else if(gamepad1.right_bumper) {
-                carouselMotor.setPower(speed);
+                carouselMotor.setPower(carouselpower);
             } else {
                 carouselMotor.setPower(0);
             }
@@ -54,6 +57,9 @@ public class Carousel implements Subsystem {
         }
     }
     public void on() {
-        carouselMotor.setPower(0.4);
+        carouselMotor.setPower(carouselpower);
+    }
+    public void off() {
+        carouselMotor.setPower(0);
     }
 }

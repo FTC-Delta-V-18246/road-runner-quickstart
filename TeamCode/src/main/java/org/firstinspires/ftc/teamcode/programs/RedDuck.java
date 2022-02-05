@@ -42,8 +42,8 @@ public class RedDuck extends LinearOpMode {
         robot.drive.drive.setPoseEstimate(startPose);
 
         Trajectory Duck = robot.drive.drive.trajectoryBuilder(startPose)
-                .splineToLinearHeading(new Pose2d(-48, -44, Math.toRadians(180)), Math.toRadians(180))
-                .splineToLinearHeading(new Pose2d(-56, -48), Math.toRadians(180))
+                .splineTo(new Vector2d(-48, -44), Math.toRadians(180))
+                .splineTo(new Vector2d(-56,-48), Math.toRadians(180))
                 .build();
         Trajectory Dump = robot.drive.drive.trajectoryBuilder(Duck.end())
                 .lineToConstantHeading(new Vector2d(-32, -24))
@@ -87,6 +87,8 @@ public class RedDuck extends LinearOpMode {
         VisionPipeline.POS position = vision.detector.getPosition();
 
         waitForStart();
+        robot.drive.drive.followTrajectory(Duck);
+
         currentState = State.DUCK;
 
         switch (currentState) {

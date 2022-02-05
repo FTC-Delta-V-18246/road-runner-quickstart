@@ -10,7 +10,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.subsystems.BasicLift;
-import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.util.Vision;
 import org.firstinspires.ftc.teamcode.util.VisionPipeline;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -30,7 +29,6 @@ public class RedCycle extends LinearOpMode {
     OpenCvCamera camera;
     Vision vision;
     VisionPipeline position;
-    BasicLift lift;
     State currentState = State.DONE;
 
     @Override
@@ -39,15 +37,21 @@ public class RedCycle extends LinearOpMode {
         Pose2d startPose = new Pose2d(-32, -65, Math.toRadians(90));
         robot.drive.drive.setPoseEstimate(startPose);
 
-        TrajectorySequence seq = robot.drive.drive.trajectorySequenceBuilder(startPose)
+        Trajectory DumpLoaded = robot.drive.drive.trajectoryBuilder(startPose)
                 .splineToLinearHeading(new Pose2d(2, -38, Math.toRadians(315)), Math.toRadians(135))
                 .addDisplacementMarker(16, () -> {
                     robot.v4b.deposit();
                 })
+                .build();
+        Trajectory Intake = robot.drive.drive.trajectoryBuilder(DumpLoaded.end())
                 .splineToSplineHeading(new Pose2d(12, -63, Math.toRadians(0)), Math.toRadians(0))
                 .lineToSplineHeading(new Pose2d(48, -63, Math.toRadians(0)))
+                .build();
+        Trajectory Dump = robot.drive.drive.trajectoryBuilder(Intake.end())
                 .lineToSplineHeading(new Pose2d(12, -63, Math.toRadians(0)))
                 .splineToSplineHeading(new Pose2d(2, -38, Math.toRadians(315)), Math.toRadians(135))
+                .build();
+        Trajectory Park = robot.drive.drive.trajectoryBuilder(Dump.end())
                 .splineToLinearHeading(new Pose2d(-62, -36, Math.toRadians(0)), Math.toRadians(180))
                 .build();
         //timers
@@ -60,80 +64,78 @@ public class RedCycle extends LinearOpMode {
         vision.setPipeline();
         vision.startStreaming();
         VisionPipeline.POS position = vision.detector.getPosition();
-
-        robot.drive.drive.followTrajectorySequenceAsync(seq);
+        robot.lift.updatePID(0);
 
         waitForStart();
 
-        currentState = State.DUMP;
-        robot.deposit.turretNeutral();
+        currentState = State.DUMPLOADED;
+        robot.drive.drive.followTrajectoryAsync(DumpLoaded);
 
-        switch (currentState) {
-            case DUMPLOADED:
-                if (position == VisionPipeline.POS.LEFT) {
-                    lift.liftShared();
-                } else if (position == VisionPipeline.POS.CENTER) {
-                    lift.liftMid();
-                } else {
-                    lift.liftHigh();
-                }
-                if (!robot.drive.drive.isBusy()) {
-                    currentState = State.WAITDUMP;
-                }
+            switch (currentState) {
+                case DUMPLOADED:
+                    if (position == VisionPipeline.POS.LEFT) {
+                        robot.lift.liftShared();
+                    } else if (position == VisionPipeline.POS.CENTER) {
+                        robot.lift.liftMid();
+                    } else {
+                        robot.lift.liftHigh();
+                    }
+                    if (!robot.drive.drive.isBusy()) {
+                        currentState = State.WAITDUMP;
+                    }
 
-                break;
-            case WAITDUMPLOADED:
-                DumpTimer.reset();
-                if (DumpTimer.seconds() >= DumpTime) {
-                    robot.deposit.open();
-                    currentState = State.INTAKE;
-                }
-                break;
-            case INTAKE:
-                DumpTimer.reset();
-                if (DumpTimer.seconds() >= DumpTime) {
-                    robot.v4b.intake();
-                    robot.deposit.close();
-                }
-                ArmTimer.reset();
-                if (ArmTimer.seconds() >= ArmTime) {
-                    lift.liftIntake();
-                }
-                robot.intake.intakeDown();
-                robot.intake.on();
-                robot.drive.drive.followTrajectoryAsync(Intake);
-                if (!robot.drive.drive.isBusy()) {
-                    currentState = State.DUMP;
-                }
-                break;
-            case DUMP:
-                lift.liftHigh();
-                ArmTimer.reset();
-                if (ArmTimer.seconds() >= ArmTime) {
-                    robot.deposit.open();
-                }
-                robot.drive.drive.followTrajectoryAsync(Dump);
-                if (!robot.drive.drive.isBusy()) {
-                    currentState = State.WAITDUMP;
-                }
-                break;
-            case WAITDUMP:
-                DumpTimer.reset();
-                if (DumpTimer.seconds() >= DumpTime) {
-                    robot.deposit.open();
-                    currentState = State.PARK;
-                }
-                break;
-            case PARK:
-                robot.drive.drive.followTrajectory(Park);
-                if (!robot.drive.drive.isBusy()) {
-                    currentState = State.DONE;
-                }
-                break;
-            case DONE:
-                lift.liftIntake();
-                break;
+                    break;
+                case WAITDUMPLOADED:
+                    DumpTimer.reset();
+                    if (DumpTimer.seconds() >= DumpTime) {
+                        robot.deposit.open();
+                        currentState = State.INTAKE;
+                    }
+                    break;
+                case INTAKE:
+                    DumpTimer.reset();
+                    if (DumpTimer.seconds() >= DumpTime) {
+                        robot.v4b.intake();
+                        robot.deposit.close();
+                    }
+                    ArmTimer.reset();
+                    if (ArmTimer.seconds() >= ArmTime) {
+                        robot.lift.liftIntake();
+                    }
+                    robot.intake.intakeDown();
+                    robot.intake.on();
+                    robot.drive.drive.followTrajectoryAsync(Intake);
+                    if (!robot.drive.drive.isBusy()) {
+                        currentState = State.DUMP;
+                    }
+                    break;
+                case DUMP:
+                    robot.lift.liftHigh();
+                    ArmTimer.reset();
+                    if (ArmTimer.seconds() >= ArmTime) {
+                        robot.deposit.open();
+                    }
+                    robot.drive.drive.followTrajectoryAsync(Dump);
+                    if (!robot.drive.drive.isBusy()) {
+                        currentState = State.WAITDUMP;
+                    }
+                    break;
+                case WAITDUMP:
+                    DumpTimer.reset();
+                    if (DumpTimer.seconds() >= DumpTime) {
+                        robot.deposit.open();
+                        currentState = State.PARK;
+                    }
+                    break;
+                case PARK:
+                    robot.drive.drive.followTrajectoryAsync(Park);
+                    if (!robot.drive.drive.isBusy()) {
+                        currentState = State.DONE;
+                    }
+                    break;
+                case DONE:
+                    robot.lift.liftIntake();
+                    break;
+            }
         }
     }
-}
-
