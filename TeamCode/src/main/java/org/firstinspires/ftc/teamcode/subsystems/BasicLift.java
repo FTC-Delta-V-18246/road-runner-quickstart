@@ -22,7 +22,7 @@ public class BasicLift implements Subsystem {
     public static double target = 0;
     public static double MID = -475;
     public static double HIGH = -640;
-    public static double SHARED = -450;
+    public static double SHARED = -430;
     public static double INTAKE = 50;
     public static double HOLD = -200;
 

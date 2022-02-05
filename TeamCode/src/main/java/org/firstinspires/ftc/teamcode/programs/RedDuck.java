@@ -171,6 +171,9 @@ public class RedDuck extends LinearOpMode {
 
             }
             robot.update();
+            robot.lift.update(robot);
+            robot.lift.updatePID(robot.lift.target);
+
         }
     }
 }
