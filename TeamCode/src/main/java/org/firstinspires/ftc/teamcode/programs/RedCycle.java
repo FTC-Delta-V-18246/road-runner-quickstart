@@ -34,6 +34,7 @@ public class RedCycle extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         Robot robot = new Robot(hardwareMap, gamepad1, gamepad2);
+
         Pose2d startPose = new Pose2d(-32, -65, Math.toRadians(90));
         robot.drive.drive.setPoseEstimate(startPose);
 
@@ -70,6 +71,7 @@ public class RedCycle extends LinearOpMode {
 
         currentState = State.DUMPLOADED;
         robot.drive.drive.followTrajectoryAsync(DumpLoaded);
+        robot.lift.liftIntake();
 
         while (opModeIsActive()) {
 
@@ -83,25 +85,26 @@ public class RedCycle extends LinearOpMode {
                         robot.lift.liftHigh();
                     }
                     if (!robot.drive.drive.isBusy()) {
-                        currentState = State.WAITDUMP;
+                        currentState = State.WAITDUMPLOADED;
+                        DumpTimer.reset();
+
                     }
 
                     break;
                 case WAITDUMPLOADED:
-                    DumpTimer.reset();
                     if (DumpTimer.seconds() >= DumpTime) {
                         robot.deposit.open();
                         currentState = State.INTAKE;
                         robot.drive.drive.followTrajectoryAsync(Intake);
+                        DumpTimer.reset();
+                        ArmTimer.reset();
                     }
                     break;
                 case INTAKE:
-                    DumpTimer.reset();
                     if (DumpTimer.seconds() >= DumpTime) {
                         robot.v4b.intake();
                         robot.deposit.close();
                     }
-                    ArmTimer.reset();
                     if (ArmTimer.seconds() >= ArmTime) {
                         robot.lift.liftIntake();
                     }
@@ -110,21 +113,20 @@ public class RedCycle extends LinearOpMode {
                     if (!robot.drive.drive.isBusy()) {
                         currentState = State.DUMP;
                         robot.drive.drive.followTrajectoryAsync(Dump);
-
+                        ArmTimer.reset();
                     }
                     break;
                 case DUMP:
                     robot.lift.liftHigh();
-                    ArmTimer.reset();
                     if (ArmTimer.seconds() >= ArmTime) {
                         robot.deposit.open();
                     }
                     if (!robot.drive.drive.isBusy()) {
                         currentState = State.WAITDUMP;
+                        DumpTimer.reset();
                     }
                     break;
                 case WAITDUMP:
-                    DumpTimer.reset();
                     if (DumpTimer.seconds() >= DumpTime) {
                         robot.deposit.open();
                         currentState = State.PARK;
@@ -140,6 +142,7 @@ public class RedCycle extends LinearOpMode {
                     robot.lift.liftIntake();
                     break;
             }
+            robot.update();
         }
     }
 }

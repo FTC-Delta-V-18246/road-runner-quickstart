@@ -35,15 +35,19 @@ public class RedDuck extends LinearOpMode {
     BasicLift lift;
     State currentState = State.DONE;
 
+
     @Override
     public void runOpMode() throws InterruptedException {
+
+
         Robot robot = new Robot(hardwareMap, gamepad1, gamepad2);
+        lift.liftReset();
         Pose2d startPose = new Pose2d(-32, -65, Math.toRadians(90));
         robot.drive.drive.setPoseEstimate(startPose);
 
         Trajectory Duck = robot.drive.drive.trajectoryBuilder(startPose)
                 .splineTo(new Vector2d(-44, -44), Math.toRadians(180))
-                .splineTo(new Vector2d(-53, -53), Math.toRadians(180))
+                .splineTo(new Vector2d(-54, -54), Math.toRadians(180))
                 .build();
         Trajectory Dump = robot.drive.drive.trajectoryBuilder(Duck.end())
                 .lineToConstantHeading(new Vector2d(-32, -24))
@@ -90,6 +94,8 @@ public class RedDuck extends LinearOpMode {
         robot.drive.drive.followTrajectory(Duck);
 
         currentState = State.DUCK;
+        lift.liftIntake();
+
 
         while (opModeIsActive()) {
 
@@ -97,11 +103,11 @@ public class RedDuck extends LinearOpMode {
                 case DUCK:
                     if (!robot.drive.drive.isBusy()) {
                         currentState = State.WAITDUCK;
+                        DuckTimer.reset();
+                        robot.carousel.on();
                     }
                     break;
                 case WAITDUCK:
-                    robot.carousel.on();
-                    DuckTimer.reset();
                     if (DuckTimer.seconds() >= DuckTime) {
                         currentState = State.DUMP;
                         robot.drive.drive.followTrajectoryAsync(Dump);
@@ -117,11 +123,11 @@ public class RedDuck extends LinearOpMode {
                     }
                     if (!robot.drive.drive.isBusy()) {
                         currentState = State.WAITDUMP;
+                        DumpTimer.reset();
                     }
                     break;
                 case WAITDUMP:
                     //v4b temporal marker, scroll up to traj
-                    DumpTimer.reset();
                     if (DumpTimer.seconds() >= DumpTime) {
                         robot.deposit.open();
                         currentState = State.INTAKE;
@@ -140,10 +146,10 @@ public class RedDuck extends LinearOpMode {
                     lift.liftHigh();
                     if (!robot.drive.drive.isBusy()) {
                         currentState = State.WAITDUMP2;
+                        DumpTimer.reset();
                     }
                     break;
                 case WAITDUMP2:
-                    DumpTimer.reset();
                     if (DumpTimer.seconds() >= DumpTime) {
                         robot.deposit.open();
                         currentState = State.PARK;
