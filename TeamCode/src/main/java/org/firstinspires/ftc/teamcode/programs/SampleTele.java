@@ -18,7 +18,6 @@ public class SampleTele extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            robot.carousel.updateCaro(-0.45);
 
             robot.lift.ttelemetry(this);
             telemetry.update();

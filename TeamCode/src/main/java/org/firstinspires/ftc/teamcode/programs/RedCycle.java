@@ -35,7 +35,7 @@ public class RedCycle extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Robot robot = new Robot(hardwareMap, gamepad1, gamepad2);
 
-        Pose2d startPose = new Pose2d(-32, -65, Math.toRadians(90));
+        Pose2d startPose = new Pose2d(15, -62, Math.toRadians(90));
         robot.drive.drive.setPoseEstimate(startPose);
 
         Trajectory DumpLoaded = robot.drive.drive.trajectoryBuilder(startPose)
@@ -49,7 +49,7 @@ public class RedCycle extends LinearOpMode {
                 .lineToSplineHeading(new Pose2d(48, -63, Math.toRadians(0)))
                 .build();
         Trajectory Dump = robot.drive.drive.trajectoryBuilder(Intake.end())
-                .lineToSplineHeading(new Pose2d(12, -63, Math.toRadians(0)))
+                .lineToSplineHeading(new Pose2d(8, -64, Math.toRadians(0)))
                 .splineToSplineHeading(new Pose2d(2, -38, Math.toRadians(315)), Math.toRadians(135))
                 .build();
         Trajectory Park = robot.drive.drive.trajectoryBuilder(Dump.end())
@@ -69,14 +69,16 @@ public class RedCycle extends LinearOpMode {
 
         waitForStart();
 
+        robot.drive.drive.followTrajectory(DumpLoaded);
         currentState = State.DUMPLOADED;
-        robot.drive.drive.followTrajectoryAsync(DumpLoaded);
         robot.lift.liftIntake();
 
         while (opModeIsActive()) {
+            robot.deposit.turretNeutral();
 
             switch (currentState) {
                 case DUMPLOADED:
+                    robot.deposit.close();
                     if (position == VisionPipeline.POS.LEFT) {
                         robot.lift.liftShared();
                     } else if (position == VisionPipeline.POS.CENTER) {
@@ -87,7 +89,6 @@ public class RedCycle extends LinearOpMode {
                     if (!robot.drive.drive.isBusy()) {
                         currentState = State.WAITDUMPLOADED;
                         DumpTimer.reset();
-
                     }
 
                     break;
@@ -95,12 +96,13 @@ public class RedCycle extends LinearOpMode {
                     if (DumpTimer.seconds() >= DumpTime) {
                         robot.deposit.open();
                         currentState = State.INTAKE;
-                        robot.drive.drive.followTrajectoryAsync(Intake);
+                        robot.drive.drive.followTrajectory(Intake);
                         DumpTimer.reset();
                         ArmTimer.reset();
                     }
                     break;
                 case INTAKE:
+                    robot.intake.on();
                     if (DumpTimer.seconds() >= DumpTime) {
                         robot.v4b.intake();
                         robot.deposit.close();
@@ -109,14 +111,16 @@ public class RedCycle extends LinearOpMode {
                         robot.lift.liftIntake();
                     }
                     robot.intake.intakeDown();
-                    robot.intake.on();
                     if (!robot.drive.drive.isBusy()) {
                         currentState = State.DUMP;
-                        robot.drive.drive.followTrajectoryAsync(Dump);
+                        robot.lift.liftHold();
+                        robot.drive.drive.followTrajectory(Dump);
                         ArmTimer.reset();
                     }
                     break;
                 case DUMP:
+                    robot.intake.reverse();
+
                     robot.lift.liftHigh();
                     if (ArmTimer.seconds() >= ArmTime) {
                         robot.deposit.open();
@@ -130,7 +134,7 @@ public class RedCycle extends LinearOpMode {
                     if (DumpTimer.seconds() >= DumpTime) {
                         robot.deposit.open();
                         currentState = State.PARK;
-                        robot.drive.drive.followTrajectoryAsync(Park);
+                        robot.drive.drive.followTrajectory(Park);
                     }
                     break;
                 case PARK:
