@@ -71,6 +71,8 @@ public class RedCycle extends LinearOpMode {
         currentState = State.DUMPLOADED;
         robot.drive.drive.followTrajectoryAsync(DumpLoaded);
 
+        while (opModeIsActive()) {
+
             switch (currentState) {
                 case DUMPLOADED:
                     if (position == VisionPipeline.POS.LEFT) {
@@ -90,6 +92,7 @@ public class RedCycle extends LinearOpMode {
                     if (DumpTimer.seconds() >= DumpTime) {
                         robot.deposit.open();
                         currentState = State.INTAKE;
+                        robot.drive.drive.followTrajectoryAsync(Intake);
                     }
                     break;
                 case INTAKE:
@@ -104,9 +107,10 @@ public class RedCycle extends LinearOpMode {
                     }
                     robot.intake.intakeDown();
                     robot.intake.on();
-                    robot.drive.drive.followTrajectoryAsync(Intake);
                     if (!robot.drive.drive.isBusy()) {
                         currentState = State.DUMP;
+                        robot.drive.drive.followTrajectoryAsync(Dump);
+
                     }
                     break;
                 case DUMP:
@@ -115,7 +119,6 @@ public class RedCycle extends LinearOpMode {
                     if (ArmTimer.seconds() >= ArmTime) {
                         robot.deposit.open();
                     }
-                    robot.drive.drive.followTrajectoryAsync(Dump);
                     if (!robot.drive.drive.isBusy()) {
                         currentState = State.WAITDUMP;
                     }
@@ -125,10 +128,10 @@ public class RedCycle extends LinearOpMode {
                     if (DumpTimer.seconds() >= DumpTime) {
                         robot.deposit.open();
                         currentState = State.PARK;
+                        robot.drive.drive.followTrajectoryAsync(Park);
                     }
                     break;
                 case PARK:
-                    robot.drive.drive.followTrajectoryAsync(Park);
                     if (!robot.drive.drive.isBusy()) {
                         currentState = State.DONE;
                     }
@@ -139,3 +142,4 @@ public class RedCycle extends LinearOpMode {
             }
         }
     }
+}

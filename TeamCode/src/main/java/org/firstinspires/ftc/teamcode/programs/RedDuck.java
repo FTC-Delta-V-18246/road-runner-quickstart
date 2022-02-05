@@ -42,8 +42,8 @@ public class RedDuck extends LinearOpMode {
         robot.drive.drive.setPoseEstimate(startPose);
 
         Trajectory Duck = robot.drive.drive.trajectoryBuilder(startPose)
-                .splineTo(new Vector2d(-48, -44), Math.toRadians(180))
-                .splineTo(new Vector2d(-56,-48), Math.toRadians(180))
+                .splineTo(new Vector2d(-44, -44), Math.toRadians(180))
+                .splineTo(new Vector2d(-53, -53), Math.toRadians(180))
                 .build();
         Trajectory Dump = robot.drive.drive.trajectoryBuilder(Duck.end())
                 .lineToConstantHeading(new Vector2d(-32, -24))
@@ -91,72 +91,76 @@ public class RedDuck extends LinearOpMode {
 
         currentState = State.DUCK;
 
-        switch (currentState) {
-            case DUCK:
-                robot.drive.drive.followTrajectory(Duck);
-                if (!robot.drive.drive.isBusy()) {
-                    currentState = State.WAITDUCK;
-                }
-                break;
-            case WAITDUCK:
-                robot.carousel.on();
-                DuckTimer.reset();
-                if (DuckTimer.seconds() >= DuckTime) {
-                    currentState = State.DUMP;
-                }
-                break;
-            case DUMP:
-                robot.drive.drive.followTrajectory(Dump);
-                if (position == VisionPipeline.POS.LEFT) {
-                    lift.liftShared();
-                } else if (position == VisionPipeline.POS.CENTER) {
-                    lift.liftMid();
-                } else {
+        while (opModeIsActive()) {
+
+            switch (currentState) {
+                case DUCK:
+                    if (!robot.drive.drive.isBusy()) {
+                        currentState = State.WAITDUCK;
+                    }
+                    break;
+                case WAITDUCK:
+                    robot.carousel.on();
+                    DuckTimer.reset();
+                    if (DuckTimer.seconds() >= DuckTime) {
+                        currentState = State.DUMP;
+                        robot.drive.drive.followTrajectoryAsync(Dump);
+                    }
+                    break;
+                case DUMP:
+                    if (position == VisionPipeline.POS.LEFT) {
+                        lift.liftShared();
+                    } else if (position == VisionPipeline.POS.CENTER) {
+                        lift.liftMid();
+                    } else {
+                        lift.liftHigh();
+                    }
+                    if (!robot.drive.drive.isBusy()) {
+                        currentState = State.WAITDUMP;
+                    }
+                    break;
+                case WAITDUMP:
+                    //v4b temporal marker, scroll up to traj
+                    DumpTimer.reset();
+                    if (DumpTimer.seconds() >= DumpTime) {
+                        robot.deposit.open();
+                        currentState = State.INTAKE;
+                        robot.drive.drive.followTrajectoryAsync(Intake);
+                    }
+                    break;
+                case INTAKE:
+                    robot.intake.intakeDown();
+                    robot.intake.on();
+                    if (!robot.drive.drive.isBusy()) {
+                        currentState = State.DUMP2;
+                        robot.drive.drive.followTrajectoryAsync(Dump2);
+                    }
+                    break;
+                case DUMP2:
                     lift.liftHigh();
-                }
-                if (!robot.drive.drive.isBusy()) {
-                    currentState = State.WAITDUMP;
-                }
-                break;
-            case WAITDUMP:
-                //v4b temporal marker, scroll up to traj
-                DumpTimer.reset();
-                if (DumpTimer.seconds() >= DumpTime) {
-                    robot.deposit.open();
-                    currentState = State.INTAKE;
-                }
-                break;
-            case INTAKE:
-                robot.intake.intakeDown();
-                robot.intake.on();
-                robot.drive.drive.followTrajectoryAsync(Intake);
-                if (!robot.drive.drive.isBusy()) {
-                    currentState = State.DUMP2;
-                }
-                break;
-            case DUMP2:
-                lift.liftHigh();
-                robot.drive.drive.followTrajectoryAsync(Dump2);
-                if (!robot.drive.drive.isBusy()) {
-                    currentState = State.WAITDUMP2;
-                }
-                break;
-            case WAITDUMP2:
-                DumpTimer.reset();
-                if (DumpTimer.seconds() >= DumpTime) {
-                    robot.deposit.open();
-                    currentState = State.PARK;
-                }
-                break;
-            case PARK:
-                robot.drive.drive.followTrajectory(Park);
-                if (!robot.drive.drive.isBusy()) {
-                    currentState = State.DONE;
-                }
-                break;
-            case DONE:
-                lift.liftIntake();
-                break;
+                    if (!robot.drive.drive.isBusy()) {
+                        currentState = State.WAITDUMP2;
+                    }
+                    break;
+                case WAITDUMP2:
+                    DumpTimer.reset();
+                    if (DumpTimer.seconds() >= DumpTime) {
+                        robot.deposit.open();
+                        currentState = State.PARK;
+                        robot.drive.drive.followTrajectory(Park);
+                    }
+                    break;
+                case PARK:
+                    if (!robot.drive.drive.isBusy()) {
+                        currentState = State.DONE;
+                    }
+                    break;
+                case DONE:
+                    lift.liftIntake();
+                    break;
+
+            }
+            robot.update();
         }
     }
 }

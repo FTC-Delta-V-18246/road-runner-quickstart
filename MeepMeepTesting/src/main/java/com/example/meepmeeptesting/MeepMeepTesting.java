@@ -18,12 +18,12 @@ public class MeepMeepTesting {
                 .setColorScheme(new ColorSchemeBlueDark())
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 10)
                 .followTrajectorySequence(start ->
-                                start.trajectorySequenceBuilder(new Pose2d(-32, -65, Math.toRadians(90)))
+                                start.trajectorySequenceBuilder(new Pose2d(-32, -63, Math.toRadians(90)))
                                         //duck
                                         //.splineToSplineHeading(new Pose2d(-48, -44, Math.toRadians(180)), Math.toRadians(180))
                                         //.splineToSplineHeading(new Pose2d(-56, -48, Math.toRadians(180)), Math.toRadians(180))
-                                        .splineTo(new Vector2d(-48, -44), Math.toRadians(180))
-                                        .splineTo(new Vector2d(-56,-48), Math.toRadians(180))
+                                        .splineTo(new Vector2d(-44, -44), Math.toRadians(180))
+                                        .splineTo(new Vector2d(-54,-54), Math.toRadians(180))
                                         .waitSeconds(1)
                                         //deposit preloaded, adjust by 2" for low/mid/high
                                         .lineToConstantHeading(new Vector2d(-32, -24))
