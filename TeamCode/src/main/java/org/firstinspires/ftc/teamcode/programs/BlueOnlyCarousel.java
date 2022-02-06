@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.programs;
+/*package org.firstinspires.ftc.teamcode.programs;
 
 import com.acmerobotics.roadrunner.drive.Drive;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -23,22 +23,16 @@ import org.openftc.easyopencv.OpenCvCamera;
 
 import java.util.Arrays;
 
-
-@Autonomous(name = "RedDuck")
-public class RedDuck extends LinearOpMode {
+@Autonomous(name = "BlueOnlyCarousel")
+public class BlueOnlyCarousel extends LinearOpMode {
     DcMotor lift1;
 
     enum State {
         DUCK,           // go to carousel
         WAITDUCK,       // wait x seconds to spin
-        DUMP,           // go to dump position (need if statement)
-        WAITDUMP,       // wait x seconds to dump
+
         BACK,
         RESET,
-        INTAKE,         // go to intake duck
-        WAITINTAKE,
-        DUMP2,          // go to dump high
-        WAITDUMP2,      // wait to dump high
         PARK,           //go to park
         DONE            // nothing
     }
@@ -60,48 +54,16 @@ public class RedDuck extends LinearOpMode {
         robot.lift.liftReset();
         lift1 = hardwareMap.get(DcMotor.class, "lift1");
 
-        Pose2d startPose = new Pose2d(-28, -62, Math.toRadians(90));
+        Pose2d startPose = new Pose2d(-28, 62, Math.toRadians(270));
         robot.drive.drive.setPoseEstimate(startPose);
 
         Trajectory Duck = robot.drive.drive.trajectoryBuilder(startPose)
-                .splineTo(new Vector2d(-44, -44), Math.toRadians(180))
-                .splineTo(new Vector2d(-58, -58), Math.toRadians(180))
+                .splineTo(new Vector2d(-44, 44), Math.toRadians(180))
+                .splineTo(new Vector2d(-57, 57), Math.toRadians(180))
                 .build();
-        Trajectory Dump = robot.drive.drive.trajectoryBuilder(Duck.end())
-                .lineToConstantHeading(new Vector2d(-31, -24))
-                .addDisplacementMarker(4, () -> {
-                    robot.v4b.deposit();
-                    robot.carousel.off();
-                })
-                .build();
-        Trajectory Back = robot.drive.drive.trajectoryBuilder(Dump.end())
-                .lineToSplineHeading(new Pose2d(-40, -24, Math.toRadians(180)))
-                .addTemporalMarker(0.5, () -> {
-                    robot.v4b.intake();
-                })
-                .splineToSplineHeading(new Pose2d(-44, -62, Math.toRadians(240)), Math.toRadians(180))
-                .addTemporalMarker(1.5, () -> {
-                    robot.lift.liftIntake();
-                    robot.deposit.closeDuck();
-                    lobot.intake.on();
-                })
-                .build();
-        Trajectory Intake = robot.drive.drive.trajectoryBuilder(Back.end())
-                .lineToConstantHeading(new Vector2d(-59, -62), new MinVelocityConstraint(
-                                Arrays.asList(
-                                        new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
-                                        new MecanumVelocityConstraint(0.5 * DriveConstants.MAX_VEL, DriveConstants.TRACK_WIDTH))),
-                        new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .build();
-        Trajectory Dump2 = robot.drive.drive.trajectoryBuilder(Intake.end())
-                .lineToLinearHeading(new Pose2d(-31, -24, Math.toRadians(180)), new MinVelocityConstraint(
-                                Arrays.asList(
-                                        new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
-                                        new MecanumVelocityConstraint(1 * DriveConstants.MAX_VEL, DriveConstants.TRACK_WIDTH))),
-                        new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .build();
-        Trajectory Park = robot.drive.drive.trajectoryBuilder(Dump2.end())
-                .splineToLinearHeading(new Pose2d(-58, -46, Math.toRadians(0)), Math.toRadians(180))
+
+        Trajectory Park = robot.drive.drive.trajectoryBuilder(Duck.end())
+                .splineToLinearHeading(new Pose2d(-60, 42, Math.toRadians(0)), Math.toRadians(180))
                 .addDisplacementMarker(6, () -> {
                     robot.v4b.intake();
                     robot.deposit.close();
@@ -134,7 +96,7 @@ public class RedDuck extends LinearOpMode {
                 case DUCK:
                     if (!robot.drive.drive.isBusy()) {
                         DuckTimer.reset();
-                        robot.carousel.reverse();
+                        robot.carousel.on();
                         currentState = State.WAITDUCK;
                     }
                     break;
@@ -227,4 +189,4 @@ public class RedDuck extends LinearOpMode {
             }
         }
     }
-}
+}*/

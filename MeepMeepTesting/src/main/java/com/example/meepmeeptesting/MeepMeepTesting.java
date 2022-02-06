@@ -70,7 +70,7 @@ public class MeepMeepTesting {
                 .setColorScheme(new ColorSchemeRedDark())
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 10)
                 .followTrajectorySequence(start ->
-                        /*start.trajectorySequenceBuilder(new Pose2d(-32, 65, Math.toRadians(270)))
+                        start.trajectorySequenceBuilder(new Pose2d(-32, 65, Math.toRadians(270)))
                                 .splineToLinearHeading(new Pose2d(-48, 44, Math.toRadians(180)), Math.toRadians(180))
                                 .splineToLinearHeading(new Pose2d(-56,48, Math.toRadians(180)), Math.toRadians(180))
                                 .waitSeconds(1)
@@ -84,9 +84,9 @@ public class MeepMeepTesting {
                                 .lineToLinearHeading(new Pose2d(-32, 24, Math.toRadians(180)))
                                 //park
                                 .splineToLinearHeading(new Pose2d(-62,36, Math.toRadians(0)), Math.toRadians(180))
-                                .build()*/
+                                .build()
 
-                        start.trajectorySequenceBuilder(new Pose2d(10, 63, Math.toRadians(270)))
+                        /*start.trajectorySequenceBuilder(new Pose2d(10, 63, Math.toRadians(270)))
                                 //deposit preloaded, adjust by 2" for low/mid/high
                                 .splineToLinearHeading(new Pose2d(2, 38, Math.toRadians(45)), Math.toRadians(270))
                                 //intake1
@@ -97,7 +97,7 @@ public class MeepMeepTesting {
                                 .lineToSplineHeading(new Pose2d(12, 63, Math.toRadians(0)))
                                 .splineToSplineHeading(new Pose2d(2, 38, Math.toRadians(45)), Math.toRadians(225)) //deposit
                                 //looop after
-                                .build()
+                                .build()*/
                 );
 
 

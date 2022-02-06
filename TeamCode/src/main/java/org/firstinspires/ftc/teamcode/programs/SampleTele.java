@@ -8,6 +8,8 @@ import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.subsystems.BasicLift;
 import org.firstinspires.ftc.teamcode.subsystems.Drive;
 
+import static org.firstinspires.ftc.teamcode.subsystems.Carousel.carouselpower;
+
 @TeleOp
 public class SampleTele extends LinearOpMode {
 
@@ -21,6 +23,8 @@ public class SampleTele extends LinearOpMode {
             robot.intake.intakeDown();
             robot.lift.ttelemetry(this);
             telemetry.update();
+            robot.carousel.updateCaro(0.25);
+
 
             robot.update();
         }

@@ -59,6 +59,9 @@ public class Carousel implements Subsystem {
     public void on() {
         carouselMotor.setPower(carouselpower);
     }
+    public void reverse() {
+        carouselMotor.setPower(-carouselpower);
+    }
     public void off() {
         carouselMotor.setPower(0);
     }
