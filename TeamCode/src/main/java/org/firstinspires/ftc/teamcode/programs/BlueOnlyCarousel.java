@@ -1,4 +1,4 @@
-/*package org.firstinspires.ftc.teamcode.programs;
+package org.firstinspires.ftc.teamcode.programs;
 
 import com.acmerobotics.roadrunner.drive.Drive;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -30,9 +30,6 @@ public class BlueOnlyCarousel extends LinearOpMode {
     enum State {
         DUCK,           // go to carousel
         WAITDUCK,       // wait x seconds to spin
-
-        BACK,
-        RESET,
         PARK,           //go to park
         DONE            // nothing
     }
@@ -59,11 +56,11 @@ public class BlueOnlyCarousel extends LinearOpMode {
 
         Trajectory Duck = robot.drive.drive.trajectoryBuilder(startPose)
                 .splineTo(new Vector2d(-44, 44), Math.toRadians(180))
-                .splineTo(new Vector2d(-57, 57), Math.toRadians(180))
+                .splineTo(new Vector2d(-58, 58), Math.toRadians(180))
                 .build();
 
         Trajectory Park = robot.drive.drive.trajectoryBuilder(Duck.end())
-                .splineToLinearHeading(new Pose2d(-60, 42, Math.toRadians(0)), Math.toRadians(180))
+                .splineToLinearHeading(new Pose2d(-58, 40, Math.toRadians(0)), Math.toRadians(180))
                 .addDisplacementMarker(6, () -> {
                     robot.v4b.intake();
                     robot.deposit.close();
@@ -102,78 +99,6 @@ public class BlueOnlyCarousel extends LinearOpMode {
                     break;
                 case WAITDUCK:
                     if (DuckTimer.seconds() >= DuckTime) {
-                        currentState = State.DUMP;
-                        robot.drive.drive.followTrajectory(Dump);
-                    }
-                    if (position == VisionPipeline.POS.LEFT) {
-                        robot.lift.liftHigh();
-                    } else if (position == VisionPipeline.POS.CENTER) {
-                        robot.lift.liftHigh();
-                    } else {
-                        robot.lift.liftHigh();
-                    }
-                    if (lift1.getCurrentPosition() < robot.lift.READY) {
-                        robot.v4b.deposit();
-                        if (position == VisionPipeline.POS.LEFT) {
-                            robot.lift.liftHold();
-                        } else if (position == VisionPipeline.POS.CENTER) {
-                            robot.lift.liftHigh();
-                        }
-                    }
-                    break;
-                case DUMP:
-                    if (!robot.drive.drive.isBusy()) {
-                        currentState = State.WAITDUMP;
-                        DumpTimer.reset();
-                        robot.deposit.open();
-                    }
-                    break;
-                case WAITDUMP:
-                    if (DumpTimer.seconds() >= DumpTime) {
-                        robot.drive.drive.followTrajectory(Back);
-                        currentState = State.BACK;
-                    }
-                    break;
-                case BACK:
-                    robot.lift.liftHigh();
-                    if (!robot.drive.drive.isBusy()) {
-                        currentState = State.RESET;
-                        ResetTimer.reset();
-                        robot.lift.liftIntake();
-                    }
-                    break;
-                case RESET:
-                    if (ResetTimer.seconds() >= ResetTime) {
-                        currentState = State.INTAKE;
-                        robot.drive.drive.followTrajectory(Intake);
-                    }
-                    break;
-                case INTAKE:
-                    if (!robot.drive.drive.isBusy()) {
-                        currentState = State.WAITINTAKE;
-                        DumpTimer.reset();
-                    }
-                    break;
-                case WAITINTAKE:
-                    robot.lift.liftHigh();
-                    if (DumpTimer.seconds() >= DumpTime) {
-                        currentState = State.DUMP2;
-                        robot.drive.drive.followTrajectory(Dump2);
-                    }
-                    if (lift1.getCurrentPosition() < robot.lift.READY) {
-                        robot.v4b.deposit();
-                        robot.intake.off();
-                    }
-                    break;
-                case DUMP2:
-                    if (!robot.drive.drive.isBusy()) {
-                        currentState = State.WAITDUMP2;
-                        DumpTimer.reset();
-                    }
-                    break;
-                case WAITDUMP2:
-                    robot.deposit.open();
-                    if (DumpTimer.seconds() >= DumpTime) {
                         currentState = State.PARK;
                         robot.drive.drive.followTrajectory(Park);
                     }
@@ -189,4 +114,4 @@ public class BlueOnlyCarousel extends LinearOpMode {
             }
         }
     }
-}*/
+}

@@ -83,7 +83,7 @@ public class RedDuck extends LinearOpMode {
                 .addTemporalMarker(1.5, () -> {
                     robot.lift.liftIntake();
                     robot.deposit.closeDuck();
-                    lobot.intake.on();
+                    robot.intake.on();
                 })
                 .build();
         Trajectory Intake = robot.drive.drive.trajectoryBuilder(Back.end())
