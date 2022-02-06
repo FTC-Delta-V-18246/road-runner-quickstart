@@ -4,15 +4,22 @@ import com.acmerobotics.roadrunner.drive.Drive;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.constraints.AngularVelocityConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.MecanumVelocityConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.MinVelocityConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.ProfileAccelerationConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.subsystems.BasicLift;
 import org.firstinspires.ftc.teamcode.util.Vision;
 import org.firstinspires.ftc.teamcode.util.VisionPipeline;
 import org.openftc.easyopencv.OpenCvCamera;
+
+import java.util.Arrays;
 
 @Autonomous(name = "RedCycle")
 public class RedCycle extends LinearOpMode {
@@ -45,16 +52,20 @@ public class RedCycle extends LinearOpMode {
                 })
                 .build();
         Trajectory Intake = robot.drive.drive.trajectoryBuilder(DumpLoaded.end())
-                .splineToSplineHeading(new Pose2d(12, -63, Math.toRadians(0)), Math.toRadians(0))
-                .lineToSplineHeading(new Pose2d(48, -63, Math.toRadians(0)))
+                .splineToSplineHeading(new Pose2d(8, -62, Math.toRadians(0)), Math.toRadians(0))
+                .lineToSplineHeading(new Pose2d(48, -62, Math.toRadians(0)), new MinVelocityConstraint(
+                                Arrays.asList(
+                                        new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
+                                        new MecanumVelocityConstraint(0.5 * DriveConstants.MAX_VEL, DriveConstants.TRACK_WIDTH))),
+                        new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
         Trajectory Dump = robot.drive.drive.trajectoryBuilder(Intake.end())
                 .lineToSplineHeading(new Pose2d(8, -64, Math.toRadians(0)))
                 .splineToSplineHeading(new Pose2d(2, -38, Math.toRadians(315)), Math.toRadians(135))
                 .build();
         Trajectory Park = robot.drive.drive.trajectoryBuilder(Dump.end())
-                .splineToLinearHeading(new Pose2d(-62, -36, Math.toRadians(0)), Math.toRadians(180))
-                .build();
+                .splineToSplineHeading(new Pose2d(8, -62, Math.toRadians(0)), Math.toRadians(0))
+                .lineToSplineHeading(new Pose2d(48, -62, Math.toRadians(0))).build();
         //timers
         double DumpTime = 1.5;
         ElapsedTime DumpTimer = new ElapsedTime();

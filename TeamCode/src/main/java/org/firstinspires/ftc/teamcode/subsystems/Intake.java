@@ -51,6 +51,9 @@ public class Intake implements Subsystem {
     public void on() {
         intakeMotor.setPower(-1.0);
     }
+    public void off() {
+        intakeMotor.setPower(0);
+    }
     public void reverse() {
         intakeMotor.setPower(1.0);
     }
