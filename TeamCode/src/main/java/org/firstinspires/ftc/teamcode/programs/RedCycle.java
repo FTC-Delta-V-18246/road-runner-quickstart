@@ -38,10 +38,12 @@ public class RedCycle extends LinearOpMode {
     VisionPipeline position;
     State currentState = State.DONE;
     private static int cycleCount = 3;
+    Robot robot = new Robot(hardwareMap, gamepad1, gamepad2);
+
+
 
     @Override
     public void runOpMode() throws InterruptedException {
-        Robot robot = new Robot(hardwareMap, gamepad1, gamepad2);
 
         Pose2d startPose = new Pose2d(15, -62, Math.toRadians(90));
         robot.drive.drive.setPoseEstimate(startPose);
@@ -81,8 +83,17 @@ public class RedCycle extends LinearOpMode {
                 })
                 .build();
         Trajectory Park = robot.drive.drive.trajectoryBuilder(Dump.end())
-                .splineToSplineHeading(new Pose2d(8, -62, Math.toRadians(0)), Math.toRadians(0))
-                .lineToSplineHeading(new Pose2d(48, -62, Math.toRadians(0))).build();
+                .splineToSplineHeading(new Pose2d(6, -63, Math.toRadians(0)), Math.toRadians(0))
+                .lineToSplineHeading(new Pose2d(48, -62, Math.toRadians(0)))
+                .addTemporalMarker(1, () -> {
+                    robot.v4b.intake();
+                    robot.deposit.close();
+                })
+                .addTemporalMarker(2, () -> {
+                    robot.lift.liftIntake();
+                })
+                .build();
+
         //timers
         double DumpTime = 1.5;
         ElapsedTime DumpTimer = new ElapsedTime();
@@ -146,13 +157,15 @@ public class RedCycle extends LinearOpMode {
                 case WAITDUMP:
                     robot.deposit.open();
                     if (DumpTimer.seconds() >= DumpTime) {
-                        if (cycleCount != 0) {
+                        currentState = State.PARK;
+                        robot.drive.drive.followTrajectory(Park);
+                        /*if (cycleCount != 0) {
                             currentState = State.INTAKE;
                             robot.drive.drive.followTrajectory(Intake);
                         } else {
                             currentState = State.PARK;
                             robot.drive.drive.followTrajectory(Park);
-                        }
+                        }*/
                     }
                     break;
                 case PARK:
