@@ -15,8 +15,8 @@ import org.firstinspires.ftc.teamcode.util.VisionPipeline;
 import org.openftc.easyopencv.OpenCvCamera;
 
 
-@Autonomous(name = "RedDuck")
-public class RedDuck extends LinearOpMode {
+@Autonomous(name = "BlueDuck")
+public class BlueDuck extends LinearOpMode {
     enum State {
         DUCK,           // go to carousel
         WAITDUCK,       // wait x seconds to spin
@@ -34,6 +34,7 @@ public class RedDuck extends LinearOpMode {
     VisionPipeline position;
     State currentState = State.DONE;
 
+
     @Override
     public void runOpMode() throws InterruptedException {
         //vision
@@ -44,15 +45,15 @@ public class RedDuck extends LinearOpMode {
 
         Robot robot = new Robot(hardwareMap, gamepad1, gamepad2);
         robot.lift.liftReset();
-        Pose2d startPose = new Pose2d(-28, -62, Math.toRadians(90));
+        Pose2d startPose = new Pose2d(-28, 62, Math.toRadians(90));
         robot.drive.drive.setPoseEstimate(startPose);
 
         Trajectory Duck = robot.drive.drive.trajectoryBuilder(startPose)
-                .splineTo(new Vector2d(-44, -44), Math.toRadians(180))
-                .splineTo(new Vector2d(-60, -60), Math.toRadians(180))
+                .splineTo(new Vector2d(-44, 44), Math.toRadians(180))
+                .splineTo(new Vector2d(-60, 60), Math.toRadians(180))
                 .build();
         Trajectory Dump = robot.drive.drive.trajectoryBuilder(Duck.end())
-                .lineToConstantHeading(new Vector2d(-32, -24))
+                .lineToConstantHeading(new Vector2d(-32, 24))
                 .addDisplacementMarker(4, () -> {
                     robot.v4b.deposit();
                     robot.carousel.off();
@@ -62,12 +63,11 @@ public class RedDuck extends LinearOpMode {
                 })
                 .build();
         Trajectory Intake = robot.drive.drive.trajectoryBuilder(Dump.end())
-                .lineToSplineHeading(new Pose2d(-38, -24, Math.toRadians(180)))
+                .lineToSplineHeading(new Pose2d(-38,24, Math.toRadians(180)))
                 .addTemporalMarker(0.5, () -> {
                     if (position == VisionPipeline.POS.LEFT) {
                         robot.lift.liftShared();
-                    }
-                })
+                    }                })
                 .addTemporalMarker(1, () -> {
                     robot.v4b.intake();
                 })
@@ -76,11 +76,11 @@ public class RedDuck extends LinearOpMode {
                     robot.deposit.closeDuck();
                     robot.intake.on();
                 })
-                .splineToSplineHeading(new Pose2d(-44, -56, Math.toRadians(180)), Math.toRadians(180))
-                .lineToSplineHeading(new Pose2d(-56, -56, Math.toRadians(225)))
+                .splineToSplineHeading(new Pose2d(-44, 56, Math.toRadians(180)), Math.toRadians(180))
+                .lineToSplineHeading(new Pose2d(-56, 56, Math.toRadians(135)))
                 .build();
         Trajectory Dump2 = robot.drive.drive.trajectoryBuilder(Intake.end())
-                .lineToLinearHeading(new Pose2d(-32, -24, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(-32, 24, Math.toRadians(180)))
                 .addTemporalMarker(1, () -> {
                     robot.v4b.deposit();
                 })
@@ -90,8 +90,9 @@ public class RedDuck extends LinearOpMode {
                     robot.v4b.intake();
                     robot.deposit.close();
                 })
-                .splineToLinearHeading(new Pose2d(-60, -42, Math.toRadians(0)), Math.toRadians(180))
+                .splineToLinearHeading(new Pose2d(-60, 42, Math.toRadians(0)), Math.toRadians(180))
                 .build();
+        //timers
         double DuckTime = 3;
         ElapsedTime DuckTimer = new ElapsedTime();
         double DumpTime = 1;
