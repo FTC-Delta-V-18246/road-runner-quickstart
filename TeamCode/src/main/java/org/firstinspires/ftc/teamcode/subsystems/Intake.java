@@ -35,6 +35,7 @@ public class Intake implements Subsystem {
 
         droptakeLeft = hw.get(Servo.class, "droptakeL");
         droptakeRight = hw.get(Servo.class, "droptakeR");
+        intakeUp();
     }
 
     @Override

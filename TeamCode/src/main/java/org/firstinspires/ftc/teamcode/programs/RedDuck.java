@@ -34,7 +34,9 @@ public class RedDuck extends LinearOpMode {
         DUMP,           // go to dump position (need if statement)
         WAITDUMP,       // wait x seconds to dump
         BACK,
+        RESET,
         INTAKE,         // go to intake duck
+        WAITINTAKE,
         DUMP2,          // go to dump high
         WAITDUMP2,      // wait to dump high
         PARK,           //go to park
@@ -74,23 +76,28 @@ public class RedDuck extends LinearOpMode {
                 .build();
         Trajectory Back = robot.drive.drive.trajectoryBuilder(Dump.end())
                 .lineToSplineHeading(new Pose2d(-40, -24, Math.toRadians(180)))
-                .addTemporalMarker(1, () -> {
+                .addTemporalMarker(0.5, () -> {
                     robot.v4b.intake();
                 })
-                .splineToSplineHeading(new Pose2d(-44, -61, Math.toRadians(240)), Math.toRadians(180))
+                .splineToSplineHeading(new Pose2d(-44, -62, Math.toRadians(240)), Math.toRadians(180))
+                .addTemporalMarker(1.5, () -> {
+                    robot.lift.liftIntake();
+                    robot.deposit.closeDuck();
+                    robot.intake.on();
+                })
                 .build();
         Trajectory Intake = robot.drive.drive.trajectoryBuilder(Back.end())
-                .lineToConstantHeading(new Vector2d(-58, -61), new MinVelocityConstraint(
-                Arrays.asList(
-                        new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
-                        new MecanumVelocityConstraint(0.5 * DriveConstants.MAX_VEL, DriveConstants.TRACK_WIDTH))),
-                new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .build();
-        Trajectory Dump2 = robot.drive.drive.trajectoryBuilder(Intake.end())
-                .lineToLinearHeading(new Pose2d(-30, -24, Math.toRadians(180)), new MinVelocityConstraint(
+                .lineToConstantHeading(new Vector2d(-59, -62), new MinVelocityConstraint(
                                 Arrays.asList(
                                         new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
-                                        new MecanumVelocityConstraint(0.4 * DriveConstants.MAX_VEL, DriveConstants.TRACK_WIDTH))),
+                                        new MecanumVelocityConstraint(0.5 * DriveConstants.MAX_VEL, DriveConstants.TRACK_WIDTH))),
+                        new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
+        Trajectory Dump2 = robot.drive.drive.trajectoryBuilder(Intake.end())
+                .lineToLinearHeading(new Pose2d(-30.5, -24, Math.toRadians(180)), new MinVelocityConstraint(
+                                Arrays.asList(
+                                        new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
+                                        new MecanumVelocityConstraint(1 * DriveConstants.MAX_VEL, DriveConstants.TRACK_WIDTH))),
                         new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
         Trajectory Park = robot.drive.drive.trajectoryBuilder(Dump2.end())
@@ -100,11 +107,15 @@ public class RedDuck extends LinearOpMode {
                     robot.deposit.close();
                 })
                 .build();
-        double DuckTime = 3.5;
+        double DuckTime = 3;
         ElapsedTime DuckTimer = new ElapsedTime();
         double DumpTime = 1.5;
         ElapsedTime DumpTimer = new ElapsedTime();
+        double ResetTime = 1;
+        ElapsedTime ResetTimer = new ElapsedTime();
         robot.lift.liftReset();
+        robot.intake.intakeUp();
+
         waitForStart();
 
         robot.drive.drive.followTrajectory(Duck);
@@ -117,6 +128,7 @@ public class RedDuck extends LinearOpMode {
             robot.deposit.turretNeutral();
             robot.intake.intakeDown();
             robot.lift.updatePID(robot.lift.target);
+            lift1.getCurrentPosition();
 
             switch (currentState) {
                 case DUCK:
@@ -132,7 +144,7 @@ public class RedDuck extends LinearOpMode {
                         robot.drive.drive.followTrajectory(Dump);
                     }
                     if (position == VisionPipeline.POS.LEFT) {
-                        robot.lift.liftShared();
+                        robot.lift.liftHigh();
                     } else if (position == VisionPipeline.POS.CENTER) {
                         robot.lift.liftMid();
                     } else {
@@ -140,6 +152,11 @@ public class RedDuck extends LinearOpMode {
                     }
                     if (lift1.getCurrentPosition() < robot.lift.READY) {
                         robot.v4b.deposit();
+                        if (position == VisionPipeline.POS.LEFT) {
+                            robot.lift.liftHold();
+                        } else if (position == VisionPipeline.POS.CENTER) {
+                            robot.lift.liftMid();
+                        }
                     }
                     break;
                 case DUMP:
@@ -156,26 +173,37 @@ public class RedDuck extends LinearOpMode {
                     }
                     break;
                 case BACK:
+                    robot.lift.liftHigh();
                     if (!robot.drive.drive.isBusy()) {
+                        currentState = State.RESET;
+                        ResetTimer.reset();
+                        robot.lift.liftIntake();
+                    }
+                    break;
+                case RESET:
+                    if (ResetTimer.seconds() >= ResetTime) {
                         currentState = State.INTAKE;
                         robot.drive.drive.followTrajectory(Intake);
-                        robot.lift.liftIntake();
-                        robot.deposit.closeDuck();
-                        robot.intake.on();
                     }
                     break;
                 case INTAKE:
                     if (!robot.drive.drive.isBusy()) {
-                        robot.lift.liftHigh();
+                        currentState = State.WAITINTAKE;
+                        DumpTimer.reset();
+                    }
+                    break;
+                case WAITINTAKE:
+                    robot.lift.liftHigh();
+                    if (DumpTimer.seconds() >= DumpTime) {
                         currentState = State.DUMP2;
                         robot.drive.drive.followTrajectory(Dump2);
                     }
-                    break;
-                case DUMP2:
                     if (lift1.getCurrentPosition() < robot.lift.READY) {
                         robot.v4b.deposit();
                         robot.intake.off();
                     }
+                    break;
+                case DUMP2:
                     if (!robot.drive.drive.isBusy()) {
                         currentState = State.WAITDUMP2;
                         DumpTimer.reset();
