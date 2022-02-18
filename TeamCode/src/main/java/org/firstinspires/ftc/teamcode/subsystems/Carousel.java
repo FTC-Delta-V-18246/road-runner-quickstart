@@ -41,9 +41,9 @@ public class Carousel implements Subsystem {
         }*/
     }
         public void updateCaro(double speed) {
-            if(gamepad1.left_bumper) {
+            if(gamepad1.dpad_left) {
                 carouselMotor.setPower(-carouselpower);
-            } else if(gamepad1.right_bumper) {
+            } else if(gamepad1.dpad_right) {
                 carouselMotor.setPower(carouselpower);
             } else {
                 carouselMotor.setPower(0);

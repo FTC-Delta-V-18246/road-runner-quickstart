@@ -20,9 +20,9 @@ public class BasicLift implements Subsystem {
     DcMotor lift1;
     DcMotor lift2;
     public static double target = 0;
-    private static double MID = -425;
+    private static double MID = -450;
     private static double HIGH = -640;
-    private static double SHARED = -425;
+    private static double SHARED = -450;
     private static double INTAKE = 50;
     private static double HOLD = -200;
     public static double READY = -300;
@@ -50,7 +50,11 @@ public class BasicLift implements Subsystem {
         HIGH,
         SHARED,
         DEPOSIT,
+        DEPOSITSHARED,
+        DEPOSITSHAREDENDHEIGHT,
         OPENBOX,
+        OPENBOXSHARED,
+        RETRACTV4BSHARED,
         RETRACTV4B,
         DOWN
     }
@@ -121,7 +125,6 @@ public class BasicLift implements Subsystem {
 
     @Override
     public void update(Robot robot) {
-        robot.deposit.turretNeutral();
 
         switch (state) {
             case INTAKE:
@@ -137,9 +140,6 @@ public class BasicLift implements Subsystem {
                     state = liftState.HIGH;
                 }
                 if (gamepad1.x) {
-                    state = liftState.MID;
-                }
-                if (gamepad1.a) {
                     state = liftState.SHARED;
                 }
                 if (gamepad1.dpad_down) {
@@ -156,12 +156,9 @@ public class BasicLift implements Subsystem {
                     state = liftState.HIGH;
                 }
                 if (gamepad1.x) {
-                    state = liftState.MID;
-                }
-                if (gamepad1.a) {
                     state = liftState.SHARED;
                 }
-                if (gamepad1.dpad_down) {
+                if (gamepad1.a) {
                     state = liftState.RETRACTV4B;
                 }
                 break;
@@ -171,20 +168,32 @@ public class BasicLift implements Subsystem {
                     state = liftState.DEPOSIT;
                 }
                 break;
-            case MID:
-                liftMid();
-                if (gamepad1.y) {
-                    state = liftState.HIGH;
-                }
-                if (LiftTimer.seconds() >= LiftTime) {
-                    state = liftState.DEPOSIT;
-                }
-                break;
             case SHARED:
                 liftShared();
                 if (LiftTimer.seconds() >= LiftTime) {
-                    state = liftState.DEPOSIT;
+                    state = liftState.DEPOSITSHAREDENDHEIGHT;
+                    DumpTimer.reset();
                 }
+                break;
+            case DEPOSITSHAREDENDHEIGHT:
+                if (DumpTimer.seconds() >= DumpTime) {
+                    robot.deposit.turretBLUESHARED();
+                    liftIntake();
+                if (gamepad1.b) {
+                    state = liftState.OPENBOX;
+                }
+                if (gamepad1.y) {
+                    state = liftState.HIGH;
+                    }
+                }
+                break;
+            case DEPOSITSHARED:
+                if (gamepad1.b) {
+                    state = liftState.OPENBOX;
+                }
+                if (gamepad1.y) {
+                    state = liftState.HIGH;
+                    }
                 break;
             case DEPOSIT:
                 robot.v4b.deposit();
@@ -192,15 +201,26 @@ public class BasicLift implements Subsystem {
                     state = liftState.OPENBOX;
                 }
                 break;
-
             case OPENBOX:
                 robot.deposit.open();
                 DumpTimer.reset();
-                if (gamepad1.dpad_down) {
+                if (gamepad1.a) {
                     state = liftState.RETRACTV4B;
                 }
                 break;
-
+            case OPENBOXSHARED:
+                robot.deposit.open();
+                DumpTimer.reset();
+                if (gamepad1.a) {
+                    state = liftState.RETRACTV4BSHARED;
+                }
+                break;
+            case RETRACTV4BSHARED:
+                DumpTimer.reset();
+                if (DumpTimer.seconds() >= DumpTime) {
+                    state = liftState.RETRACTV4B;
+                }
+                break;
             case RETRACTV4B:
                 robot.v4b.intake();
                 robot.deposit.close();
