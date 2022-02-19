@@ -19,7 +19,7 @@ public class Intake implements Subsystem {
     DcMotor intakeMotor;
 
 
-    public static double dropTakeDown = 0.3;
+    public static double dropTakeDown = 0.28;
     public static double dropTakeUp = 0.1;
 
 
@@ -40,7 +40,7 @@ public class Intake implements Subsystem {
 
     @Override
     public void update(Robot robot) {
-        intakeMotor.setPower(1.0 * (gamepad1.right_trigger - gamepad1.left_trigger));
+        intakeMotor.setPower(1.0 * (gamepad1.left_trigger - gamepad1.right_trigger));
     }
 
     public void intakeUp() {

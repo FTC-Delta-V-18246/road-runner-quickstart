@@ -23,8 +23,8 @@ public class Deposit implements Subsystem {
     public static double doorClose = 0.67;
     public static double doorCloseDuck = 0.655;
     public static double turretNEUTRAL = 0.6;
-    public static double turretREDPOS = 0.9;
-    public static double turretBLUEPOS = 0.3;
+    public static double turretREDPOS = 0.8;
+    public static double turretBLUEPOS = 0.4;
     public static double distanceMin = 0;
     public static double distanceMax = 2.25;
     public static double depositSensor = 5;
@@ -49,29 +49,29 @@ public class Deposit implements Subsystem {
 
     @Override
     public void update(Robot robot) {
-        switch (state) {
-            case INTAKE:
-                turretNeutral();
-                break;
-            case NEUTRAL:
-                turretNeutral();
-                if (gamepad1.x) {
-                    open();
-                }
-                break;
-            case REDSHARED:
-                turretREDSHARED();
-                if (gamepad1.x) {
-                    open();
-                }
-                break;
-            case BLUESHARED:
-                turretBLUESHARED();
-                if (gamepad1.x) {
-                    open();
-                }
-                break;
-        }
+//        switch (state) {
+//            case INTAKE:
+//                turretNeutral();
+//                break;
+//            case NEUTRAL:
+//                turretNeutral();
+//                if (gamepad1.x) {
+//                    open();
+//                }
+//                break;
+//            case REDSHARED:
+//                turretREDSHARED();
+//                if (gamepad1.x) {
+//                    open();
+//                }
+//                break;
+//            case BLUESHARED:
+//                turretBLUESHARED();
+//                if (gamepad1.x) {
+//                    open();
+//                }
+//                break;
+//        }
     }
     public void open() {
         trapDoor.setPosition(doorOpen);

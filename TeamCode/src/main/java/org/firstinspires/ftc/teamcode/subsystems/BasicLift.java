@@ -20,9 +20,9 @@ public class BasicLift implements Subsystem {
     DcMotor lift1;
     DcMotor lift2;
     public static double target = 0;
-    private static double MID = -450;
     private static double HIGH = -640;
-    private static double SHARED = -450;
+    private static double SHARED = -150;
+    private static double MID = -475;
     private static double INTAKE = 50;
     private static double HOLD = -200;
     public static double READY = -300;
@@ -101,7 +101,6 @@ public class BasicLift implements Subsystem {
     public void liftHigh() {
         target = HIGH;
     }
-
     public void liftMid() {
         target = MID;
     }
@@ -169,18 +168,19 @@ public class BasicLift implements Subsystem {
                 }
                 break;
             case SHARED:
-                liftShared();
-                if (LiftTimer.seconds() >= LiftTime) {
+                liftMid();
+                DumpTimer.reset();
+                if (lift1.getCurrentPosition() < READY) {
                     state = liftState.DEPOSITSHAREDENDHEIGHT;
-                    DumpTimer.reset();
                 }
                 break;
             case DEPOSITSHAREDENDHEIGHT:
+                robot.v4b.deposit();
                 if (DumpTimer.seconds() >= DumpTime) {
                     robot.deposit.turretBLUESHARED();
-                    liftIntake();
+                    liftShared();
                 if (gamepad1.b) {
-                    state = liftState.OPENBOX;
+                    state = liftState.OPENBOXSHARED;
                 }
                 if (gamepad1.y) {
                     state = liftState.HIGH;
@@ -189,7 +189,7 @@ public class BasicLift implements Subsystem {
                 break;
             case DEPOSITSHARED:
                 if (gamepad1.b) {
-                    state = liftState.OPENBOX;
+                    state = liftState.OPENBOXSHARED;
                 }
                 if (gamepad1.y) {
                     state = liftState.HIGH;
@@ -203,26 +203,31 @@ public class BasicLift implements Subsystem {
                 break;
             case OPENBOX:
                 robot.deposit.open();
+                robot.deposit.turretNeutral();
                 DumpTimer.reset();
                 if (gamepad1.a) {
                     state = liftState.RETRACTV4B;
                 }
                 break;
             case OPENBOXSHARED:
+                robot.deposit.turretBLUESHARED();
                 robot.deposit.open();
                 DumpTimer.reset();
                 if (gamepad1.a) {
                     state = liftState.RETRACTV4BSHARED;
+                    liftMid();
                 }
                 break;
             case RETRACTV4BSHARED:
-                DumpTimer.reset();
                 if (DumpTimer.seconds() >= DumpTime) {
+                    robot.deposit.turretNeutral();
                     state = liftState.RETRACTV4B;
+                    DumpTimer.reset();
                 }
                 break;
             case RETRACTV4B:
                 robot.v4b.intake();
+                robot.deposit.turretNeutral();
                 robot.deposit.close();
                 if (DumpTimer.seconds() >= DumpTime) {
                     state = liftState.INTAKE;
