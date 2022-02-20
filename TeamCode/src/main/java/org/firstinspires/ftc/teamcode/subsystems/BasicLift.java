@@ -117,10 +117,15 @@ public class BasicLift implements Subsystem {
         target = INTAKE;
     }
 
+
+
+
     public static double LiftTime = .8;
     ElapsedTime LiftTimer = new ElapsedTime();
     public static double DumpTime = .6;
     ElapsedTime DumpTimer = new ElapsedTime();
+    ElapsedTime IntakeReverseTimer = new ElapsedTime();
+
 
     @Override
     public void update(Robot robot) {
@@ -131,38 +136,43 @@ public class BasicLift implements Subsystem {
                 robot.v4b.intake();
                 robot.deposit.close();
                 robot.deposit.depositSensor = robot.deposit.ssensor.getDistance(DistanceUnit.INCH);
-                LiftTimer.reset();
                 if ((robot.deposit.distanceMax >= robot.deposit.depositSensor && robot.deposit.depositSensor >= robot.deposit.distanceMin)) {
                     state = liftState.HOLD;
                 }
-                if (gamepad1.y) {
+                if (gamepad1.right_bumper) {
                     state = liftState.HIGH;
                 }
-                if (gamepad1.x) {
-                    state = liftState.SHARED;
-                }
-                if (gamepad1.dpad_down) {
-                    state = liftState.RETRACTV4B;
-                }
-                break;
-
-            case HOLD:
-                liftHold();
-                robot.v4b.intake();
-                robot.deposit.close();
-                LiftTimer.reset();
                 if (gamepad1.y) {
-                    state = liftState.HIGH;
-                }
-                if (gamepad1.x) {
                     state = liftState.SHARED;
                 }
                 if (gamepad1.a) {
                     state = liftState.RETRACTV4B;
                 }
+                LiftTimer.reset();
+                IntakeReverseTimer.reset();
                 break;
+            case HOLD:
+                liftHold();
+                robot.v4b.intake();
+                robot.deposit.close();
+                LiftTimer.reset();
+                if (gamepad1.right_bumper) {
+                    state = liftState.HIGH;
+                }
+                if (gamepad1.y) {
+                    state = liftState.SHARED;
+                }
+                if (gamepad1.a) {
+                    state = liftState.RETRACTV4B;
+                }
+                while (IntakeReverseTimer.seconds() <= 2) {
+                    robot.intake.reverse();
+                }
+
+                    break;
             case HIGH:
                 liftHigh();
+                robot.deposit.turretNeutral();
                 if (lift1.getCurrentPosition() < READY) {
                     state = liftState.DEPOSIT;
                 }
@@ -179,26 +189,21 @@ public class BasicLift implements Subsystem {
                 if (DumpTimer.seconds() >= DumpTime) {
                     robot.deposit.turretBLUESHARED();
                     liftShared();
-                if (gamepad1.b) {
+                if (gamepad1.left_bumper) {
                     state = liftState.OPENBOXSHARED;
                 }
-                if (gamepad1.y) {
+                if (gamepad1.right_bumper) {
                     state = liftState.HIGH;
                     }
                 }
-                break;
-            case DEPOSITSHARED:
-                if (gamepad1.b) {
-                    state = liftState.OPENBOXSHARED;
-                }
-                if (gamepad1.y) {
-                    state = liftState.HIGH;
-                    }
                 break;
             case DEPOSIT:
                 robot.v4b.deposit();
-                if (gamepad1.b) {
+                if (gamepad1.left_bumper) {
                     state = liftState.OPENBOX;
+                }
+                if (gamepad1.y) {
+                    state = liftState.DEPOSITSHAREDENDHEIGHT;
                 }
                 break;
             case OPENBOX:
@@ -240,12 +245,11 @@ public class BasicLift implements Subsystem {
     public void updatePID(double target) {
         error = target - encoderTicksToDegrees(lift1.getCurrentPosition());
         power = error * kP + Math.signum(error) * kF;
-
         if (Math.abs(error) < 75) {
             power = 0;
         }
 
-        power = Range.clip(power, -0.8, 0.8);
+        power = Range.clip(power, -0.75, 0.75); //0.8
         lift1.setPower(-power);
         lift2.setPower(power);
     }
