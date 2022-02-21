@@ -21,7 +21,7 @@ public class BasicLift implements Subsystem {
     DcMotor lift2;
     public static double target = 0;
     private static double HIGH = -640;
-    private static double SHARED = -150;
+    private static double SHARED = -200;
     private static double MID = -475;
     private static double INTAKE = 50;
     private static double HOLD = -200;
@@ -165,7 +165,7 @@ public class BasicLift implements Subsystem {
                 if (gamepad1.a) {
                     state = liftState.RETRACTV4B;
                 }
-                while (IntakeReverseTimer.seconds() <= 2) {
+                while (IntakeReverseTimer.seconds() <= 0.3) {
                     robot.intake.reverse();
                 }
 
@@ -191,6 +191,7 @@ public class BasicLift implements Subsystem {
                     liftShared();
                 if (gamepad1.left_bumper) {
                     state = liftState.OPENBOXSHARED;
+                    LiftTimer.reset();
                 }
                 if (gamepad1.right_bumper) {
                     state = liftState.HIGH;
@@ -218,7 +219,7 @@ public class BasicLift implements Subsystem {
                 robot.deposit.turretBLUESHARED();
                 robot.deposit.open();
                 DumpTimer.reset();
-                if (gamepad1.a) {
+                if (LiftTimer.seconds() >= 1) {
                     state = liftState.RETRACTV4BSHARED;
                     liftMid();
                 }
