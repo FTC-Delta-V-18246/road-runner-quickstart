@@ -19,7 +19,7 @@ public class Intake implements Subsystem {
     DcMotor intakeMotor;
 
 
-    public static double dropTakeDown = 0.33;
+    public static double dropTakeDown = 0.295;
     public static double dropTakeUp = 0.1;
 
 

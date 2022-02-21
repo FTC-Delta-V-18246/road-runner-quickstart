@@ -26,7 +26,7 @@ public class Deposit implements Subsystem {
     public static double turretREDPOS = 0.8;
     public static double turretBLUEPOS = 0.4;
     public static double distanceMin = 0;
-    public static double distanceMax = 2.75;
+    public static double distanceMax = 3;
     public static double depositSensor = 5;
 
     public State state = State.INTAKE;
