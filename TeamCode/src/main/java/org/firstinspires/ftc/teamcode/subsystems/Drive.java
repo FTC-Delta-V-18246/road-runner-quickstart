@@ -42,7 +42,7 @@ public class Drive implements Subsystem {
 
     @Override
     public void update(Robot robot) {
-        if (gamepad1.dpad_up) {
+        if (gamepad1.x) {
             odoRetract();
         }
         else {

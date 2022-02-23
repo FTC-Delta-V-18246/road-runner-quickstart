@@ -2,12 +2,17 @@
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.constraints.AngularVelocityConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.MecanumVelocityConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.MinVelocityConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.ProfileAccelerationConstraint;
 import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.core.colorscheme.scheme.ColorSchemeBlueDark;
 import com.noahbres.meepmeep.core.colorscheme.scheme.ColorSchemeRedDark;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
+import java.util.Arrays;
 import java.util.Vector;
 
 public class MeepMeepTesting {
@@ -22,7 +27,6 @@ public class MeepMeepTesting {
                                         //duck
                                         //.splineToSplineHeading(new Pose2d(-48, -44, Math.toRadians(180)), Math.toRadians(180))
                                         //.splineToSplineHeading(new Pose2d(-56, -48, Math.toRadians(180)), Math.toRadians(180))
-                                        .splineTo(new Vector2d(-44, -44), Math.toRadians(180))
                                         .splineTo(new Vector2d(-54,-54), Math.toRadians(180))
                                         .waitSeconds(1)
                                         //deposit preloaded, adjust by 2" for low/mid/high
@@ -36,8 +40,9 @@ public class MeepMeepTesting {
                                         .addDisplacementMarker(164, () -> {
                                         })
                                         //intake duck
-                                        .splineToSplineHeading(new Pose2d(-44, -56, Math.toRadians(180)), Math.toRadians(180))
-                                        .lineToSplineHeading(new Pose2d(-56, -56, Math.toRadians(240)))
+                                        .lineToLinearHeading(new Pose2d(-40, -24, Math.toRadians(240)))
+                                        .splineToConstantHeading(new Vector2d(-44, -62), Math.toRadians(180))
+                                        .lineToConstantHeading(new Vector2d(-59, -62))
                                         //deposit duck
                                         .lineToLinearHeading(new Pose2d(-32, -24, Math.toRadians(180)))
 
