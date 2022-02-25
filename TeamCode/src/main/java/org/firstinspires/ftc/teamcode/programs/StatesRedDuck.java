@@ -54,7 +54,6 @@ public class StatesRedDuck extends LinearOpMode {
         vision = new Vision(hardwareMap, telemetry);
         vision.setPipeline();
         vision.startStreaming();
-        VisionPipeline.POS position = vision.detector.getPosition();
 
         Robot robot = new Robot(hardwareMap, gamepad1, gamepad2);
         robot.lift.liftReset();
@@ -83,7 +82,6 @@ public class StatesRedDuck extends LinearOpMode {
                                         new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
                                         new MecanumVelocityConstraint(0.5 * DriveConstants.MAX_VEL, DriveConstants.TRACK_WIDTH))),
                         new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL))
-
                 .build();
         Trajectory Dump2 = robot.drive.drive.trajectoryBuilder(Intake.end())
                 .lineToLinearHeading(new Pose2d(-31, -24, Math.toRadians(180)), new MinVelocityConstraint(
@@ -110,6 +108,7 @@ public class StatesRedDuck extends LinearOpMode {
 
         waitForStart();
 
+        VisionPipeline.POS position = vision.detector.getPosition();
         robot.drive.drive.followTrajectory(Duck);
         currentState = State.DUCK;
         robot.lift.liftIntake();

@@ -10,6 +10,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.MinVelocityConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.ProfileAccelerationConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Robot;
@@ -23,6 +24,8 @@ import java.util.Arrays;
 
 @Autonomous(name = "StatesRedCycle")
 public class StatesRedCycle extends LinearOpMode {
+    DcMotor lift1;
+
     enum State {
         DUMPLOADED,           // go to dump position (need if statement)
         WAITDUMPLOADED,       // wait x seconds to dump
@@ -37,22 +40,24 @@ public class StatesRedCycle extends LinearOpMode {
     Vision vision;
     VisionPipeline position;
     State currentState = State.DONE;
-    private static int cycleCount = 3;
-    Robot robot = new Robot(hardwareMap, gamepad1, gamepad2);
-
-
+    //private static int cycleCount = 3;
 
     @Override
     public void runOpMode() throws InterruptedException {
+
+        vision = new Vision(hardwareMap, telemetry);
+        vision.setPipeline();
+        vision.startStreaming();
+
+        Robot robot = new Robot(hardwareMap, gamepad1, gamepad2);
+        robot.lift.liftReset();
+        lift1 = hardwareMap.get(DcMotor.class, "lift1");
 
         Pose2d startPose = new Pose2d(15, -62, Math.toRadians(90));
         robot.drive.drive.setPoseEstimate(startPose);
 
         Trajectory DumpLoaded = robot.drive.drive.trajectoryBuilder(startPose)
                 .splineToLinearHeading(new Pose2d(6, -42, Math.toRadians(315)), Math.toRadians(135))
-                .addTemporalMarker(1.75, () -> {
-                    robot.v4b.deposit();
-                })
                 .build();
         Trajectory Intake = robot.drive.drive.trajectoryBuilder(DumpLoaded.end())
                 .splineToSplineHeading(new Pose2d(6, -62, Math.toRadians(0)), Math.toRadians(0))

@@ -45,7 +45,6 @@ public class MeepMeepTesting {
                                         .lineToConstantHeading(new Vector2d(-59, -62))
                                         //deposit duck
                                         .lineToLinearHeading(new Pose2d(-32, -24, Math.toRadians(180)))
-
                                         //park
                                         .splineToLinearHeading(new Pose2d(-62, -36, Math.toRadians(0)), Math.toRadians(180))
                                         .build()
