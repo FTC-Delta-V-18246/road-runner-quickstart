@@ -29,7 +29,7 @@ public class BasicLift implements Subsystem {
 
     public static final double TICKS_PER_REV = 28 * 13.7;
     public static final double GEAR_RATIO = 1;
-    public static double kP = -0.0016;
+    public static double kP = -0.0014;
     public static double kF = -0.001;
     public Gamepad gamepad1;
     public Gamepad gamepad2;
@@ -165,10 +165,9 @@ public class BasicLift implements Subsystem {
                 if (gamepad1.a) {
                     state = liftState.RETRACTV4B;
                 }
-                while (IntakeReverseTimer.seconds() <= 0.3) {
+                while (IntakeReverseTimer.seconds() <= 0.5) {
                     robot.intake.reverse();
                 }
-
                     break;
             case HIGH:
                 liftHigh();

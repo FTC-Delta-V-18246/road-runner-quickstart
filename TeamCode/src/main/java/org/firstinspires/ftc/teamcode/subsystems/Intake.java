@@ -19,7 +19,7 @@ public class Intake implements Subsystem {
     DcMotor intakeMotor;
 
 
-    public static double dropTakeDown = 0.285;
+    public static double dropTakeDown = 0.3;
     public static double dropTakeUp = 0.1;
 
 
@@ -55,7 +55,7 @@ public class Intake implements Subsystem {
         intakeMotor.setPower(0);
     }
     public void reverse() {
-        intakeMotor.setPower(1.0);
+        intakeMotor.setPower(0.6);
     }
 
     public void intakeDown() {

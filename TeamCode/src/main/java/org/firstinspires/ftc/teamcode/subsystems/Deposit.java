@@ -20,7 +20,7 @@ public class Deposit implements Subsystem {
     DistanceSensor ssensor;
 
     public static double doorOpen = 0.9;
-    public static double doorClose = 0.67;
+    public static double doorClose = 0.66;
     public static double doorCloseDuck = 0.655;
     public static double turretNEUTRAL = 0.6;
     public static double turretREDPOS = 0.8;

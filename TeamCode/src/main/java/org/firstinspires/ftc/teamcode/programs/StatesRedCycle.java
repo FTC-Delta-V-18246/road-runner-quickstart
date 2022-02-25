@@ -69,7 +69,7 @@ public class StatesRedCycle extends LinearOpMode {
                 .build();
         Trajectory Dump = robot.drive.drive.trajectoryBuilder(Intake.end())
                 .lineToSplineHeading(new Pose2d(8, -62.5, Math.toRadians(0)))
-                .splineToSplineHeading(new Pose2d(6, -42, Math.toRadians(315)), Math.toRadians(135))
+                .splineToSplineHeading(new Pose2d(6, -4, Math.toRadians(315)), Math.toRadians(135))
                 .build();
         Trajectory Park = robot.drive.drive.trajectoryBuilder(Dump.end())
                 .splineToSplineHeading(new Pose2d(6, -63, Math.toRadians(0)), Math.toRadians(0))
