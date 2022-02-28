@@ -139,10 +139,10 @@ public class BasicLift implements Subsystem {
                 if ((robot.deposit.distanceMax >= robot.deposit.depositSensor && robot.deposit.depositSensor >= robot.deposit.distanceMin)) {
                     state = liftState.HOLD;
                 }
-                if (gamepad2.right_bumper) {
+                if (gamepad2.y) {
                     state = liftState.HIGH;
                 }
-                if (gamepad2.y) {
+                if (gamepad2.x) {
                     state = liftState.SHARED;
                 }
                 if (gamepad2.a) {
@@ -156,10 +156,10 @@ public class BasicLift implements Subsystem {
                 robot.v4b.intake();
                 robot.deposit.close();
                 LiftTimer.reset();
-                if (gamepad2.right_bumper) {
+                if (gamepad2.y) {
                     state = liftState.HIGH;
                 }
-                if (gamepad2.y) {
+                if (gamepad2.x) {
                     state = liftState.SHARED;
                 }
                 if (gamepad2.a) {
@@ -188,21 +188,21 @@ public class BasicLift implements Subsystem {
                 if (DumpTimer.seconds() >= DumpTime) {
                     robot.deposit.turretBLUESHARED();
                     liftShared();
-                if (gamepad2.left_bumper) {
+                if (gamepad2.b) {
                     state = liftState.OPENBOXSHARED;
                     LiftTimer.reset();
                 }
-                if (gamepad2.right_bumper) {
+                if (gamepad2.y) {
                     state = liftState.HIGH;
                     }
                 }
                 break;
             case DEPOSIT:
                 robot.v4b.deposit();
-                if (gamepad2.left_bumper) {
+                if (gamepad2.b) {
                     state = liftState.OPENBOX;
                 }
-                if (gamepad2.y) {
+                if (gamepad2.x) {
                     state = liftState.DEPOSITSHAREDENDHEIGHT;
                 }
                 break;
@@ -210,7 +210,7 @@ public class BasicLift implements Subsystem {
                 robot.deposit.open();
                 robot.deposit.turretNeutral();
                 DumpTimer.reset();
-                if (gamepad2.right_bumper) {
+                if (gamepad2.a) {
                     state = liftState.RETRACTV4B;
                 }
                 break;
