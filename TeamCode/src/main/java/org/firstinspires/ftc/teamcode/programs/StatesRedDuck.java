@@ -89,7 +89,8 @@ public class StatesRedDuck extends LinearOpMode {
                         new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
         Trajectory Park = robot.drive.drive.trajectoryBuilder(Dump2.end())
-                .splineToConstantHeading(new Vector2d(-58, -40), Math.toRadians(180))
+                //.splineToConstantHeading(new Vector2d(-58, -40), Math.toRadians(180))
+                .splineToLinearHeading(new Pose2d(-58, -40, Math.toRadians(0)), Math.toRadians(180))
                 .addTemporalMarker(0.75, () -> {
                     robot.v4b.intake();
                     robot.deposit.close();

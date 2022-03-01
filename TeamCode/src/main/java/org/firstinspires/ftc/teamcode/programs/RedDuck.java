@@ -142,14 +142,14 @@ public class RedDuck extends LinearOpMode {
                         robot.drive.drive.followTrajectory(Dump);
                     }
                     if (position == VisionPipeline.POS.LEFT) {
-                        //robot.lift.liftMid();
+                        robot.lift.liftMid();
                     } else {
-                        //robot.lift.liftHigh();
+                        robot.lift.liftHigh();
                     }
                     if (lift1.getCurrentPosition() < robot.lift.READY) {
-                        //robot.v4b.deposit();
+                        robot.v4b.deposit();
                         if (position == VisionPipeline.POS.LEFT) {
-                            //robot.lift.liftShared();
+                            robot.lift.liftShared();
                             }
                     }
                     break;
@@ -157,7 +157,7 @@ public class RedDuck extends LinearOpMode {
                     if (!robot.drive.drive.isBusy()) {
                         currentState = State.WAITDUMP;
                         DumpTimer.reset();
-                        //robot.deposit.open();
+                        robot.deposit.open();
                     }
                     break;
                 case WAITDUMP:
@@ -167,11 +167,11 @@ public class RedDuck extends LinearOpMode {
                     }
                     break;
                 case BACK:
-                    //robot.lift.liftHigh();
+                    robot.lift.liftHigh();
                     if (!robot.drive.drive.isBusy()) {
                         currentState = State.RESET;
                         ResetTimer.reset();
-                        //robot.lift.liftIntake();
+                        robot.lift.liftIntake();
                     }
                     break;
                 case RESET:
@@ -193,7 +193,7 @@ public class RedDuck extends LinearOpMode {
                         robot.drive.drive.followTrajectory(Dump2);
                     }
                     if (lift1.getCurrentPosition() < robot.lift.READY) {
-                        //robot.v4b.deposit();
+                        robot.v4b.deposit();
                         robot.intake.off();
                     }
                     break;
@@ -204,7 +204,7 @@ public class RedDuck extends LinearOpMode {
                     }
                     break;
                 case WAITDUMP2:
-                    //robot.deposit.open();
+                    robot.deposit.open();
                     if (DumpTimer.seconds() >= DumpTime) {
                         currentState = State.PARK;
                         robot.drive.drive.followTrajectory(Park);
@@ -216,7 +216,7 @@ public class RedDuck extends LinearOpMode {
                     }
                     break;
                 case DONE:
-                    //robot.lift.liftIntake();
+                    robot.lift.liftIntake();
                     break;
             }
         }
