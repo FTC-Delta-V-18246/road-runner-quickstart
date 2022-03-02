@@ -20,11 +20,11 @@ public class BasicLift implements Subsystem {
     DcMotor lift1;
     DcMotor lift2;
     public static double target = 0;
-    private static double HIGH = -625;
-    private static double SHARED = -250;
-    private static double MID = -475;
-    private static double INTAKE = 10;
-    private static double HOLD = -200;
+    public static double HIGH = -645;
+    public static double SHARED = -250;
+    public static double MID = -475;
+    public static double INTAKE = 10;
+    public static double HOLD = -200;
     public static double READY = -350;
 
     public static final double TICKS_PER_REV = 28 * 13.7;
