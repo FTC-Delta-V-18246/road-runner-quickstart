@@ -20,7 +20,7 @@ public class BasicLift implements Subsystem {
     DcMotor lift1;
     DcMotor lift2;
     public static double target = 0;
-    public static double HIGH = -645;
+    public static double HIGH = -650;
     public static double SHARED = -250;
     public static double MID = -475;
     public static double INTAKE = 10;
@@ -247,7 +247,7 @@ public class BasicLift implements Subsystem {
             power = 0;
         }
 
-        power = Range.clip(power, -0.7, 0.7); //0.8
+        power = Range.clip(power, -0.9, 0.9); //0.8
         lift1.setPower(-power);
         lift2.setPower(power);
     }

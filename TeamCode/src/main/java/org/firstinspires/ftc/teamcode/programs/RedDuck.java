@@ -66,23 +66,27 @@ public class RedDuck extends LinearOpMode {
                 .build();
         Trajectory Dump = robot.drive.drive.trajectoryBuilder(Duck.end())
                 .splineToConstantHeading(new Vector2d(-57.5, -30), Math.toRadians(180))
-                .splineToConstantHeading(new Vector2d(-32, -26), Math.toRadians(180))
-                .addDisplacementMarker(4, () -> {
-                    //robot.v4b.deposit();
-                    robot.carousel.off();
+                .splineToConstantHeading(new Vector2d(-32, -25), Math.toRadians(180))
+                .addTemporalMarker(0.2, () -> {
+                    robot.v4b.deposit();
                 })
                 .build();
         Trajectory Back = robot.drive.drive.trajectoryBuilder(Dump.end())
                 //.lineToSplineHeading(new Pose2d(-57.5, -24, Math.toRadians(180)))
+                .splineTo(new Vector2d(-40, -24), Math.toRadians(270))
+                .addDisplacementMarker(() -> robot.v4b.intake())
                 .splineTo(new Vector2d(-57.5, -24), Math.toRadians(270))
-                .addDisplacementMarker(() -> robot.lift.liftIntake())
-                .addTemporalMarker(0.3, () -> {
-                    //robot.v4b.intake();
-                })
-                //.splineToSplineHeading(new Pose2d(-56, -48, Math.toRadians(270)), Math.toRadians(180))
-                .splineTo(new Vector2d(-55, -58), Math.toRadians(270))
-                .addTemporalMarker(1.5, () -> {
+                .addDisplacementMarker( () -> {
+                    robot.lift.liftIntake();
                     robot.deposit.closeDuck();
+                })
+        //.splineToSplineHeading(new Pose2d(-56, -48, Math.toRadians(270)), Math.toRadians(180))
+                .splineTo(new Vector2d(-55, -59), Math.toRadians(270), new MinVelocityConstraint(
+                        Arrays.asList(
+                                new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
+                                new MecanumVelocityConstraint(0.5 * DriveConstants.MAX_VEL, DriveConstants.TRACK_WIDTH))),
+                new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addTemporalMarker(1.5, () -> {
                     robot.intake.on();
                 })
                 .build();
@@ -94,7 +98,7 @@ public class RedDuck extends LinearOpMode {
                         new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
         Trajectory Dump2 = robot.drive.drive.trajectoryBuilder(Intake.end())
-                .splineToLinearHeading(new Pose2d(-32, -26, Math.toRadians(180)), Math.toRadians(180))
+                .splineToLinearHeading(new Pose2d(-32, -25, Math.toRadians(180)), Math.toRadians(180))
                 .build();
         Trajectory Park = robot.drive.drive.trajectoryBuilder(Dump2.end())
                 .splineToLinearHeading(new Pose2d(-58, -40, Math.toRadians(180)), Math.toRadians(180))
@@ -114,7 +118,7 @@ public class RedDuck extends LinearOpMode {
 
         waitForStart();
         VisionPipeline.POS position = vision.detector.getPosition();
-
+        telemetry.addData("Position: ", position);
 
         robot.drive.drive.followTrajectory(Duck);
         currentState = State.DUCK;
@@ -141,19 +145,20 @@ public class RedDuck extends LinearOpMode {
                         currentState = State.DUMP;
                         robot.drive.drive.followTrajectory(Dump);
                     }
-                    if (position == VisionPipeline.POS.LEFT) {
+                    if (position != VisionPipeline.POS.RIGHT) {
                         robot.lift.liftMid();
                     } else {
                         robot.lift.liftHigh();
                     }
                     if (lift1.getCurrentPosition() < robot.lift.READY) {
-                        robot.v4b.deposit();
+                        //robot.v4b.deposit();
                         if (position == VisionPipeline.POS.LEFT) {
                             robot.lift.liftShared();
-                            }
+                        }
                     }
                     break;
                 case DUMP:
+                    robot.carousel.off();
                     if (!robot.drive.drive.isBusy()) {
                         currentState = State.WAITDUMP;
                         DumpTimer.reset();
@@ -217,6 +222,8 @@ public class RedDuck extends LinearOpMode {
                     break;
                 case DONE:
                     robot.lift.liftIntake();
+                    robot.deposit.close();
+                    robot.v4b.intake();
                     break;
             }
         }
