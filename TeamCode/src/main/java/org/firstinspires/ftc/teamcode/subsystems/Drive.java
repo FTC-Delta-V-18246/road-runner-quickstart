@@ -26,6 +26,8 @@ public class Drive implements Subsystem {
     public static double odoLUp = 0.08;
     public static double odoCUp = 0.98;
 
+    public static double rotatePower = 1.0;
+
     public Drive(Gamepad g1, Gamepad g2) {
         gamepad1 = g1;
         gamepad2 = g2;
@@ -51,7 +53,7 @@ public class Drive implements Subsystem {
         drive.setWeightedDrivePower(new Pose2d(
                 -gamepad1.left_stick_y,
                 -gamepad1.left_stick_x,
-                -gamepad1.right_stick_x
+                -gamepad1.right_stick_x / rotatePower
         ));
         drive.update();
     }

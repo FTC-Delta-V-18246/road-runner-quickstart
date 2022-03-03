@@ -25,7 +25,6 @@ public class SampleTele extends LinearOpMode {
             telemetry.update();
             robot.carousel.updateCaro(0.25);
 
-
             robot.update();
         }
     }

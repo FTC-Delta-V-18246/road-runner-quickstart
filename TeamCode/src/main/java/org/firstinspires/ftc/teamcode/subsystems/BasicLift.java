@@ -115,9 +115,6 @@ public class BasicLift implements Subsystem {
         target = INTAKE;
     }
 
-
-
-
     public static double LiftTime = .8;
     ElapsedTime LiftTimer = new ElapsedTime();
     public static double DumpTime = .6;
@@ -169,6 +166,7 @@ public class BasicLift implements Subsystem {
                     break;
             case HIGH:
                 liftHigh();
+                robot.drive.rotatePower = 2.0;
                 robot.deposit.turretNeutral();
                 if (lift1.getCurrentPosition() < READY) {
                     state = liftState.DEPOSIT;
@@ -176,6 +174,7 @@ public class BasicLift implements Subsystem {
                 break;
             case SHARED:
                 liftMid();
+                robot.drive.rotatePower = 2.0;
                 DumpTimer.reset();
                 if (lift1.getCurrentPosition() < READY) {
                     state = liftState.DEPOSITSHAREDENDHEIGHT;
@@ -222,6 +221,8 @@ public class BasicLift implements Subsystem {
                 }
                 break;
             case RETRACTV4BSHARED:
+                robot.drive.rotatePower = 1.0;
+
                 if (DumpTimer.seconds() >= DumpTime) {
                     robot.deposit.turretNeutral();
                     state = liftState.RETRACTV4B;
@@ -229,6 +230,7 @@ public class BasicLift implements Subsystem {
                 }
                 break;
             case RETRACTV4B:
+                robot.drive.rotatePower = 1.0;
                 robot.v4b.intake();
                 robot.deposit.turretNeutral();
                 robot.deposit.close();
