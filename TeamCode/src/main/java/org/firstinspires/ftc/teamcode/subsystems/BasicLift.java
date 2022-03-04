@@ -249,7 +249,7 @@ public class BasicLift implements Subsystem {
             power = 0;
         }
 
-        power = Range.clip(power, -0.9, 0.9); //0.8
+        power = Range.clip(power, -0.8, 0.8); //0.8
         lift1.setPower(-power);
         lift2.setPower(power);
     }

@@ -18,9 +18,9 @@ public class Intake implements Subsystem {
     Gamepad gamepad2;
     DcMotor intakeMotor;
 
-
     public static double dropTakeDown = 0.32;
     public static double dropTakeUp = 0.1;
+    public static double intakePower = 1.0;
 
 
     public Intake(Gamepad g1, Gamepad g2) {
@@ -40,7 +40,7 @@ public class Intake implements Subsystem {
 
     @Override
     public void update(Robot robot) {
-        intakeMotor.setPower(1.0 * (gamepad1.left_trigger - gamepad1.right_trigger));
+        intakeMotor.setPower(intakePower * (gamepad1.left_trigger - gamepad1.right_trigger));
     }
 
     public void intakeUp() {
@@ -49,7 +49,7 @@ public class Intake implements Subsystem {
     }
 
     public void on() {
-        intakeMotor.setPower(-1.0);
+        intakeMotor.setPower(-intakePower);
     }
     public void off() {
         intakeMotor.setPower(0);
@@ -57,7 +57,6 @@ public class Intake implements Subsystem {
     public void reverse() {
         intakeMotor.setPower(0.6);
     }
-
     public void intakeDown() {
         droptakeRight.setPosition(dropTakeDown);
         droptakeLeft.setPosition(1 - dropTakeDown);
