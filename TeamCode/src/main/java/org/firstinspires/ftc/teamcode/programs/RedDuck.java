@@ -109,9 +109,9 @@ public class RedDuck extends LinearOpMode {
                 .build();
         double DuckTime = 3;
         ElapsedTime DuckTimer = new ElapsedTime();
-        double DumpTime = 1.5;
+        double DumpTime = 2;
         ElapsedTime DumpTimer = new ElapsedTime();
-        double ResetTime = 1;
+        double ResetTime = 2;
         ElapsedTime ResetTimer = new ElapsedTime();
         robot.lift.liftReset();
         robot.intake.intakeUp();
@@ -150,29 +150,27 @@ public class RedDuck extends LinearOpMode {
                     } else {
                         robot.lift.liftHigh();
                     }
-                    if (lift1.getCurrentPosition() < robot.lift.READY) {
-                        //robot.v4b.deposit();
-                        if (position == VisionPipeline.POS.LEFT) {
+                    if ((lift1.getCurrentPosition() < robot.lift.READY) && (position == VisionPipeline.POS.LEFT)) {
                             robot.lift.liftShared();
                         }
-                    }
                     break;
                 case DUMP:
                     robot.carousel.off();
+                    robot.v4b.deposit();
                     if (!robot.drive.drive.isBusy()) {
                         currentState = State.WAITDUMP;
                         DumpTimer.reset();
-                        robot.deposit.open();
                     }
                     break;
                 case WAITDUMP:
                     if (DumpTimer.seconds() >= DumpTime) {
+                        robot.deposit.open();
+                        robot.lift.liftHigh();
                         robot.drive.drive.followTrajectory(Back);
                         currentState = State.BACK;
                     }
                     break;
                 case BACK:
-                    robot.lift.liftHigh();
                     if (!robot.drive.drive.isBusy()) {
                         currentState = State.RESET;
                         ResetTimer.reset();

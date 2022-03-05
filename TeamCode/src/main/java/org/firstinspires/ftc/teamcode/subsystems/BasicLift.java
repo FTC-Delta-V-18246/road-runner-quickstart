@@ -20,16 +20,16 @@ public class BasicLift implements Subsystem {
     DcMotor lift1;
     DcMotor lift2;
     public static double target = 0;
-    public static double HIGH = -650;
+    public static double HIGH = -640;
     public static double SHARED = -250;
-    public static double MID = -475;
-    public static double INTAKE = 10;
+    public static double MID = -450;
+    public static double INTAKE = 20;
     public static double HOLD = -200;
     public static double READY = -350;
 
     public static final double TICKS_PER_REV = 28 * 13.7;
     public static final double GEAR_RATIO = 1;
-    public static double kP = -0.0016;
+    public static double kP = -0.0014;
     public static double kF = -0.001;
     public Gamepad gamepad1;
     private double error = 0;
@@ -158,7 +158,7 @@ public class BasicLift implements Subsystem {
                     state = liftState.SHARED;
                 }
                 if (gamepad1.a) {
-                    robot.v4b.intake();
+                    state = liftState.INTAKE;
                 }
                 while (IntakeReverseTimer.seconds() <= 0.3) {
                     robot.intake.reverse();
@@ -183,7 +183,6 @@ public class BasicLift implements Subsystem {
             case DEPOSITSHAREDENDHEIGHT:
                 robot.v4b.deposit();
                 if (DumpTimer.seconds() >= DumpTime) {
-                    robot.deposit.turretBLUESHARED();
                     liftShared();
                 if (gamepad1.left_bumper) {
                     state = liftState.OPENBOXSHARED;
@@ -222,7 +221,6 @@ public class BasicLift implements Subsystem {
                 break;
             case RETRACTV4BSHARED:
                 robot.drive.rotatePower = 1.0;
-
                 if (DumpTimer.seconds() >= DumpTime) {
                     robot.deposit.turretNeutral();
                     state = liftState.RETRACTV4B;
@@ -245,11 +243,11 @@ public class BasicLift implements Subsystem {
     public void updatePID(double target) {
         error = target - encoderTicksToDegrees(lift1.getCurrentPosition());
         power = error * kP + Math.signum(error) * kF;
-        if (Math.abs(error) < 50) { //75
+        if (Math.abs(error) < 70) { //75
             power = 0;
         }
 
-        power = Range.clip(power, -0.8, 0.8); //0.8
+        power = Range.clip(power, -0.75, 0.75); //0.8
         lift1.setPower(-power);
         lift2.setPower(power);
     }
