@@ -20,16 +20,16 @@ public class BasicLift implements Subsystem {
     DcMotor lift1;
     DcMotor lift2;
     public static double target = 0;
-    public static double HIGH = -640;
-    public static double SHARED = -250;
-    public static double MID = -450;
-    public static double INTAKE = 20;
+    public static double HIGH = -650;
+    public static double SHARED = -150;
+    public static double MID = -515;
+    public static double INTAKE = 50;
     public static double HOLD = -200;
-    public static double READY = -350;
+    public static double READY = -425;
 
     public static final double TICKS_PER_REV = 28 * 13.7;
     public static final double GEAR_RATIO = 1;
-    public static double kP = -0.0014;
+    public static double kP = -0.0016;
     public static double kF = -0.001;
     public Gamepad gamepad1;
     private double error = 0;
@@ -127,12 +127,21 @@ public class BasicLift implements Subsystem {
 
         switch (state) {
             case INTAKE:
+                if (gamepad1.dpad_down) {
+                    INTAKE = INTAKE + 5;
+                    robot.lift.liftReset();
+                }
+                if (gamepad1.dpad_down) {
+                    INTAKE = INTAKE - 5;
+                    robot.lift.liftReset();
+                }
                 liftIntake();
                 robot.v4b.intake();
                 robot.deposit.close();
                 robot.deposit.depositSensor = robot.deposit.ssensor.getDistance(DistanceUnit.INCH);
                 if ((robot.deposit.distanceMax >= robot.deposit.depositSensor && robot.deposit.depositSensor >= robot.deposit.distanceMin)) {
                     state = liftState.HOLD;
+                    gamepad1.rumble(300);
                 }
                 if (gamepad1.right_bumper) {
                     state = liftState.HIGH;
@@ -211,7 +220,6 @@ public class BasicLift implements Subsystem {
                 }
                 break;
             case OPENBOXSHARED:
-                robot.deposit.turretBLUESHARED();
                 robot.deposit.open();
                 DumpTimer.reset();
                 if (LiftTimer.seconds() >= 0.4) {
