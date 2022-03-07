@@ -20,9 +20,9 @@ public class BasicLift implements Subsystem {
     DcMotor lift1;
     DcMotor lift2;
     public static double target = 0;
-    public static double HIGH = -650;
+    public static double HIGH = -645;
     public static double SHARED = -150;
-    public static double MID = -515;
+    public static double MID = -500;
     public static double INTAKE = 50;
     public static double HOLD = -200;
     public static double READY = -425;
@@ -86,6 +86,7 @@ public class BasicLift implements Subsystem {
         rruntime = new ElapsedTime();
         liftReset();
         state = liftState.INTAKE;
+
     }
 
     public void liftReset() {
@@ -127,6 +128,7 @@ public class BasicLift implements Subsystem {
 
         switch (state) {
             case INTAKE:
+                robot.intake.intakeDown();
                 if (gamepad1.dpad_down) {
                     INTAKE = INTAKE + 5;
                     robot.lift.liftReset();

@@ -21,6 +21,7 @@ public class Intake implements Subsystem {
     public static double dropTakeDown = 0.31;
     public static double dropTakeUp = 0.1;
     public static double intakePower = 1.0;
+    public static double autoPower = 0.8;
 
 
     public Intake(Gamepad g1, Gamepad g2) {
@@ -35,7 +36,6 @@ public class Intake implements Subsystem {
 
         droptakeLeft = hw.get(Servo.class, "droptakeL");
         droptakeRight = hw.get(Servo.class, "droptakeR");
-        intakeUp();
     }
 
     @Override
@@ -44,12 +44,15 @@ public class Intake implements Subsystem {
     }
 
     public void intakeUp() {
-        droptakeRight.setPosition(dropTakeDown);
-        droptakeLeft.setPosition(1 - dropTakeDown);
+        droptakeLeft.setPosition(1);
+        droptakeRight.setPosition(0);
     }
 
     public void on() {
         intakeMotor.setPower(-intakePower);
+    }
+    public void autoOn() {
+        intakeMotor.setPower(-autoPower);
     }
     public void off() {
         intakeMotor.setPower(0);
