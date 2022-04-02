@@ -21,7 +21,7 @@ public class BasicLift implements Subsystem {
     DcMotor lift2;
     public static double target = 0;
     public static double HIGH = -645;
-    public static double SHARED = -150;
+    public static double SHARED = -350;
     public static double MID = -500;
     public static double INTAKE = 50;
     public static double HOLD = -200;
@@ -35,6 +35,8 @@ public class BasicLift implements Subsystem {
     private double error = 0;
     private double power = 0;
     public ElapsedTime rruntime;
+
+    public boolean ready = false;
 
     public Timer extendTimer;
 
@@ -99,6 +101,9 @@ public class BasicLift implements Subsystem {
 
     public void liftHigh() {
         target = HIGH;
+        if (lift1.getCurrentPosition() < READY) {
+            ready = true;
+        }
     }
     public void liftMid() {
         target = MID;
@@ -138,7 +143,7 @@ public class BasicLift implements Subsystem {
                     robot.lift.liftReset();
                 }
                 liftIntake();
-                robot.v4b.intake();
+                robot.v4b.intake(robot);
                 robot.deposit.close();
                 robot.deposit.depositSensor = robot.deposit.ssensor.getDistance(DistanceUnit.INCH);
                 if ((robot.deposit.distanceMax >= robot.deposit.depositSensor && robot.deposit.depositSensor >= robot.deposit.distanceMin)) {
@@ -152,14 +157,14 @@ public class BasicLift implements Subsystem {
                     state = liftState.SHARED;
                 }
                 if (gamepad1.a) {
-                    robot.v4b.intake();
+                    robot.v4b.intake(robot);
                 }
                 LiftTimer.reset();
                 IntakeReverseTimer.reset();
                 break;
             case HOLD:
                 liftHold();
-                robot.v4b.intake();
+                robot.v4b.intake(robot);
                 robot.deposit.close();
                 LiftTimer.reset();
                 if (gamepad1.right_bumper) {
@@ -239,7 +244,7 @@ public class BasicLift implements Subsystem {
                 break;
             case RETRACTV4B:
                 robot.drive.rotatePower = 1.0;
-                robot.v4b.intake();
+                robot.v4b.intake(robot);
                 robot.deposit.turretNeutral();
                 robot.deposit.close();
                 if (DumpTimer.seconds() >= DumpTime) {

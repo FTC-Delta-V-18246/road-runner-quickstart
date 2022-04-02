@@ -23,94 +23,17 @@ public class MeepMeepTesting {
                 .setColorScheme(new ColorSchemeBlueDark())
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 10)
                 .followTrajectorySequence(start ->
-                                start.trajectorySequenceBuilder(new Pose2d(-32, -63, Math.toRadians(90)))
-                                        //duck
-                                        //.splineToSplineHeading(new Pose2d(-48, -44, Math.toRadians(180)), Math.toRadians(180))
-                                        //.splineToSplineHeading(new Pose2d(-56, -48, Math.toRadians(180)), Math.toRadians(180))
-                                        .splineTo(new Vector2d(-54,-54), Math.toRadians(180))
-                                        .waitSeconds(1)
-                                        //deposit preloaded, adjust by 2" for low/mid/high
-                                        .lineToConstantHeading(new Vector2d(-32, -24))
-                                        .addDisplacementMarker(60, () -> {
-                                        })
-                                        .addDisplacementMarker(88, () -> {
-                                        })
-                                        .addDisplacementMarker(144, () -> {
-                                        })
-                                        .addDisplacementMarker(164, () -> {
-                                        })
-                                        //intake duck
-                                        .splineToConstantHeading(new Vector2d(-57.5, -30), Math.toRadians(180))
-                                        //.splineToConstatHeading(new Vector2d(-59, -62), Math.toRadians(180))
-                                        .splineToConstantHeading(new Vector2d(-44, -62), Math.toRadians(180))
-
-                                        //deposit duck
-                                        .lineToLinearHeading(new Pose2d(-32, -24, Math.toRadians(180)))
-                                        //park
-                                        .splineToLinearHeading(new Pose2d(-62, -36, Math.toRadians(0)), Math.toRadians(180))
+                                start.trajectorySequenceBuilder(new Pose2d(12, -62, Math.toRadians(90)))
+                                        .splineToSplineHeading(new Pose2d(-4, -48, Math.toRadians(315)), Math.toRadians(90))
+                                        .splineToLinearHeading(new Pose2d(36, -61, Math.toRadians(0)), Math.toRadians(0))
+                                        .splineToLinearHeading(new Pose2d(-4, -48, Math.toRadians(315)), Math.toRadians(135))
                                         .build()
                 );
-                        /*start.trajectorySequenceBuilder(new Pose2d(10, -63, Math.toRadians(90)))
-                                //deposit preloaded, adjust by 2" for low/mid/high
-                                .addDisplacementMarker(16, () -> {
-                                })
-                                .splineToLinearHeading(new Pose2d(2, -38, Math.toRadians(315)), Math.toRadians(135))
-
-            //intake1
-                                .splineToLinearHeading(new Pose2d(12, -63, Math.toRadians(0)), Math.toRadians(0))
-                                .lineToLinearHeading(new Pose2d(48, -63, Math.toRadians(0)))
-                                .addDisplacementMarker(36, () -> {
-                                })
-                                .addDisplacementMarker(48, () -> {
-                                })
-                                .waitSeconds(1)
-                                //deposit1
-                                .lineToSplineHeading(new Pose2d(12, -63, Math.toRadians(0)))
-                                .splineToSplineHeading(new Pose2d(2, -38, Math.toRadians(315)), Math.toRadians(135)) //deposit
-                                //looop after
-                                .build()
-                );*/
-
-        RoadRunnerBotEntity blue = new DefaultBotBuilder(meepMeep)
-                .setColorScheme(new ColorSchemeRedDark())
-                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 10)
-                .followTrajectorySequence(start ->
-                        start.trajectorySequenceBuilder(new Pose2d(-32, 65, Math.toRadians(270)))
-                                .splineToLinearHeading(new Pose2d(-48, 44, Math.toRadians(180)), Math.toRadians(180))
-                                .splineToLinearHeading(new Pose2d(-56,48, Math.toRadians(180)), Math.toRadians(180))
-                                .waitSeconds(1)
-                                //deposit preloaded, adjust by 2" for low/mid/high
-                                .lineToConstantHeading(new Vector2d(-32, 24))
-                                .addDisplacementMarker(88,()->{})
-                                //intake duck
-                                .splineToLinearHeading(new Pose2d(-40, 56, Math.toRadians(120)), Math.toRadians(180))
-                                .lineToConstantHeading(new Vector2d(-48, 56))
-                                //deposit duck
-                                .lineToLinearHeading(new Pose2d(-32, 24, Math.toRadians(180)))
-                                //park
-                                .splineToLinearHeading(new Pose2d(-62,36, Math.toRadians(0)), Math.toRadians(180))
-                                .build()
-
-                        /*start.trajectorySequenceBuilder(new Pose2d(10, 63, Math.toRadians(270)))
-                                //deposit preloaded, adjust by 2" for low/mid/high
-                                .splineToLinearHeading(new Pose2d(2, 38, Math.toRadians(45)), Math.toRadians(270))
-                                //intake1
-                                .splineToSplineHeading(new Pose2d(12, 63, Math.toRadians(0)), Math.toRadians(0))
-                                .lineToSplineHeading(new Pose2d(48, 63, Math.toRadians(0)))
-                                .waitSeconds(1)
-                                //deposit1
-                                .lineToSplineHeading(new Pose2d(12, 63, Math.toRadians(0)))
-                                .splineToSplineHeading(new Pose2d(2, 38, Math.toRadians(45)), Math.toRadians(225)) //deposit
-                                //looop after
-                                .build()*/
-                );
-
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_FREIGHTFRENZY_ADI_DARK)
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
                 .addEntity(red)
-                .addEntity(blue)
                 .start();
     }
 }

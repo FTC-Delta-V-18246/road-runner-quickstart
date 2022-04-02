@@ -17,7 +17,7 @@ public class V4b implements Subsystem {
     Servo v4bRight;
 
     public static double deposit = 0.75; //maybe double check
-    public static double intake = 0.2;
+    public static double intake = 0.12;
 
     public V4b(Gamepad g1, Gamepad g2) {
         gamepad1 = g1;
@@ -28,17 +28,19 @@ public class V4b implements Subsystem {
     public void init(HardwareMap hw) {
         v4bLeft = hw.get(Servo.class, "v4bLeft");
         v4bRight = hw.get(Servo.class, "v4bRight");
-        intake();
     }
 
     @Override
     public void update(Robot robot) {
+        if (robot.lift.ready = true) {
+            deposit();
+        }
     }
 
-
-    public void intake() {
+    public void intake(Robot robot) {
         v4bLeft.setPosition(intake);
         v4bRight.setPosition(1 - intake);
+        robot.lift.ready = false;
     }
 
     public void deposit() {
