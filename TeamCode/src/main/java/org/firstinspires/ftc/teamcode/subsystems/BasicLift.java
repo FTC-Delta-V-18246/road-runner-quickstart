@@ -20,7 +20,7 @@ public class BasicLift implements Subsystem {
     DcMotor lift1;
     DcMotor lift2;
     public static double target = 0;
-    public static double HIGH = -450;
+    public static double HIGH = -430;
     public static double SHARED = -350;
     public static double MID = -200;
     public static double INTAKE = 50;
@@ -29,7 +29,7 @@ public class BasicLift implements Subsystem {
 
     public static final double TICKS_PER_REV = 28 * 13.7;
     public static final double GEAR_RATIO = 1;
-    public static double kP = -0.0017;
+    public static double kP = -0.0018;
     public static double kF = -0.001;
     public Gamepad gamepad1;
     private double error = 0;

@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
+import org.firstinspires.ftc.teamcode.subsystems.BasicLift;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.util.Vision;
 import org.firstinspires.ftc.teamcode.util.VisionPipeline;
@@ -63,7 +64,7 @@ public class CycleFsm extends LinearOpMode {
                 .addDisplacementMarker(() -> {
                     deposit();
                 })
-                .splineToLinearHeading(new Pose2d(2, -36, Math.toRadians(315)), Math.toRadians(315-180))
+                .splineToLinearHeading(new Pose2d(4, -38, Math.toRadians(315)), Math.toRadians(315-180))
                 .waitSeconds(time)
                 .addTemporalMarker(() -> {
                     kick();
@@ -75,20 +76,23 @@ public class CycleFsm extends LinearOpMode {
                 .UNSTABLE_addDisplacementMarkerOffset(1, () -> {
                     robot.intake.on(robot);
                 })
-                .splineTo(new Vector2d(42, -63), Math.toRadians(0), new MinVelocityConstraint(Arrays.asList(
+                .splineTo(new Vector2d(43, -63), Math.toRadians(0), new MinVelocityConstraint(Arrays.asList(
                         new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
-                        new MecanumVelocityConstraint(0.8 * DriveConstants.MAX_VEL, DriveConstants.TRACK_WIDTH))),
+                        new MecanumVelocityConstraint(0.62 * DriveConstants.MAX_VEL, DriveConstants.TRACK_WIDTH))),
                         new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {
                     robot.deposit.close();
-                    robot.intake.reverse();
                 })
-                .UNSTABLE_addDisplacementMarkerOffset(6, () -> {
+                .UNSTABLE_addDisplacementMarkerOffset(2, () -> {
+                    robot.intake.reverse();
+                    deposit();
+                })
+                .UNSTABLE_addDisplacementMarkerOffset(12, () -> {
                     robot.intake.off();
                     deposit();
                 })
                 .lineTo(new Vector2d(14, -63))
-                .splineTo(new Vector2d(2, -36), Math.toRadians(135))
+                .splineTo(new Vector2d(4, -38), Math.toRadians(130))
                 .waitSeconds(time)
                 .addTemporalMarker(() -> {
                     kick();
@@ -100,20 +104,23 @@ public class CycleFsm extends LinearOpMode {
                 .UNSTABLE_addDisplacementMarkerOffset(1, () -> {
                     robot.intake.on(robot);
                 })
-                .splineTo(new Vector2d(44, -64), Math.toRadians(0), new MinVelocityConstraint(Arrays.asList(
+                .splineTo(new Vector2d(45, -64), Math.toRadians(0), new MinVelocityConstraint(Arrays.asList(
                         new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
-                        new MecanumVelocityConstraint(0.8 * DriveConstants.MAX_VEL, DriveConstants.TRACK_WIDTH))),
+                        new MecanumVelocityConstraint(0.62 * DriveConstants.MAX_VEL, DriveConstants.TRACK_WIDTH))),
                         new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {
                     robot.deposit.close();
-                    robot.intake.reverse();
                 })
-                .UNSTABLE_addDisplacementMarkerOffset(6, () -> {
+                .UNSTABLE_addDisplacementMarkerOffset(2, () -> {
+                    robot.intake.reverse();
+                    deposit();
+                })
+                .UNSTABLE_addDisplacementMarkerOffset(12, () -> {
                     robot.intake.off();
                     deposit();
                 })
                 .lineTo(new Vector2d(14, -64))
-                .splineTo(new Vector2d(2, -36), Math.toRadians(140))
+                .splineTo(new Vector2d(4, -38), Math.toRadians(125))
                 .waitSeconds(time)
                 .addTemporalMarker(() -> {
                     kick();
@@ -121,58 +128,64 @@ public class CycleFsm extends LinearOpMode {
                 .waitSeconds(0.200)
                 //cycle 3
 
-                .splineTo(new Vector2d(14, -65), Math.toRadians(0))
+                .splineTo(new Vector2d(14, -65), Math.toRadians(-3))
                 .UNSTABLE_addDisplacementMarkerOffset(1, () -> {
                     robot.intake.on(robot);
                 })
-                .splineTo(new Vector2d(46, -65), Math.toRadians(0), new MinVelocityConstraint(Arrays.asList(
+                .splineTo(new Vector2d(47, -65), Math.toRadians(-3), new MinVelocityConstraint(Arrays.asList(
                         new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
-                        new MecanumVelocityConstraint(0.8 * DriveConstants.MAX_VEL, DriveConstants.TRACK_WIDTH))),
+                        new MecanumVelocityConstraint(0.62 * DriveConstants.MAX_VEL, DriveConstants.TRACK_WIDTH))),
                         new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {
                     robot.deposit.close();
-                    robot.intake.reverse();
                 })
-                .UNSTABLE_addDisplacementMarkerOffset(6, () -> {
+                .UNSTABLE_addDisplacementMarkerOffset(2, () -> {
+                    robot.intake.reverse();
+                    deposit();
+                })
+                .UNSTABLE_addDisplacementMarkerOffset(12, () -> {
                     robot.intake.off();
                     deposit();
                 })
-                .lineTo(new Vector2d(14, -63))
-                .splineTo(new Vector2d(2, -36), Math.toRadians(135))
+                .lineTo(new Vector2d(14, -65))
+                .splineTo(new Vector2d(4, -38), Math.toRadians(120))
                 .waitSeconds(time)
                 .addTemporalMarker(() -> {
                     kick();
                 })
                 .waitSeconds(0.200)
 
-                .splineTo(new Vector2d(14, -65), Math.toRadians(0))
+                .splineTo(new Vector2d(14, -66), Math.toRadians(5))
                 .UNSTABLE_addDisplacementMarkerOffset(1, () -> {
                     robot.intake.on(robot);
                 })
-                .splineTo(new Vector2d(46, -65), Math.toRadians(0), new MinVelocityConstraint(Arrays.asList(
+                .splineTo(new Vector2d(47, -66), Math.toRadians(-5), new MinVelocityConstraint(Arrays.asList(
                         new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
-                        new MecanumVelocityConstraint(0.8 * DriveConstants.MAX_VEL, DriveConstants.TRACK_WIDTH))),
+                        new MecanumVelocityConstraint(0.62 * DriveConstants.MAX_VEL, DriveConstants.TRACK_WIDTH))),
                         new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {
                     robot.deposit.close();
-                    robot.intake.reverse();
                 })
-                .UNSTABLE_addDisplacementMarkerOffset(6, () -> {
+                .UNSTABLE_addDisplacementMarkerOffset(2, () -> {
+                    robot.intake.reverse();
+                    deposit();
+                })
+                .UNSTABLE_addDisplacementMarkerOffset(12, () -> {
                     robot.intake.off();
                     deposit();
                 })
-                .lineTo(new Vector2d(14, -63))
-                .splineTo(new Vector2d(2, -36), Math.toRadians(150))
+                .lineTo(new Vector2d(14, -66))
+                .splineTo(new Vector2d(2, -36), Math.toRadians(115))
                 .waitSeconds(time)
                 .addTemporalMarker(() -> {
                     kick();
                 })
                 .waitSeconds(0.200)
-                .splineTo(new Vector2d(14, -65), Math.toRadians(0))
+                .splineTo(new Vector2d(14, -66.5), Math.toRadians(-15))
+                .splineTo(new Vector2d(40, -67), Math.toRadians(-15))
 
                 //repeat
                 .build();
-
 
         waitForStart();
 
@@ -191,11 +204,13 @@ public class CycleFsm extends LinearOpMode {
                 case HOME:
                     robot.lift.liftIntake();
                     robot.v4b.intake(robot);
-                    robot.deposit.receive();
+                    if ((robot.deposit.distanceMax >= robot.deposit.depositSensor && robot.deposit.depositSensor >= robot.deposit.distanceMin)) {
+                        robot.deposit.close();
+                        robot.v4b.receive();
+                        robot.intake.reverse();
+                    }
                     break;
                 case HIGH:
-                    robot.deposit.close();
-
                     if(depositTimer.milliseconds() > 100) {
                         robot.lift.liftHigh();
                     }
@@ -210,7 +225,7 @@ public class CycleFsm extends LinearOpMode {
                     if(depositTimer.milliseconds() > 200) {
                         robot.v4b.receive();
                     }
-                    if(depositTimer.milliseconds() > (200 + 800)) {
+                    if(depositTimer.milliseconds() > (200 + 1000)) {
                         deposit = Deposit.HOME;
                     }
                     break;
