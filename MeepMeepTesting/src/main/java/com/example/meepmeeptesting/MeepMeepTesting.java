@@ -23,13 +23,14 @@ public class MeepMeepTesting {
                 .setColorScheme(new ColorSchemeBlueDark())
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 10)
                 .followTrajectorySequence(start ->
-                                start.trajectorySequenceBuilder(new Pose2d(12, -62, Math.toRadians(90)))
-                                        .splineToSplineHeading(new Pose2d(-4, -48, Math.toRadians(315)), Math.toRadians(90))
-                                        .splineToLinearHeading(new Pose2d(36, -61, Math.toRadians(0)), Math.toRadians(0))
-                                        .splineToLinearHeading(new Pose2d(-4, -48, Math.toRadians(315)), Math.toRadians(135))
+                                start.trajectorySequenceBuilder(new Pose2d(6, -62, Math.toRadians(90)))
+                                        .splineToLinearHeading(new Pose2d(2, -40, Math.toRadians(315)), Math.toRadians(90))
+                                        .splineToLinearHeading(new Pose2d(20, -61, Math.toRadians(0)), Math.toRadians(0))
+                                        .lineToConstantHeading(new Vector2d(40, -62))
+                                        .lineToConstantHeading(new Vector2d(20, -62))
+                                        .splineToLinearHeading(new Pose2d(2, -40, Math.toRadians(315)), Math.toRadians(135))
                                         .build()
                 );
-
         meepMeep.setBackground(MeepMeep.Background.FIELD_FREIGHTFRENZY_ADI_DARK)
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)

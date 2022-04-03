@@ -17,6 +17,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.subsystems.BasicLift;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.util.Vision;
 import org.firstinspires.ftc.teamcode.util.VisionPipeline;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -42,55 +43,75 @@ public class Cycle extends LinearOpMode {
         robot.lift.liftReset();
         lift1 = hardwareMap.get(DcMotor.class, "lift1");
 
-        Pose2d startPose = new Pose2d(-28, -62, Math.toRadians(90));
+        Pose2d startPose = new Pose2d(6, -62, Math.toRadians(90));
         robot.drive.drive.setPoseEstimate(startPose);
 
-        double DuckTime = 3;
-        ElapsedTime DuckTimer = new ElapsedTime();
-        double DumpTime = 2;
-        ElapsedTime DumpTimer = new ElapsedTime();
-        double ResetTime = 1;
-        ElapsedTime ResetTimer = new ElapsedTime();
-        robot.lift.liftReset();
         robot.intake.intakeUp();
-
-        waitForStart();
-        VisionPipeline.POS position = vision.detector.getPosition();
-        telemetry.addData("Position: ", position);
-
-        robot.lift.liftIntake();
-        robot.v4b.intake(robot);
+        robot.v4b.receive();
         robot.deposit.close();
 
-        robot.drive.drive.trajectorySequenceBuilder(startPose)
-                .splineToSplineHeading(new Pose2d(-4, -48, Math.toRadians(315)), Math.toRadians(90))
-                .addTemporalMarker(0.5, () -> {robot.lift.liftHigh();})
+        TrajectorySequence cycle = robot.drive.drive.trajectorySequenceBuilder(startPose)
+                .addDisplacementMarker(() -> robot.lift.liftHigh())
+                .splineToSplineHeading(new Pose2d(2, -36, (Math.toRadians(315))), Math.toRadians(90))
+                .addDisplacementMarker(6, () -> {
+                    robot.v4b.deposit();
+                })
                 .addDisplacementMarker(() -> {
-                    robot.deposit.open();
+                    robot.deposit.kick();
                 })
-                .waitSeconds(0.5)
-                .splineToLinearHeading(new Pose2d(36, -61, Math.toRadians(0)), Math.toRadians(0))
-                .UNSTABLE_addTemporalMarkerOffset(0.25, () -> {
-                    robot.v4b.intake(robot);
-                    robot.deposit.close();
+                .waitSeconds(0.1)
+                .UNSTABLE_addDisplacementMarkerOffset(1, () -> {
+                    robot.v4b.receive();
+                    robot.deposit.receive();
                 })
-                .UNSTABLE_addTemporalMarkerOffset(0.75, () -> {
+                .splineTo(new Vector2d(14, -63), Math.toRadians(0))
+                .addDisplacementMarker(() -> {
                     robot.lift.liftIntake();
-                    robot.intake.on();
                 })
-                .splineToLinearHeading(new Pose2d(-4, -48, Math.toRadians(315)), Math.toRadians(135))
-                .UNSTABLE_addTemporalMarkerOffset(0.25, () -> {
+                .waitSeconds(0.1)
+                .UNSTABLE_addDisplacementMarkerOffset(1, () -> {
+                    robot.v4b.intake(robot);
+                    robot.intake.on(robot);
+                })
+                .splineTo(new Vector2d(40, -63), Math.toRadians(0), new MinVelocityConstraint(Arrays.asList(
+                        new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
+                        new MecanumVelocityConstraint(0.5 * DriveConstants.MAX_VEL, DriveConstants.TRACK_WIDTH))),
+                        new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addDisplacementMarker(() -> {
+                    robot.deposit.close();
+                    robot.intake.reverse();
+                })
+                .UNSTABLE_addDisplacementMarkerOffset(6, () -> {
+                    robot.intake.off();
+                    robot.v4b.receive();
+                })
+                .lineTo(new Vector2d(14, -63))
+                .UNSTABLE_addDisplacementMarkerOffset(6, () -> {
                     robot.lift.liftHigh();
                 })
-                //repeat
+                .UNSTABLE_addDisplacementMarkerOffset(4, () -> {
+                    robot.v4b.deposit();
+                })
+                .splineTo(new Vector2d(2, -36), Math.toRadians(135))
+                .waitSeconds(0.25)
+                .addDisplacementMarker(() ->
+                        robot.deposit.kick())
+                .splineTo(new Vector2d(2, -36), Math.toRadians(135))
+
                 .build();
+
+        waitForStart();
+
+        robot.intake.intakeDown();
+        robot.drive.drive.followTrajectorySequenceAsync(cycle);
 
         while (opModeIsActive()) {
             robot.deposit.turretNeutral();
-            robot.intake.intakeDown();
             robot.lift.updatePID(robot.lift.target);
             lift1.getCurrentPosition();
-
+            robot.drive.drive.update();
+            telemetry.addData("lift: ", lift1.getCurrentPosition());
+            telemetry.update();
         }
     }
 }

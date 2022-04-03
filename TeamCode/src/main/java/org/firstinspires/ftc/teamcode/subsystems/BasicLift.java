@@ -13,23 +13,23 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.programs.RedDuck;
+//import org.firstinspires.ftc.teamcode.programs.RedDuck;
 
 @Config
 public class BasicLift implements Subsystem {
     DcMotor lift1;
     DcMotor lift2;
     public static double target = 0;
-    public static double HIGH = -645;
+    public static double HIGH = -450;
     public static double SHARED = -350;
-    public static double MID = -500;
+    public static double MID = -200;
     public static double INTAKE = 50;
     public static double HOLD = -200;
-    public static double READY = -425;
+    public static double READY = -150;
 
     public static final double TICKS_PER_REV = 28 * 13.7;
     public static final double GEAR_RATIO = 1;
-    public static double kP = -0.0016;
+    public static double kP = -0.0017;
     public static double kF = -0.001;
     public Gamepad gamepad1;
     private double error = 0;
@@ -123,7 +123,7 @@ public class BasicLift implements Subsystem {
 
     public static double LiftTime = .8;
     ElapsedTime LiftTimer = new ElapsedTime();
-    public static double DumpTime = .6;
+    public static double DumpTime = .5;
     ElapsedTime DumpTimer = new ElapsedTime();
     ElapsedTime IntakeReverseTimer = new ElapsedTime();
 
@@ -143,15 +143,20 @@ public class BasicLift implements Subsystem {
                     robot.lift.liftReset();
                 }
                 liftIntake();
-                robot.v4b.intake(robot);
-                robot.deposit.close();
+                robot.deposit.receive();
+                if (gamepad1.right_trigger > 0) {
+                    robot.v4b.intake(robot);
+            }
                 robot.deposit.depositSensor = robot.deposit.ssensor.getDistance(DistanceUnit.INCH);
                 if ((robot.deposit.distanceMax >= robot.deposit.depositSensor && robot.deposit.depositSensor >= robot.deposit.distanceMin)) {
-                    state = liftState.HOLD;
                     gamepad1.rumble(300);
+                    robot.deposit.close();
+                    robot.v4b.receive();
+                    state = liftState.HOLD;
                 }
                 if (gamepad1.right_bumper) {
                     state = liftState.HIGH;
+                    robot.deposit.close();
                 }
                 if (gamepad1.y) {
                     state = liftState.SHARED;
@@ -163,10 +168,12 @@ public class BasicLift implements Subsystem {
                 IntakeReverseTimer.reset();
                 break;
             case HOLD:
-                liftHold();
-                robot.v4b.intake(robot);
-                robot.deposit.close();
                 LiftTimer.reset();
+                robot.v4b.receive();
+                if (gamepad1.right_trigger > 0) {
+                    robot.v4b.intake(robot);
+                    state = liftState.INTAKE;
+                }
                 if (gamepad1.right_bumper) {
                     state = liftState.HIGH;
                 }
@@ -176,11 +183,12 @@ public class BasicLift implements Subsystem {
                 if (gamepad1.a) {
                     state = liftState.INTAKE;
                 }
-                while (IntakeReverseTimer.seconds() <= 0.3) {
+                while (IntakeReverseTimer.seconds() <= 0.2) {
                     robot.intake.reverse();
                 }
                     break;
             case HIGH:
+                robot.v4b.receive();
                 liftHigh();
                 robot.drive.rotatePower = 2.0;
                 robot.deposit.turretNeutral();
@@ -193,7 +201,7 @@ public class BasicLift implements Subsystem {
                 robot.drive.rotatePower = 2.0;
                 DumpTimer.reset();
                 if (lift1.getCurrentPosition() < READY) {
-                    state = liftState.DEPOSITSHAREDENDHEIGHT;
+                    state = liftState.DEPOSIT;
                 }
                 break;
             case DEPOSITSHAREDENDHEIGHT:
@@ -219,7 +227,7 @@ public class BasicLift implements Subsystem {
                 }
                 break;
             case OPENBOX:
-                robot.deposit.open();
+                robot.deposit.kick();
                 robot.deposit.turretNeutral();
                 DumpTimer.reset();
                 if (gamepad1.right_bumper) {
@@ -227,7 +235,7 @@ public class BasicLift implements Subsystem {
                 }
                 break;
             case OPENBOXSHARED:
-                robot.deposit.open();
+                robot.deposit.kick();
                 DumpTimer.reset();
                 if (LiftTimer.seconds() >= 0.4) {
                     state = liftState.RETRACTV4BSHARED;
@@ -244,7 +252,7 @@ public class BasicLift implements Subsystem {
                 break;
             case RETRACTV4B:
                 robot.drive.rotatePower = 1.0;
-                robot.v4b.intake(robot);
+                robot.v4b.receive();
                 robot.deposit.turretNeutral();
                 robot.deposit.close();
                 if (DumpTimer.seconds() >= DumpTime) {

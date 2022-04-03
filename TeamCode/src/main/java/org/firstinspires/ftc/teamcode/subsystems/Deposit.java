@@ -19,10 +19,11 @@ public class Deposit implements Subsystem {
     Servo trapDoor;
     DistanceSensor ssensor;
 
-    public static double doorOpen = 0.9;
-    public static double doorClose = 0.66;
+    public static double close = 0.5;
+    public static double kick = 0.88;
     public static double doorCloseDuck = 0.635;
-    public static double turretNEUTRAL = 0.73;
+    public static double receive = 0.74;
+    public static double turretNEUTRAL = 0.185;
     public static double turretREDPOS = 0.8;
     public static double turretBLUEPOS = 0.4;
     public static double distanceMin = 0;
@@ -73,15 +74,18 @@ public class Deposit implements Subsystem {
 //                break;
 //        }
     }
-    public void open() {
-        trapDoor.setPosition(doorOpen);
+    public void receive() {
+        trapDoor.setPosition(receive);
     }
 
     public void close() {
-        trapDoor.setPosition(doorClose);
+        trapDoor.setPosition(close);
     }
     public void closeDuck() {
         trapDoor.setPosition(doorCloseDuck);
+    }
+    public void kick() {
+        trapDoor.setPosition(kick);
     }
 
     public void turretNeutral() {
