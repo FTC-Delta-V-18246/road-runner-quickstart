@@ -154,7 +154,7 @@ public class CycleFsm extends LinearOpMode {
                     kick();
                 })
                 .waitSeconds(0.200)
-
+                //cycle 4
                 .splineTo(new Vector2d(14, -66), Math.toRadians(5))
                 .UNSTABLE_addDisplacementMarkerOffset(1, () -> {
                     robot.intake.on(robot);
@@ -182,7 +182,7 @@ public class CycleFsm extends LinearOpMode {
                 })
                 .waitSeconds(0.200)
                 .splineTo(new Vector2d(14, -66.5), Math.toRadians(-15))
-                .splineTo(new Vector2d(40, -67), Math.toRadians(-15))
+                .splineTo(new Vector2d(46, -67), Math.toRadians(-15))
 
                 //repeat
                 .build();
@@ -225,7 +225,7 @@ public class CycleFsm extends LinearOpMode {
                     if(depositTimer.milliseconds() > 200) {
                         robot.v4b.receive();
                     }
-                    if(depositTimer.milliseconds() > (200 + 1000)) {
+                    if(depositTimer.milliseconds() > (200 + 1100)) {
                         deposit = Deposit.HOME;
                     }
                     break;

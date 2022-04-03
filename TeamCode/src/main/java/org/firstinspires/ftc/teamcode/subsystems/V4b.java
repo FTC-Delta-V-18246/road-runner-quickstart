@@ -18,7 +18,7 @@ public class V4b implements Subsystem {
 
     public static double deposit = 0.05; //maybe double check
     public static double intake = 0.815;
-    public static double receive = 0.75;
+    public static double receive = 0.74;
 
     public V4b(Gamepad g1, Gamepad g2) {
         gamepad1 = g1;
