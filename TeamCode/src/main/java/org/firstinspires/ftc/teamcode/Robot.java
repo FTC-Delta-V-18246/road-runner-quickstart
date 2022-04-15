@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.subsystems.BasicLift;
-import org.firstinspires.ftc.teamcode.subsystems.Carousel;
 import org.firstinspires.ftc.teamcode.subsystems.Deposit;
 import org.firstinspires.ftc.teamcode.subsystems.Drive;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
@@ -21,7 +20,6 @@ public class Robot {
 
     public Drive drive;
     public Intake intake;
-    public Carousel carousel;
     public Deposit deposit;
     public V4b v4b;
     public BasicLift lift;
@@ -32,14 +30,12 @@ public class Robot {
         subsystems = new ArrayList<>();
         drive = new Drive(g1, g2);
         intake = new Intake(g1, g2);
-        carousel = new Carousel(g1, g2);
         lift = new BasicLift(g1, g2);
         deposit = new Deposit(g1, g2);
         v4b = new V4b(g1, g2);
 
         subsystems.add(drive);
         subsystems.add(intake);
-        subsystems.add(carousel);
         subsystems.add(deposit);
         subsystems.add(lift);
         subsystems.add(v4b);

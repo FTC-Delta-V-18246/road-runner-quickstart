@@ -29,18 +29,16 @@ public class RedCaroAuto extends LinearOpMode {
 
     @Override
 
-
     public void runOpMode() throws InterruptedException {
 
         vision = new Vision(hardwareMap, telemetry);
         vision.setPipeline();
         vision.startStreaming();
 
-
         Robot robot = new Robot(hardwareMap, gamepad1, gamepad2);
         TrajectorySequence sequence = robot.drive.drive.trajectorySequenceBuilder(startPose)
                 .splineTo(new Vector2d(-58, -58), Math.toRadians(180))
-                .addTemporalMarker(() -> robot.carousel.reverse())
+                //.addTemporalMarker(() -> robot.carousel.reverse())
                 .waitSeconds(3)
                 .addTemporalMarker(() -> active = true)
                 .waitSeconds(1)
@@ -64,7 +62,6 @@ public class RedCaroAuto extends LinearOpMode {
 
         VisionPipeline.POS position = vision.detector.getPosition();
 
-
         robot.drive.drive.setPoseEstimate(startPose);
         robot.drive.drive.followTrajectorySequenceAsync(sequence);
 
@@ -72,7 +69,6 @@ public class RedCaroAuto extends LinearOpMode {
             robot.drive.drive.update();
             robot.lift.update(robot);
             robot.lift.updatePID(robot.lift.target);
-
 
             if(active) {
                 if (position == VisionPipeline.POS.LEFT) {

@@ -16,7 +16,8 @@ public class Intake implements Subsystem {
     public static Servo droptakeLeft;
     Gamepad gamepad1;
     Gamepad gamepad2;
-    DcMotor intakeMotor;
+    DcMotor intakeLeft;
+    DcMotor intakeRight;
 
     public static double dropTakeDown = 0.31;
     public static double dropTakeUp = 0;
@@ -31,8 +32,10 @@ public class Intake implements Subsystem {
 
     @Override
     public void init(HardwareMap hw) {
-        intakeMotor = hw.get(DcMotor.class, "intake");
-        intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        intakeLeft = hw.get(DcMotor.class, "intakeLeft");
+        intakeRight = hw.get(DcMotor.class, "intakeRight");
+        intakeRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        intakeLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         droptakeLeft = hw.get(Servo.class, "droptakeL");
         droptakeRight = hw.get(Servo.class, "droptakeR");
@@ -40,7 +43,8 @@ public class Intake implements Subsystem {
 
     @Override
     public void update(Robot robot) {
-        intakeMotor.setPower(intakePower * (gamepad1.left_trigger - gamepad1.right_trigger));
+        intakeRight.setPower(intakePower * (gamepad1.left_trigger - gamepad1.right_trigger));
+        intakeLeft.setPower(intakePower * (gamepad1.right_trigger - gamepad1.left_trigger));
     }
 
     public void intakeUp() {
@@ -49,16 +53,20 @@ public class Intake implements Subsystem {
     }
 
     public void on(Robot robot) {
-        intakeMotor.setPower(-intakePower);
+        intakeLeft.setPower(-intakePower);
+        intakeRight.setPower(intakePower);
     }
     public void autoOn() {
-        intakeMotor.setPower(-autoPower);
+        intakeLeft.setPower(-autoPower);
+        intakeRight.setPower(-autoPower);
     }
     public void off() {
-        intakeMotor.setPower(0);
+        intakeLeft.setPower(0);
+        intakeRight.setPower(0);
     }
     public void reverse() {
-        intakeMotor.setPower(0.6);
+        intakeLeft.setPower(0.6);
+        intakeRight.setPower(-0.6);
     }
     public void intakeDown() {
         droptakeRight.setPosition(dropTakeDown);
