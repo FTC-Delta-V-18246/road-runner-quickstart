@@ -20,16 +20,14 @@ public class BasicLift implements Subsystem {
     DcMotor lift1;
     DcMotor lift2;
     public static double target = 0;
-    public static double HIGH = -430;
-    public static double SHARED = -350;
-    public static double MID = -200;
-    public static double INTAKE = 50;
-    public static double HOLD = -200;
-    public static double READY = -150;
+    public static double HIGH = 560;
+    public static double MID = 0;
+    public static double INTAKE = -25;
+    public static double READY = 200;
 
     public static final double TICKS_PER_REV = 28 * 13.7;
     public static final double GEAR_RATIO = 1;
-    public static double kP = -0.0018;
+    public static double kP = -0.0017;
     public static double kF = -0.001;
     public Gamepad gamepad1;
     private double error = 0;
@@ -37,8 +35,6 @@ public class BasicLift implements Subsystem {
     public ElapsedTime rruntime;
 
     public boolean ready = false;
-
-    public Timer extendTimer;
 
     public liftState getState() {
         return state;
@@ -59,10 +55,6 @@ public class BasicLift implements Subsystem {
         RETRACTV4B,
         DOWN
     }
-
-    public enum TurretState {Neutral, Blue, Red}
-
-    public enum TrapDoorState {OPEN, CLOSE}
 
     BasicLift.liftState state = BasicLift.liftState.INTAKE;
 
@@ -88,13 +80,11 @@ public class BasicLift implements Subsystem {
         rruntime = new ElapsedTime();
         liftReset();
         state = liftState.INTAKE;
-
     }
 
     public void liftReset() {
         lift1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lift1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
         lift2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lift2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
@@ -105,28 +95,20 @@ public class BasicLift implements Subsystem {
             ready = true;
         }
     }
+
     public void liftMid() {
         target = MID;
-    }
-
-    public void liftHold() {
-        target = HOLD;
-    }
-
-    public void liftShared() {
-        target = SHARED;
     }
 
     public void liftIntake() {
         target = INTAKE;
     }
 
-    public static double LiftTime = .8;
+    public static double LiftTime = .2;
     ElapsedTime LiftTimer = new ElapsedTime();
     public static double DumpTime = .5;
     ElapsedTime DumpTimer = new ElapsedTime();
     ElapsedTime IntakeReverseTimer = new ElapsedTime();
-
 
     @Override
     public void update(Robot robot) {
@@ -137,21 +119,22 @@ public class BasicLift implements Subsystem {
                 if (gamepad1.dpad_down) {
                     INTAKE = INTAKE + 5;
                     robot.lift.liftReset();
+                    robot.lift.update(robot);
                 }
                 if (gamepad1.dpad_down) {
                     INTAKE = INTAKE - 5;
                     robot.lift.liftReset();
+                    robot.lift.update(robot);
                 }
                 liftIntake();
                 robot.deposit.receive();
                 if (gamepad1.right_trigger > 0) {
                     robot.v4b.intake(robot);
-            }
+                }
                 robot.deposit.depositSensor = robot.deposit.ssensor.getDistance(DistanceUnit.INCH);
                 if ((robot.deposit.distanceMax >= robot.deposit.depositSensor && robot.deposit.depositSensor >= robot.deposit.distanceMin)) {
                     gamepad1.rumble(300);
                     robot.deposit.close();
-                    robot.v4b.receive();
                     state = liftState.HOLD;
                 }
                 if (gamepad1.right_bumper) {
@@ -183,10 +166,10 @@ public class BasicLift implements Subsystem {
                 if (gamepad1.a) {
                     state = liftState.INTAKE;
                 }
-                while (IntakeReverseTimer.seconds() <= 0.2) {
+                while (IntakeReverseTimer.seconds() <= 0.3) {
                     robot.intake.reverse();
                 }
-                    break;
+                break;
             case HIGH:
                 robot.v4b.receive();
                 liftHigh();
@@ -207,13 +190,12 @@ public class BasicLift implements Subsystem {
             case DEPOSITSHAREDENDHEIGHT:
                 robot.v4b.deposit();
                 if (DumpTimer.seconds() >= DumpTime) {
-                    liftShared();
-                if (gamepad1.left_bumper) {
-                    state = liftState.OPENBOXSHARED;
-                    LiftTimer.reset();
-                }
-                if (gamepad1.right_bumper) {
-                    state = liftState.HIGH;
+                    if (gamepad1.left_bumper) {
+                        state = liftState.OPENBOXSHARED;
+                        LiftTimer.reset();
+                    }
+                    if (gamepad1.right_bumper) {
+                        state = liftState.HIGH;
                     }
                 }
                 break;
@@ -232,22 +214,6 @@ public class BasicLift implements Subsystem {
                 DumpTimer.reset();
                 if (gamepad1.right_bumper) {
                     state = liftState.RETRACTV4B;
-                }
-                break;
-            case OPENBOXSHARED:
-                robot.deposit.kick();
-                DumpTimer.reset();
-                if (LiftTimer.seconds() >= 0.4) {
-                    state = liftState.RETRACTV4BSHARED;
-                    liftMid();
-                }
-                break;
-            case RETRACTV4BSHARED:
-                robot.drive.rotatePower = 1.0;
-                if (DumpTimer.seconds() >= DumpTime) {
-                    robot.deposit.turretNeutral();
-                    state = liftState.RETRACTV4B;
-                    DumpTimer.reset();
                 }
                 break;
             case RETRACTV4B:
@@ -269,8 +235,7 @@ public class BasicLift implements Subsystem {
         if (Math.abs(error) < 70) { //75
             power = 0;
         }
-
-        power = Range.clip(power, -0.75, 0.75); //0.8
+        power = Range.clip(power, -0.8, 0.8); //0.8
         lift1.setPower(-power);
         lift2.setPower(power);
     }

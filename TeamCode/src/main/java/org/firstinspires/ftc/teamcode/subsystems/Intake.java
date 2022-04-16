@@ -19,11 +19,11 @@ public class Intake implements Subsystem {
     DcMotor intakeLeft;
     DcMotor intakeRight;
 
-    public static double dropTakeDown = 0.31;
+    public static double dropTakeDown = 0.67;
     public static double dropTakeUp = 0;
     public static double intakePower = 1.0;
     public static double autoPower = 0.805;
-
+    private double duckTimer = 1;
 
     public Intake(Gamepad g1, Gamepad g2) {
         gamepad1 = g1;
@@ -44,7 +44,12 @@ public class Intake implements Subsystem {
     @Override
     public void update(Robot robot) {
         intakeRight.setPower(intakePower * (gamepad1.left_trigger - gamepad1.right_trigger));
-        intakeLeft.setPower(intakePower * (gamepad1.right_trigger - gamepad1.left_trigger));
+        intakeLeft.setPower(intakePower * (gamepad1.left_trigger - gamepad1.right_trigger));
+
+        if (gamepad1.dpad_left) {
+            intakeLeft.setPower(0.2);
+            intakeRight.setPower(-0.2);
+        }
     }
 
     public void intakeUp() {

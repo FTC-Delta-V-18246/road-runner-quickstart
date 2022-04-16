@@ -23,9 +23,9 @@ public class Deposit implements Subsystem {
     public static double kick = 0.88;
     public static double doorCloseDuck = 0.635;
     public static double receive = 0.74;
-    public static double turretNEUTRAL = 0.185;
-    public static double turretREDPOS = 0.8;
-    public static double turretBLUEPOS = 0.4;
+    public static double turretNEUTRAL = 0.6;
+    public static double turretREDPOS = 0.4;
+    public static double turretBLUEPOS = 0.8;
     public static double distanceMin = 0;
     public static double distanceMax = 3;
     public static double depositSensor = 5;

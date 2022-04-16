@@ -19,12 +19,12 @@ public class Drive implements Subsystem {
     Servo leftOdo;
     Servo centerOdo;
 
-    public static double odoRDown = 0.5;
+    public static double odoRDown = 0.8;
     public static double odoLDown = 0.5;
-    public static double odoCDown = 0.5;
-    public static double odoRUp = 0.98;
+    public static double odoCDown = 0;
+    public static double odoRUp = 0;
     public static double odoLUp = 0.08;
-    public static double odoCUp = 0.98;
+    public static double odoCUp = 1;
 
     public static double rotatePower = 1.0;
 

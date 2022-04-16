@@ -16,8 +16,8 @@ public class V4b implements Subsystem {
     Servo v4bLeft;
     Servo v4bRight;
 
-    public static double deposit = 0.05; //maybe double check
-    public static double intake = 0.815;
+    public static double deposit = 0.2; //maybe double check
+    public static double intake = 1;
     public static double receive = 0.74;
 
     public V4b(Gamepad g1, Gamepad g2) {
