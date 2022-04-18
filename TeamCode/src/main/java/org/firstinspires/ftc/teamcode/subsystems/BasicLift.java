@@ -23,7 +23,7 @@ public class BasicLift implements Subsystem {
     public static double HIGH = 570;
     public static double MID = 0;
     public static double INTAKE = -25;
-    public static double READY = 100;
+    public static double READY = 125;
 
     public static final double TICKS_PER_REV = 28 * 13.7;
     public static final double GEAR_RATIO = 1;
@@ -214,7 +214,7 @@ public class BasicLift implements Subsystem {
                 robot.deposit.turretNeutral();
                 liftIntake();
                 robot.drive.rotatePower = 1.0;
-                if (lift1.getCurrentPosition() < READY && DumpTimer.milliseconds() > 600) {
+                if (lift1.getCurrentPosition() < READY && DumpTimer.milliseconds() > 500) {
                     robot.v4b.intake(robot);
                     state = liftState.INTAKE;
                 }
