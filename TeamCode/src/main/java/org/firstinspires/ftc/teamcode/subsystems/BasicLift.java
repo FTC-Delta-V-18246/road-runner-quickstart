@@ -20,7 +20,7 @@ public class BasicLift implements Subsystem {
     DcMotor lift1;
     DcMotor lift2;
     public static double target = 0;
-    public static double HIGH = 585;
+    public static double HIGH = 570;
     public static double MID = 0;
     public static double INTAKE = -25;
     public static double READY = 100;
