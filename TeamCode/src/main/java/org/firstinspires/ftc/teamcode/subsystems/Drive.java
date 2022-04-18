@@ -25,7 +25,6 @@ public class Drive implements Subsystem {
     public static double odoRUp = 0;
     public static double odoLUp = 0.08;
     public static double odoCUp = 1;
-
     public static double rotatePower = 1.0;
 
     public Drive(Gamepad g1, Gamepad g2) {
@@ -39,17 +38,10 @@ public class Drive implements Subsystem {
         rightOdo = hw.get(Servo.class, "rightOdo");
         leftOdo = hw.get(Servo.class, "leftOdo");
         centerOdo = hw.get(Servo.class, "centerOdo");
-
     }
 
     @Override
     public void update(Robot robot) {
-        if (gamepad1.x) {
-            odoRetract();
-        }
-        else {
-            odoLower();
-        }
         drive.setWeightedDrivePower(new Pose2d(
                 -gamepad1.left_stick_y,
                 -gamepad1.left_stick_x,

@@ -8,5 +8,4 @@ import org.firstinspires.ftc.teamcode.Robot;
 public interface Subsystem {
     void init (HardwareMap hw);
     void update(Robot robot);
-
 }

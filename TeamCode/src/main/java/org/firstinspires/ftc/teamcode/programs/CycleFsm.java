@@ -55,7 +55,7 @@ public class CycleFsm extends LinearOpMode {
         Pose2d startPose = new Pose2d(6, -62, Math.toRadians(90));
         robot.drive.drive.setPoseEstimate(startPose);
 
-        robot.intake.intakeUp();
+        //robot.intake.intakeUp();
         robot.v4b.receive();
         robot.deposit.close();
         depositTimer = new ElapsedTime();
@@ -228,7 +228,7 @@ public class CycleFsm extends LinearOpMode {
 
         waitForStart();
 
-        robot.intake.intakeDown();
+        //robot.intake.intakeDown();
         robot.drive.drive.followTrajectorySequenceAsync(cycle);
 
         while (opModeIsActive()) {

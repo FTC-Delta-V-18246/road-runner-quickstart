@@ -16,9 +16,11 @@ public class V4b implements Subsystem {
     Servo v4bLeft;
     Servo v4bRight;
 
-    public static double deposit = 0.2; //maybe double check
-    public static double intake = 1;
-    public static double receive = 0.74;
+    public static double deposit = 0.15;
+    public static double intake = 0.69;
+    public static double receive = 0.69;
+    public static double wartime = 0.35;
+    public static double shared = 0.05;
 
     public V4b(Gamepad g1, Gamepad g2) {
         gamepad1 = g1;
@@ -48,5 +50,13 @@ public class V4b implements Subsystem {
     public void receive() {
         v4bLeft.setPosition(receive);
         v4bRight.setPosition(1 - receive);
+    }
+    public void wartime() {
+        v4bLeft.setPosition(wartime);
+        v4bRight.setPosition(1 - wartime);
+    }
+    public void shared() {
+        v4bLeft.setPosition(shared);
+        v4bRight.setPosition(1 - shared);
     }
 }

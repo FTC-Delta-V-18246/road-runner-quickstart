@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -20,9 +21,9 @@ public class Deposit implements Subsystem {
     DistanceSensor ssensor;
 
     public static double close = 0.5;
-    public static double kick = 0.88;
+    public static double kick = 0.12;
     public static double doorCloseDuck = 0.635;
-    public static double receive = 0.74;
+    public static double receive = 0.32;
     public static double turretNEUTRAL = 0.6;
     public static double turretREDPOS = 0.4;
     public static double turretBLUEPOS = 0.8;
@@ -43,9 +44,8 @@ public class Deposit implements Subsystem {
         turret = hw.get(Servo.class, "turret");
         trapDoor = hw.get(Servo.class, "trapDoor");
         ssensor = hw.get(DistanceSensor.class, "sensor");
-
         turretNeutral();
-        close();
+
     }
 
     @Override
@@ -71,7 +71,7 @@ public class Deposit implements Subsystem {
 //                if (gamepad1.x) {
 //                    open();
 //                }
-//                break;
+//                break;;
 //        }
     }
     public void receive() {
@@ -98,5 +98,9 @@ public class Deposit implements Subsystem {
 
     public void turretBLUESHARED() {
         turret.setPosition(turretBLUEPOS);
+    }
+
+    public void ttelemetry(LinearOpMode opMode) {
+        opMode.telemetry.addData("", ssensor.getDistance(DistanceUnit.INCH));
     }
 }

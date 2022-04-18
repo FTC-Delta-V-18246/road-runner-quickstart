@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.Robot;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Config
 public class Intake implements Subsystem {
@@ -18,16 +19,47 @@ public class Intake implements Subsystem {
     Gamepad gamepad2;
     DcMotor intakeLeft;
     DcMotor intakeRight;
-
     public static double dropTakeDown = 0.67;
     public static double dropTakeUp = 0;
     public static double intakePower = 1.0;
     public static double autoPower = 0.805;
-    private double duckTimer = 1;
+    public static double spin = 0.2;
+    public static double speed = 0.4;
+    public static double spintime = 900;
+    private double power;
+    private boolean lastButton = false;
+    private boolean toggle = false;
+    private boolean wasPressedA = false;
+    private ElapsedTime duckTimer;
+
+    IntakeState state = IntakeState.INTAKE;
+
+    enum IntakeState {
+        INTAKE,
+        CARO_LEFT,
+        CARO_RIGHT
+    }
 
     public Intake(Gamepad g1, Gamepad g2) {
         gamepad1 = g1;
         gamepad2 = g2;
+    }
+
+    public void intakeLeft() {
+        droptakeLeft.setPosition(1 - dropTakeDown);
+        droptakeRight.setPosition(dropTakeUp);
+    }
+    public void intakeRight() {
+        droptakeLeft.setPosition(1 - dropTakeUp);
+        droptakeRight.setPosition(dropTakeDown);
+    }
+    public void intakeDown() {
+        droptakeLeft.setPosition(1 - dropTakeDown);
+        droptakeRight.setPosition(dropTakeDown);
+    }
+    public void intakeUp() {
+        droptakeLeft.setPosition(1 - dropTakeDown);
+        droptakeRight.setPosition(dropTakeDown);
     }
 
     @Override
@@ -39,42 +71,81 @@ public class Intake implements Subsystem {
 
         droptakeLeft = hw.get(Servo.class, "droptakeL");
         droptakeRight = hw.get(Servo.class, "droptakeR");
+
+        duckTimer = new ElapsedTime();
+
     }
 
     @Override
     public void update(Robot robot) {
-        intakeRight.setPower(intakePower * (gamepad1.left_trigger - gamepad1.right_trigger));
-        intakeLeft.setPower(intakePower * (gamepad1.left_trigger - gamepad1.right_trigger));
 
-        if (gamepad1.dpad_left) {
-            intakeLeft.setPower(0.2);
-            intakeRight.setPower(-0.2);
+        switch (state) {
+            case INTAKE:
+                power = gamepad1.right_trigger - gamepad1.left_trigger;
+                if (gamepad1.a) {
+                    wasPressedA = true;
+                    intakeLeft();
+                    intakeLeft.setPower(-power);
+                }
+
+                else {
+                    wasPressedA = false;
+                    intakeRight();
+                    intakeRight.setPower(power);
+                }
+                if (gamepad1.dpad_left) {
+                    duckTimer.reset();
+                    robot.intake.intakeDown();
+                    state = IntakeState.CARO_LEFT;
+                }
+                if (gamepad1.dpad_right) {
+                    duckTimer.reset();
+                    robot.intake.intakeDown();
+                    state = IntakeState.CARO_RIGHT;
+                }
+                break;
+            case CARO_LEFT:
+                if (duckTimer.milliseconds() < spintime) {
+                    intakeLeft.setPower(spin);
+                    intakeRight.setPower(-spin);
+                } else if (duckTimer.milliseconds() > spintime && duckTimer.milliseconds() < 1200) {
+                    intakeLeft.setPower(speed);
+                    intakeRight.setPower(-speed);
+                } else {
+                    state = IntakeState.INTAKE;
+                }
+                break;
+            case CARO_RIGHT:
+                if (duckTimer.milliseconds() < spintime) {
+                    intakeRight.setPower(spin);
+                    intakeLeft.setPower(-spin);
+                } else if (duckTimer.milliseconds() > spintime && duckTimer.milliseconds() < 1200) {
+                    intakeRight.setPower(speed);
+                    intakeLeft.setPower(-speed);
+                } else {
+                    state = IntakeState.INTAKE;
+                }
+                break;
         }
-    }
-
-    public void intakeUp() {
-        droptakeLeft.setPosition(1);
-        droptakeRight.setPosition(0);
     }
 
     public void on(Robot robot) {
         intakeLeft.setPower(-intakePower);
         intakeRight.setPower(intakePower);
     }
+
     public void autoOn() {
         intakeLeft.setPower(-autoPower);
         intakeRight.setPower(-autoPower);
     }
+
     public void off() {
         intakeLeft.setPower(0);
         intakeRight.setPower(0);
     }
+
     public void reverse() {
         intakeLeft.setPower(0.6);
         intakeRight.setPower(-0.6);
-    }
-    public void intakeDown() {
-        droptakeRight.setPosition(dropTakeDown);
-        droptakeLeft.setPosition(1 - dropTakeDown);
     }
 }

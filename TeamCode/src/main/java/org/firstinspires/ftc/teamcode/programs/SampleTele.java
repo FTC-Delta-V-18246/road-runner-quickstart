@@ -18,7 +18,7 @@ public class SampleTele extends LinearOpMode {
 
         waitForStart();
         while (opModeIsActive()) {
-            robot.intake.intakeDown();
+            robot.drive.odoRetract();
             robot.lift.ttelemetry(this);
             telemetry.update();
             robot.update();
