@@ -23,7 +23,7 @@ public class MeepMeepTesting {
                 .setColorScheme(new ColorSchemeBlueDark())
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 10)
                 .followTrajectorySequence(start ->
-                                start.trajectorySequenceBuilder(new Pose2d(6, -62, Math.toRadians(90)))
+                                start.trajectorySequenceBuilder(new Pose2d(6, -62, Math.toRadians(0)))
                                         .lineToConstantHeading(new Vector2d(-12, -46))
                                         .splineToConstantHeading(new Vector2d(20, -62), Math.toRadians(0))
                                         .lineToConstantHeading(new Vector2d(44, -62))

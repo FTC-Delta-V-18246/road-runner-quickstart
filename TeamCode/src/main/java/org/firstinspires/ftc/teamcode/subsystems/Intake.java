@@ -134,9 +134,11 @@ public class Intake implements Subsystem {
         intakeRight.setPower(intakePower);
     }
 
-    public void autoOn() {
-        intakeLeft.setPower(-autoPower);
+    public void autoRED() {
         intakeRight.setPower(-autoPower);
+    }
+    public void autoBLUE() {
+        intakeLeft.setPower(-autoPower);
     }
 
     public void off() {

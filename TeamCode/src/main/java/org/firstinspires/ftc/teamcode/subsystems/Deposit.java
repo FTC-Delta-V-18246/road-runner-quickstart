@@ -20,10 +20,10 @@ public class Deposit implements Subsystem {
     Servo trapDoor;
     DistanceSensor ssensor;
 
-    public static double close = 0.5;
+    public static double close = 0;
     public static double kick = 0.12;
     public static double doorCloseDuck = 0.635;
-    public static double receive = 0.32;
+    public static double receive = 0.28;
     public static double turretNEUTRAL = 0.6;
     public static double turretREDPOS = 0.4;
     public static double turretBLUEPOS = 0.8;

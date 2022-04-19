@@ -23,8 +23,7 @@ import org.openftc.easyopencv.OpenCvCamera;
 
 import java.util.Arrays;
 
-
-@Autonomous(name = "CycleFSM")
+@Autonomous(name = "HoustonCycleRED")
 public class CycleFsm extends LinearOpMode {
     DcMotor lift1;
     Vision vision;
@@ -37,38 +36,36 @@ public class CycleFsm extends LinearOpMode {
     }
 
     Deposit deposit = Deposit.HOME;
-    ElapsedTime depositTimer;
 
-    public static double ready = 100;
-    public static double time = 0.01;
+    double time = 0.01;
+
+    ElapsedTime depositTimer = new ElapsedTime();
+    ElapsedTime DumpTimer = new ElapsedTime();
+    ElapsedTime kickTimer = new ElapsedTime();
 
     @Override
     public void runOpMode() throws InterruptedException {
-        vision = new Vision(hardwareMap, telemetry);
         vision = new Vision(hardwareMap, telemetry);
         vision.setPipeline();
         vision.startStreaming();
 
         Robot robot = new Robot(hardwareMap, gamepad1, gamepad2);
-        robot.lift.liftReset();
         lift1 = hardwareMap.get(DcMotor.class, "lift1");
-
-        Pose2d startPose = new Pose2d(6, -62, Math.toRadians(90));
-        robot.drive.drive.setPoseEstimate(startPose);
 
         robot.intake.intakeUp();
         robot.v4b.receive();
         robot.deposit.close();
         robot.drive.odoLower();
-        ElapsedTime DepositTImer = new ElapsedTime();
-        ElapsedTime DumpTimer = new ElapsedTime();
-        ElapsedTime kickTimer = new ElapsedTime();
+
+        Pose2d startPose = new Pose2d(6, -62, Math.toRadians(0));
+        robot.drive.drive.setPoseEstimate(startPose);
 
         TrajectorySequence preload = robot.drive.drive.trajectorySequenceBuilder(startPose)
                 .lineToConstantHeading(new Vector2d(-12, -46))
                 .addTemporalMarker(() -> {
                     kick();
                 })
+                .waitSeconds(0.5)
                 .splineToConstantHeading(new Vector2d(20, -62), Math.toRadians(0))
                 .lineToConstantHeading(new Vector2d(44, -62))
                 .UNSTABLE_addDisplacementMarkerOffset(1, () -> {
@@ -76,13 +73,6 @@ public class CycleFsm extends LinearOpMode {
                 })
                 .addDisplacementMarker(() -> {
                     robot.deposit.close();
-                })
-                .UNSTABLE_addDisplacementMarkerOffset(2, () -> {
-                    robot.intake.reverse();
-                    deposit();
-                })
-                .UNSTABLE_addDisplacementMarkerOffset(12, () -> {
-                    robot.intake.off();
                 })
                 .build();
         TrajectorySequence preloadHigh = robot.drive.drive.trajectorySequenceBuilder(startPose)
@@ -92,6 +82,7 @@ public class CycleFsm extends LinearOpMode {
                 .addTemporalMarker(() -> {
                     kick();
                 })
+                .waitSeconds(0.5)
                 .lineToConstantHeading(new Vector2d(44, -62))
                 .UNSTABLE_addDisplacementMarkerOffset(1, () -> {
                     robot.intake.on(robot);
@@ -110,7 +101,14 @@ public class CycleFsm extends LinearOpMode {
 
         TrajectorySequence cycle = robot.drive.drive.trajectorySequenceBuilder(preload.end())
                 //cycle 1 score
-                .lineToConstantHeading(new Vector2d(12, -62))
+                .UNSTABLE_addDisplacementMarkerOffset(2, () -> {
+                    robot.intake.reverse();
+                    deposit();
+                })
+                .UNSTABLE_addDisplacementMarkerOffset(12, () -> {
+                    robot.intake.off();
+                })
+                .lineToConstantHeading(new Vector2d(-12, -62))
                 .waitSeconds(time)
                 .addTemporalMarker(() -> {
                     kick();
@@ -129,139 +127,42 @@ public class CycleFsm extends LinearOpMode {
                 })
                 .UNSTABLE_addDisplacementMarkerOffset(12, () -> {
                     robot.intake.off();
-                    deposit();
                 })
-                .lineToConstantHeading(new Vector2d(12, -62))
+                .lineToConstantHeading(new Vector2d(-12, -62))
+                .waitSeconds(0.5)
                 .addTemporalMarker(() -> {
                     kick();
                 })
-                //cycle 3
-                .lineToConstantHeading(new Vector2d(44, -62))
-                .UNSTABLE_addDisplacementMarkerOffset(1, () -> {
-                    robot.intake.on(robot);
-                })
-                .addDisplacementMarker(() -> {
-                    robot.deposit.close();
-                })
-                .UNSTABLE_addDisplacementMarkerOffset(2, () -> {
-                    robot.intake.reverse();
-                    deposit();
-                })
-                .UNSTABLE_addDisplacementMarkerOffset(12, () -> {
-                    robot.intake.off();
-                    deposit();
-                })
-                .lineToConstantHeading(new Vector2d(12, -62))
-                .addTemporalMarker(() -> {
-                    kick();
-                })
-                //cycle 4
-                .lineToConstantHeading(new Vector2d(44, -62))
-                .UNSTABLE_addDisplacementMarkerOffset(1, () -> {
-                    robot.intake.on(robot);
-                })
-                .addDisplacementMarker(() -> {
-                    robot.deposit.close();
-                })
-                .UNSTABLE_addDisplacementMarkerOffset(2, () -> {
-                    robot.intake.reverse();
-                    deposit();
-                })
-                .UNSTABLE_addDisplacementMarkerOffset(12, () -> {
-                    robot.intake.off();
-                    deposit();
-                })
-                .lineToConstantHeading(new Vector2d(12, -62))
-                .addTemporalMarker(() -> {
-                    kick();
-                })
-                //cycle 5
-                .lineToConstantHeading(new Vector2d(44, -62))
-                .UNSTABLE_addDisplacementMarkerOffset(1, () -> {
-                    robot.intake.on(robot);
-                })
-                .addDisplacementMarker(() -> {
-                    robot.deposit.close();
-                })
-                .UNSTABLE_addDisplacementMarkerOffset(2, () -> {
-                    robot.intake.reverse();
-                    deposit();
-                })
-                .UNSTABLE_addDisplacementMarkerOffset(12, () -> {
-                    robot.intake.off();
-                    deposit();
-                })
-                .lineToConstantHeading(new Vector2d(12, -62))
-                .addTemporalMarker(() -> {
-                    kick();
-                })
-                //cycle 6
-                .lineToConstantHeading(new Vector2d(44, -62))
-                .UNSTABLE_addDisplacementMarkerOffset(1, () -> {
-                    robot.intake.on(robot);
-                })
-                .addDisplacementMarker(() -> {
-                    robot.deposit.close();
-                })
-                .UNSTABLE_addDisplacementMarkerOffset(2, () -> {
-                    robot.intake.reverse();
-                    deposit();
-                })
-                .UNSTABLE_addDisplacementMarkerOffset(12, () -> {
-                    robot.intake.off();
-                    deposit();
-                })
-                .lineToConstantHeading(new Vector2d(12, -62))
-                .addTemporalMarker(() -> {
-                    kick();
-                })
-                //cycle 7
-                .lineToConstantHeading(new Vector2d(44, -62))
-                .UNSTABLE_addDisplacementMarkerOffset(1, () -> {
-                    robot.intake.on(robot);
-                })
-                .addDisplacementMarker(() -> {
-                    robot.deposit.close();
-                })
-                .UNSTABLE_addDisplacementMarkerOffset(2, () -> {
-                    robot.intake.reverse();
-                    deposit();
-                })
-                .UNSTABLE_addDisplacementMarkerOffset(12, () -> {
-                    robot.intake.off();
-                    deposit();
-                })
-                .lineToConstantHeading(new Vector2d(12, -62))
-                .addTemporalMarker(() -> {
-                    kick();
-                })
+                .waitSeconds(2)
                 .build();
 
         waitForStart();
 
         VisionPipeline.POS position = vision.detector.getPosition();
-        telemetry.addData("Position: ", position);
-        depositTimer.reset();
 
         if (position == VisionPipeline.POS.LEFT) {
             robot.v4b.shared();
-            robot.drive.drive.followTrajectorySequenceAsync(preload);
+            robot.drive.drive.followTrajectorySequence(preload);
         } else if (position == VisionPipeline.POS.CENTER) {
             robot.v4b.deposit();
-            robot.drive.drive.followTrajectorySequenceAsync(preload);
+            robot.drive.drive.followTrajectorySequence(preload);
         } else {
             if (depositTimer.milliseconds() > 500) {
                 robot.drive.drive.followTrajectorySequenceAsync(preloadHigh);
             }
         }
-        robot.drive.drive.followTrajectorySequenceAsync(cycle);
+        if (!robot.drive.drive.isBusy()) {
+            robot.drive.drive.followTrajectorySequenceAsync(cycle);
+        }
 
         while (opModeIsActive()) {
             robot.lift.updatePID(robot.lift.target);
             lift1.getCurrentPosition();
             robot.drive.drive.update();
             telemetry.addData("lift: ", lift1.getCurrentPosition());
+            telemetry.addData("Position: ", position);
             telemetry.update();
+            robot.intake.intakeRight();
 
             switch (deposit) {
                 case HOME:
@@ -276,6 +177,7 @@ public class CycleFsm extends LinearOpMode {
                     robot.v4b.deposit();
                     if (depositTimer.milliseconds() > 500) {
                         robot.lift.liftHigh();
+                        robot.deposit.turretBLUESHARED();
                     }
                     break;
                 case TRANSITION:
@@ -293,14 +195,15 @@ public class CycleFsm extends LinearOpMode {
                         robot.v4b.intake(robot);
                         deposit = Deposit.HOME;
                     }
+                    break;
             }
         }
     }
-
     public void deposit() {
         depositTimer.reset();
         deposit = Deposit.HIGH;
     }
+
     public void kick() {
         depositTimer.reset();
         deposit = Deposit.TRANSITION;
