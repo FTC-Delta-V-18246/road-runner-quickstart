@@ -18,6 +18,8 @@ public class Drive implements Subsystem {
     Servo rightOdo;
     Servo leftOdo;
     Servo centerOdo;
+    Servo leftBrake;
+    Servo rightBrake;
 
     public static double odoRDown = 0.8;
     public static double odoLDown = 1;
@@ -26,6 +28,8 @@ public class Drive implements Subsystem {
     public static double odoLUp = 0.1;
     public static double odoCUp = 1;
     public static double rotatePower = 1.0;
+    public static double brakeDown = 1.0;
+    public static double brakeUp = 0.85;
 
     public Drive(Gamepad g1, Gamepad g2) {
         gamepad1 = g1;
@@ -38,8 +42,11 @@ public class Drive implements Subsystem {
         rightOdo = hw.get(Servo.class, "rightOdo");
         leftOdo = hw.get(Servo.class, "leftOdo");
         centerOdo = hw.get(Servo.class, "centerOdo");
+        rightBrake = hw.get(Servo.class, "rightBrake");
+        leftBrake = hw.get(Servo.class, "leftBrake");
 
         odoLower();
+        unBrake();
     }
 
     @Override
@@ -49,8 +56,15 @@ public class Drive implements Subsystem {
                 -gamepad1.left_stick_x,
                 -gamepad1.right_stick_x / rotatePower
         ));
-        drive.update();
-    }
+
+        if (gamepad1.dpad_down) {
+            Brake();
+        }
+        if (gamepad1.dpad_up) {
+            unBrake();
+        drive.update();        }
+
+}
 
     public void odoRetract() {
         rightOdo.setPosition(odoRUp);
@@ -62,5 +76,15 @@ public class Drive implements Subsystem {
         rightOdo.setPosition(odoRDown);
         leftOdo.setPosition(odoLDown);
         centerOdo.setPosition(odoCDown);
+    }
+
+    public void Brake() {
+        rightBrake.setPosition(brakeDown);
+        leftBrake.setPosition(1 - brakeDown);
+    }
+
+    public void unBrake() {
+        rightBrake.setPosition(brakeUp);
+        leftBrake.setPosition(1 - brakeUp);
     }
 }

@@ -20,7 +20,7 @@ public class BasicLift implements Subsystem {
     DcMotor lift1;
     DcMotor lift2;
     public static double target = 0;
-    public static double HIGH = 560;
+    public static double HIGH = 570;
     public static double MID = 0;
     public static double INTAKE = -25;
     public static double READY = 125;
@@ -197,10 +197,23 @@ public class BasicLift implements Subsystem {
                 }
                 if (gamepad2.x) {
                     robot.deposit.turretBLUESHARED();
+                } else {
+
                 }
+                if (gamepad2.left_stick_y > 0.5) {
+                    robot.v4b.turretAdjust += 0.005;
+                    robot.v4b.update(robot);
+                }
+
+                if (gamepad2.left_stick_y < -0.5) {
+                    robot.v4b.turretAdjust -= 0.005;
+                    robot.v4b.update(robot);
+                }
+
                 if (gamepad2.left_bumper) {
-                    state = liftState.KICK;
                     kickTimer.reset();
+                    robot.v4b.turretAdjust = 0;
+                    state = liftState.KICK;
                 }
                 break;
             case KICK:

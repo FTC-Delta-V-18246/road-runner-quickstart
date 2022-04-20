@@ -33,6 +33,8 @@ public class Intake implements Subsystem {
     private ElapsedTime duckTimer;
 
     IntakeState state = IntakeState.INTAKE;
+    private boolean toggleA;
+    private boolean lastA;
 
     enum IntakeState {
         INTAKE,
@@ -64,6 +66,9 @@ public class Intake implements Subsystem {
 
     @Override
     public void init(HardwareMap hw) {
+        toggleA = false;
+        lastA = false;
+
         intakeLeft = hw.get(DcMotor.class, "intakeLeft");
         intakeRight = hw.get(DcMotor.class, "intakeRight");
         intakeRight.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -82,17 +87,24 @@ public class Intake implements Subsystem {
         switch (state) {
             case INTAKE:
                 power = gamepad1.right_trigger - gamepad1.left_trigger;
-                if (gamepad1.a) {
-                    wasPressedA = true;
-                    intakeLeft();
-                    intakeLeft.setPower(-power);
+
+                if(gamepad1.a) {
+                    lastA = true;
                 }
 
-                else {
-                    wasPressedA = false;
+                if(lastA && !gamepad1.a) {
+                    lastA = false;
+                    toggleA = !toggleA;
+                }
+
+                if(toggleA) {
+                    intakeLeft();
+                    intakeLeft.setPower(-power);
+                } else {
                     intakeRight();
                     intakeRight.setPower(power);
                 }
+
                 if (gamepad1.dpad_left) {
                     duckTimer.reset();
                     robot.intake.intakeDown();
