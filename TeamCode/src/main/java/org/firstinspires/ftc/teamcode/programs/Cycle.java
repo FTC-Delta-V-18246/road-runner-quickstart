@@ -71,7 +71,7 @@ public class Cycle extends LinearOpMode {
                 .waitSeconds(0.1)
                 .UNSTABLE_addDisplacementMarkerOffset(1, () -> {
                     robot.v4b.intake(robot);
-                    robot.intake.on(robot);
+                    robot.intake.on();
                 })
                 .splineTo(new Vector2d(40, -63), Math.toRadians(0), new MinVelocityConstraint(Arrays.asList(
                         new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),

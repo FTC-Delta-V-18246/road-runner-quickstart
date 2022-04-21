@@ -23,10 +23,16 @@ public class MeepMeepTesting {
                 .setColorScheme(new ColorSchemeBlueDark())
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 10)
                 .followTrajectorySequence(start ->
-                                start.trajectorySequenceBuilder(new Pose2d(6, -62, Math.toRadians(0)))
-                                        .lineToConstantHeading(new Vector2d(-12, -46))
-                                        .splineToConstantHeading(new Vector2d(20, -62), Math.toRadians(0))
-                                        .lineToConstantHeading(new Vector2d(44, -62))
+                                start.trajectorySequenceBuilder(new Pose2d(-36, 62, Math.toRadians(180)))
+                                        //high
+                                        .splineToLinearHeading(new Pose2d(-42, 54, Math.toRadians(225)), Math.toRadians(180))
+                                        /*mid / low
+                                        .splineToLinearHeading(new Pose2d(-24, 40, Math.toRadians(45)), Math.toRadians(180))*/
+                                        .splineToLinearHeading(new Pose2d(-58, 58, Math.toRadians(270)), Math.toRadians(90))
+                                        .lineToConstantHeading(new Vector2d(-50, 60))
+                                        .splineToLinearHeading(new Pose2d(-42, 54, Math.toRadians(225)), Math.toRadians(180))
+                                        .splineToLinearHeading(new Pose2d(-60, 36, Math.toRadians(180)), Math.toRadians(180))
+
 
                                         //.lineToConstantHeading(new Vector2d(44, -62))
                                         //.lineToConstantHeading(new Vector2d(-12, -62))

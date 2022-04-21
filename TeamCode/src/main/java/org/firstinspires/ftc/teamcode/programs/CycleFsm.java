@@ -35,6 +35,13 @@ public class CycleFsm extends LinearOpMode {
         RETRACT
     }
 
+    enum State {
+        PRELOAD,
+        CYCLE,
+        DONE
+    }
+
+    State currentState = State.DONE;
     Deposit deposit = Deposit.HOME;
 
     double time = 0.01;
@@ -60,7 +67,7 @@ public class CycleFsm extends LinearOpMode {
         Pose2d startPose = new Pose2d(6, -62, Math.toRadians(0));
         robot.drive.drive.setPoseEstimate(startPose);
 
-        TrajectorySequence preload = robot.drive.drive.trajectorySequenceBuilder(startPose)
+        /*TrajectorySequence preload = robot.drive.drive.trajectorySequenceBuilder(startPose)
                 .lineToConstantHeading(new Vector2d(-12, -46))
                 .addTemporalMarker(() -> {
                     kick();
@@ -70,92 +77,151 @@ public class CycleFsm extends LinearOpMode {
                 .lineToConstantHeading(new Vector2d(44, -62))
                 .UNSTABLE_addDisplacementMarkerOffset(1, () -> {
                     robot.intake.on(robot);
+                    robot.intake.intakeRight();
                 })
                 .addDisplacementMarker(() -> {
                     robot.deposit.close();
                 })
-                .build();
+                .build();*/
         TrajectorySequence preloadHigh = robot.drive.drive.trajectorySequenceBuilder(startPose)
                 .addDisplacementMarker(() -> {
                     deposit();
-                }).lineToConstantHeading(new Vector2d(-12, -62))
+                }).lineToConstantHeading(new Vector2d(-6, -62))
+                .waitSeconds(0.1)
                 .addTemporalMarker(() -> {
                     kick();
                 })
-                .waitSeconds(0.5)
-                .lineToConstantHeading(new Vector2d(44, -62))
-                .UNSTABLE_addDisplacementMarkerOffset(1, () -> {
-                    robot.intake.on(robot);
+                .addTemporalMarker(() -> {
+                    robot.intake.autoRED();
+                    robot.intake.intakeDown();
                 })
-                .addDisplacementMarker(() -> {
-                    robot.deposit.close();
-                })
-                .UNSTABLE_addDisplacementMarkerOffset(2, () -> {
+                .lineToConstantHeading(new Vector2d(44, -61),   robot.drive.drive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        robot.drive.drive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .UNSTABLE_addDisplacementMarkerOffset(10, () -> {
                     robot.intake.reverse();
                     deposit();
                 })
-                .UNSTABLE_addDisplacementMarkerOffset(12, () -> {
+                .UNSTABLE_addDisplacementMarkerOffset(22, () -> {
                     robot.intake.off();
-                })
-                .build();
-
-        TrajectorySequence cycle = robot.drive.drive.trajectorySequenceBuilder(preload.end())
-                //cycle 1 score
-                .UNSTABLE_addDisplacementMarkerOffset(2, () -> {
-                    robot.intake.reverse();
                     deposit();
                 })
-                .UNSTABLE_addDisplacementMarkerOffset(12, () -> {
-                    robot.intake.off();
-                })
-                .lineToConstantHeading(new Vector2d(-12, -62))
-                .waitSeconds(time)
+                .lineToConstantHeading(new Vector2d(-6, -62))
+                .waitSeconds(0.2)
                 .addTemporalMarker(() -> {
                     kick();
                 })
                 //cycle 2
-                .lineToConstantHeading(new Vector2d(44, -62))
-                .UNSTABLE_addDisplacementMarkerOffset(1, () -> {
-                    robot.intake.on(robot);
+                .addTemporalMarker(() -> {
+                    robot.intake.autoRED();
+                    robot.intake.intakeDown();
                 })
-                .addDisplacementMarker(() -> {
-                    robot.deposit.close();
-                })
-                .UNSTABLE_addDisplacementMarkerOffset(2, () -> {
+                .lineToConstantHeading(new Vector2d(44, -61),   robot.drive.drive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        robot.drive.drive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .UNSTABLE_addDisplacementMarkerOffset(10, () -> {
                     robot.intake.reverse();
                     deposit();
                 })
-                .UNSTABLE_addDisplacementMarkerOffset(12, () -> {
+                .UNSTABLE_addDisplacementMarkerOffset(22, () -> {
                     robot.intake.off();
+                    deposit();
                 })
-                .lineToConstantHeading(new Vector2d(-12, -62))
-                .waitSeconds(0.5)
+                .lineToConstantHeading(new Vector2d(-6, -62))
+                .waitSeconds(0.2)
                 .addTemporalMarker(() -> {
                     kick();
                 })
-                .waitSeconds(2)
+                .addTemporalMarker(() -> {
+                    robot.intake.autoRED();
+                    robot.intake.intakeDown();
+                })
+                .lineToConstantHeading(new Vector2d(44, -61),   robot.drive.drive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        robot.drive.drive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .UNSTABLE_addDisplacementMarkerOffset(10, () -> {
+                    robot.intake.reverse();
+                    deposit();
+                })
+                .UNSTABLE_addDisplacementMarkerOffset(22, () -> {
+                    robot.intake.off();
+                    deposit();
+                })
+                .lineToConstantHeading(new Vector2d(-6, -62))
+                .waitSeconds(0.2)
+                .addTemporalMarker(() -> {
+                    kick();
+                })
+                .addTemporalMarker(() -> {
+                    robot.intake.autoRED();
+                    robot.intake.intakeDown();
+                })
+                .lineToConstantHeading(new Vector2d(44, -61),   robot.drive.drive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        robot.drive.drive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .UNSTABLE_addDisplacementMarkerOffset(10, () -> {
+                    robot.intake.reverse();
+                    deposit();
+                })
+                .UNSTABLE_addDisplacementMarkerOffset(22, () -> {
+                    robot.intake.off();
+                    deposit();
+                })
+                .lineToConstantHeading(new Vector2d(-6, -62))
+                .waitSeconds(0.2)
+                .addTemporalMarker(() -> {
+                    kick();
+                })
+                .addTemporalMarker(() -> {
+                    robot.intake.autoRED();
+                    robot.intake.intakeDown();
+                })
+                .lineToConstantHeading(new Vector2d(44, -61),   robot.drive.drive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        robot.drive.drive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .UNSTABLE_addDisplacementMarkerOffset(10, () -> {
+                    robot.intake.reverse();
+                    deposit();
+                })
+                .UNSTABLE_addDisplacementMarkerOffset(22, () -> {
+                    robot.intake.off();
+                    deposit();
+                })
+                .lineToConstantHeading(new Vector2d(-6, -62))
+                .waitSeconds(0.2)
+                .addTemporalMarker(() -> {
+                    kick();
+                })
                 .build();
 
         waitForStart();
 
         VisionPipeline.POS position = vision.detector.getPosition();
 
-        if (position == VisionPipeline.POS.LEFT) {
-            robot.v4b.shared();
-            robot.drive.drive.followTrajectorySequence(preload);
-        } else if (position == VisionPipeline.POS.CENTER) {
-            robot.v4b.deposit();
-            robot.drive.drive.followTrajectorySequence(preload);
-        } else {
-            if (depositTimer.milliseconds() > 500) {
-                robot.drive.drive.followTrajectorySequenceAsync(preloadHigh);
-            }
-        }
-        if (!robot.drive.drive.isBusy()) {
-            robot.drive.drive.followTrajectorySequenceAsync(cycle);
-        }
+        robot.drive.drive.followTrajectorySequenceAsync(preloadHigh);
 
         while (opModeIsActive()) {
+
+            /*switch (currentState) {
+                case PRELOAD:
+                    if (position == VisionPipeline.POS.LEFT) {
+                        robot.v4b.shared();
+                        robot.drive.drive.followTrajectorySequence(preload);
+                    } else if (position == VisionPipeline.POS.CENTER) {
+                        robot.v4b.deposit();
+                        robot.drive.drive.followTrajectorySequence(preload);
+                    } else {
+                        if (depositTimer.milliseconds() > 500) {
+                            robot.drive.drive.followTrajectorySequenceAsync(preloadHigh);
+                        }
+                        if (!robot.drive.drive.isBusy()) {
+                            currentState = State.CYCLE;
+                        }
+                    }
+                    break;
+                case CYCLE:
+                    if (!robot.drive.drive.isBusy()) {
+                        currentState = State.DONE;
+                    }
+                    break;
+                case DONE:
+                    break;
+            }*/
             robot.lift.updatePID(robot.lift.target);
             lift1.getCurrentPosition();
             robot.drive.drive.update();
@@ -163,19 +229,21 @@ public class CycleFsm extends LinearOpMode {
             telemetry.addData("Position: ", position);
             telemetry.update();
             robot.intake.intakeRight();
+            robot.intake.intakeDown();
 
             switch (deposit) {
                 case HOME:
                     robot.lift.liftHome();
+                    robot.deposit.receive();
                     robot.v4b.intake(robot);
-                    if ((robot.deposit.depositSensor >= robot.deposit.distanceMax)) {
+                    if ((robot.deposit.depositSensor <= 2.5)) {
                         robot.deposit.close();
-                        robot.intake.reverse();
                     }
                     break;
                 case HIGH:
+                    robot.deposit.close();
                     robot.v4b.deposit();
-                    if (depositTimer.milliseconds() > 500) {
+                    if (depositTimer.milliseconds() > 700) {
                         robot.lift.liftHigh();
                         robot.deposit.turretBLUESHARED();
                     }
@@ -193,12 +261,14 @@ public class CycleFsm extends LinearOpMode {
                     robot.drive.rotatePower = 1.0;
                     if (lift1.getCurrentPosition() < READY && DumpTimer.milliseconds() > 500) {
                         robot.v4b.intake(robot);
+                        robot.intake.intakeDown();
                         deposit = Deposit.HOME;
                     }
                     break;
             }
         }
     }
+
     public void deposit() {
         depositTimer.reset();
         deposit = Deposit.HIGH;

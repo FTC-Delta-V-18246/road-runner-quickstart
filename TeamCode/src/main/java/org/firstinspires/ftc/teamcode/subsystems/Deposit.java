@@ -30,6 +30,7 @@ public class Deposit implements Subsystem {
     public static double distanceMin = 0;
     public static double distanceMax = 3;
     public static double depositSensor = 5;
+    public static double turretAdjust = 0;
 
     public State state = State.INTAKE;
     public enum State {INTAKE, NEUTRAL, REDSHARED, BLUESHARED}

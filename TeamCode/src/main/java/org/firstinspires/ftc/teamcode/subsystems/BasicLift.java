@@ -20,7 +20,7 @@ public class BasicLift implements Subsystem {
     DcMotor lift1;
     DcMotor lift2;
     public static double target = 0;
-    public static double HIGH = 570;
+    public static double HIGH = 564;
     public static double MID = 0;
     public static double INTAKE = -25;
     public static double READY = 125;
@@ -30,7 +30,7 @@ public class BasicLift implements Subsystem {
     public static double kP = -0.0018;
     public static double kF = -0.001;
     public static double dumpTime = 500;
-    public static double kickTime = 500;
+    public static double kickTime = 600;
     public Gamepad gamepad1;
     public Gamepad gamepad2;
     private double error = 0;
@@ -174,7 +174,7 @@ public class BasicLift implements Subsystem {
                 if (gamepad2.a) {
                     state = liftState.SHARED;
                 }
-                while (IntakeReverseTimer.milliseconds() < 400) {
+                while (IntakeReverseTimer.milliseconds() < 200) {
                     robot.intake.reverse();
                 }
                 break;
@@ -201,15 +201,24 @@ public class BasicLift implements Subsystem {
 
                 }
                 if (gamepad2.left_stick_y > 0.5) {
-                    robot.v4b.turretAdjust += 0.005;
-                    robot.v4b.update(robot);
+                    robot.v4b.turretAdjust -= 0.005;
+                    robot.v4b.deposit();
                 }
 
                 if (gamepad2.left_stick_y < -0.5) {
-                    robot.v4b.turretAdjust -= 0.005;
-                    robot.v4b.update(robot);
+                    robot.v4b.turretAdjust += 0.005;
+                    robot.v4b.deposit();
+                }
+                if (gamepad2.right_stick_x > 0.5) {
+                    //robot.deposit.turretAdjust -= 0.005;
+                    robot.deposit.turretNeutral();
                 }
 
+                if (gamepad2.right_stick_x < -0.5) {
+                    //robot.deposit.turretAdjust += 0.005;
+                    robot.deposit.turretNeutral();
+
+                }
                 if (gamepad2.left_bumper) {
                     kickTimer.reset();
                     robot.v4b.turretAdjust = 0;
