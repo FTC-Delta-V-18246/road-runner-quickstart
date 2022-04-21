@@ -95,7 +95,7 @@ public class CycleFsm extends LinearOpMode {
                     robot.intake.autoRED();
                     robot.intake.intakeDown();
                 })
-                .lineToConstantHeading(new Vector2d(44, -61),   robot.drive.drive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .lineToConstantHeading(new Vector2d(44, -62),   robot.drive.drive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         robot.drive.drive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .UNSTABLE_addDisplacementMarkerOffset(10, () -> {
                     robot.intake.reverse();
@@ -115,64 +115,7 @@ public class CycleFsm extends LinearOpMode {
                     robot.intake.autoRED();
                     robot.intake.intakeDown();
                 })
-                .lineToConstantHeading(new Vector2d(44, -61),   robot.drive.drive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        robot.drive.drive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .UNSTABLE_addDisplacementMarkerOffset(10, () -> {
-                    robot.intake.reverse();
-                    deposit();
-                })
-                .UNSTABLE_addDisplacementMarkerOffset(22, () -> {
-                    robot.intake.off();
-                    deposit();
-                })
-                .lineToConstantHeading(new Vector2d(-6, -62))
-                .waitSeconds(0.2)
-                .addTemporalMarker(() -> {
-                    kick();
-                })
-                .addTemporalMarker(() -> {
-                    robot.intake.autoRED();
-                    robot.intake.intakeDown();
-                })
-                .lineToConstantHeading(new Vector2d(44, -61),   robot.drive.drive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        robot.drive.drive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .UNSTABLE_addDisplacementMarkerOffset(10, () -> {
-                    robot.intake.reverse();
-                    deposit();
-                })
-                .UNSTABLE_addDisplacementMarkerOffset(22, () -> {
-                    robot.intake.off();
-                    deposit();
-                })
-                .lineToConstantHeading(new Vector2d(-6, -62))
-                .waitSeconds(0.2)
-                .addTemporalMarker(() -> {
-                    kick();
-                })
-                .addTemporalMarker(() -> {
-                    robot.intake.autoRED();
-                    robot.intake.intakeDown();
-                })
-                .lineToConstantHeading(new Vector2d(44, -61),   robot.drive.drive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        robot.drive.drive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .UNSTABLE_addDisplacementMarkerOffset(10, () -> {
-                    robot.intake.reverse();
-                    deposit();
-                })
-                .UNSTABLE_addDisplacementMarkerOffset(22, () -> {
-                    robot.intake.off();
-                    deposit();
-                })
-                .lineToConstantHeading(new Vector2d(-6, -62))
-                .waitSeconds(0.2)
-                .addTemporalMarker(() -> {
-                    kick();
-                })
-                .addTemporalMarker(() -> {
-                    robot.intake.autoRED();
-                    robot.intake.intakeDown();
-                })
-                .lineToConstantHeading(new Vector2d(44, -61),   robot.drive.drive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .lineToConstantHeading(new Vector2d(44, -62),   robot.drive.drive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         robot.drive.drive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .UNSTABLE_addDisplacementMarkerOffset(10, () -> {
                     robot.intake.reverse();
