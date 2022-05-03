@@ -87,6 +87,218 @@ public class CycleFsm extends LinearOpMode {
                 .addDisplacementMarker(() -> {
                     deposit();
                 }).lineToConstantHeading(new Vector2d(-6, -62))
+                .addTemporalMarker(() -> {
+                    kick();
+                })
+                .addTemporalMarker(() -> {
+                    robot.intake.autoRED();
+                    robot.intake.intakeDown();
+                })
+                .lineToConstantHeading(new Vector2d(45, -62),   robot.drive.drive.getVelocityConstraint(45, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        robot.drive.drive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .waitSeconds(0.5)
+                .addTemporalMarker(() -> {
+                    robot.intake.reverse();
+                })
+                .UNSTABLE_addDisplacementMarkerOffset(8, () -> {
+                    deposit();
+                })
+                .lineToConstantHeading(new Vector2d(-6, -62))
+                .addTemporalMarker(() -> {
+                    robot.intake.off();
+                    kick();
+                })
+                //cycle 2
+                .addTemporalMarker(() -> {
+                    robot.intake.autoRED();
+                    robot.intake.intakeDown();
+                })
+                .lineToConstantHeading(new Vector2d(47, -62.5),   robot.drive.drive.getVelocityConstraint(45, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        robot.drive.drive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .waitSeconds(0.5)
+                .addTemporalMarker(() -> {
+                    robot.intake.reverse();
+                })
+                .UNSTABLE_addDisplacementMarkerOffset(8, () -> {
+                    deposit();
+                })
+                .lineToConstantHeading(new Vector2d(-6, -62))
+                .addTemporalMarker(() -> {
+                    robot.intake.off();
+                    kick();
+                })
+                //cycle 3
+                .addTemporalMarker(() -> {
+                    robot.intake.autoRED();
+                    robot.intake.intakeDown();
+                })
+                .lineToConstantHeading(new Vector2d(48, -63),   robot.drive.drive.getVelocityConstraint(45, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        robot.drive.drive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .waitSeconds(0.5)
+                .addTemporalMarker(() -> {
+                    robot.intake.reverse();
+                })
+                .UNSTABLE_addDisplacementMarkerOffset(8, () -> {
+                    deposit();
+                })
+                .lineToConstantHeading(new Vector2d(-6, -62))
+                .addTemporalMarker(() -> {
+                    robot.intake.off();
+                    kick();
+                })
+                //cycle 4
+                .addTemporalMarker(() -> {
+                    robot.intake.autoRED();
+                    robot.intake.intakeDown();
+                })
+                .lineToConstantHeading(new Vector2d(49, -63),   robot.drive.drive.getVelocityConstraint(45, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        robot.drive.drive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .waitSeconds(0.5)
+                .addTemporalMarker(() -> {
+                    robot.intake.reverse();
+                })
+                .UNSTABLE_addDisplacementMarkerOffset(8, () -> {
+                    deposit();
+                })
+                .lineToConstantHeading(new Vector2d(-6, -62))
+                .addTemporalMarker(() -> {
+                    robot.intake.off();
+                    kick();
+                })
+                //cycle 5
+                .addTemporalMarker(() -> {
+                    robot.intake.autoRED();
+                    robot.intake.intakeDown();
+                })
+                .lineToConstantHeading(new Vector2d(50, -63.5),   robot.drive.drive.getVelocityConstraint(45, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        robot.drive.drive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .waitSeconds(0.5)
+                .addTemporalMarker(() -> {
+                    robot.intake.reverse();
+                })
+                .UNSTABLE_addDisplacementMarkerOffset(8, () -> {
+                    deposit();
+                })
+                .lineToConstantHeading(new Vector2d(-6, -62))
+                .addTemporalMarker(() -> {
+                    robot.intake.off();
+                    kick();
+                })
+                .lineToConstantHeading(new Vector2d(44, -63.5))
+                .build();
+
+        TrajectorySequence preloadMid = robot.drive.drive.trajectorySequenceBuilder(startPose)
+                .addDisplacementMarker(() -> {
+                    deposit();
+                }).lineToConstantHeading(new Vector2d(-6, -62))
+                .waitSeconds(0.1)
+                .addTemporalMarker(() -> {
+                    kick();
+                })
+                .addTemporalMarker(() -> {
+                    robot.intake.autoRED();
+                    robot.intake.intakeDown();
+                })
+                .lineToConstantHeading(new Vector2d(44, -62),   robot.drive.drive.getVelocityConstraint(45, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        robot.drive.drive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .UNSTABLE_addDisplacementMarkerOffset(10, () -> {
+                    robot.intake.reverse();
+                    deposit();
+                })
+                .UNSTABLE_addDisplacementMarkerOffset(22, () -> {
+                    deposit();
+                })
+                .lineToConstantHeading(new Vector2d(-6, -62))
+                .waitSeconds(0.2)
+                .addTemporalMarker(() -> {
+                    robot.intake.off();
+                    kick();
+                })
+                //cycle 2
+                .addTemporalMarker(() -> {
+                    robot.intake.autoRED();
+                    robot.intake.intakeDown();
+                })
+                .lineToConstantHeading(new Vector2d(45, -63),   robot.drive.drive.getVelocityConstraint(45, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        robot.drive.drive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .UNSTABLE_addDisplacementMarkerOffset(10, () -> {
+                    robot.intake.reverse();
+                    deposit();
+                })
+                .UNSTABLE_addDisplacementMarkerOffset(22, () -> {
+                    deposit();
+                })
+                .lineToConstantHeading(new Vector2d(-6, -63))
+                .waitSeconds(0.2)
+                .addTemporalMarker(() -> {
+                    robot.intake.off();
+                    kick();
+                })
+                //cycle 3
+                .addTemporalMarker(() -> {
+                    robot.intake.autoRED();
+                    robot.intake.intakeDown();
+                })
+                .lineToConstantHeading(new Vector2d(46, -63),   robot.drive.drive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        robot.drive.drive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .UNSTABLE_addDisplacementMarkerOffset(10, () -> {
+                    robot.intake.reverse();
+                    deposit();
+                })
+                .UNSTABLE_addDisplacementMarkerOffset(22, () -> {
+                    deposit();
+                })
+                .lineToConstantHeading(new Vector2d(-6, -63))
+                .waitSeconds(0.2)
+                .addTemporalMarker(() -> {
+                    robot.intake.off();
+                    kick();
+                })
+                //cycle 4
+                .addTemporalMarker(() -> {
+                    robot.intake.autoRED();
+                    robot.intake.intakeDown();
+                })
+                .lineToConstantHeading(new Vector2d(47, -63.5),   robot.drive.drive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        robot.drive.drive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .UNSTABLE_addDisplacementMarkerOffset(10, () -> {
+                    robot.intake.reverse();
+                    deposit();
+                })
+                .UNSTABLE_addDisplacementMarkerOffset(22, () -> {
+                    deposit();
+                })
+                .lineToConstantHeading(new Vector2d(-6, -63.5))
+                .waitSeconds(0.2)
+                .addTemporalMarker(() -> {
+                    robot.intake.off();
+                    kick();
+                })
+                //cycle 5
+                .addTemporalMarker(() -> {
+                    robot.intake.autoRED();
+                    robot.intake.intakeDown();
+                })
+                .lineToConstantHeading(new Vector2d(48, -64),   robot.drive.drive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        robot.drive.drive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .UNSTABLE_addDisplacementMarkerOffset(10, () -> {
+                    deposit();
+                })
+                .UNSTABLE_addDisplacementMarkerOffset(22, () -> {
+                    robot.intake.off();
+                    deposit();
+                })
+                .lineToConstantHeading(new Vector2d(-6, -64))
+                .waitSeconds(0.2)
+                .addTemporalMarker(() -> {
+                    robot.intake.reverse();
+                    kick();
+                })
+                .build();
+        TrajectorySequence preloadLow = robot.drive.drive.trajectorySequenceBuilder(startPose)
+                .addDisplacementMarker(() -> {
+                    deposit();
+                }).lineToConstantHeading(new Vector2d(-6, -48))
                 .waitSeconds(0.1)
                 .addTemporalMarker(() -> {
                     kick();
@@ -115,7 +327,7 @@ public class CycleFsm extends LinearOpMode {
                     robot.intake.autoRED();
                     robot.intake.intakeDown();
                 })
-                .lineToConstantHeading(new Vector2d(44, -62),   robot.drive.drive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .lineToConstantHeading(new Vector2d(45, -62.5),   robot.drive.drive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         robot.drive.drive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .UNSTABLE_addDisplacementMarkerOffset(10, () -> {
                     robot.intake.reverse();
@@ -125,7 +337,67 @@ public class CycleFsm extends LinearOpMode {
                     robot.intake.off();
                     deposit();
                 })
-                .lineToConstantHeading(new Vector2d(-6, -62))
+                .lineToConstantHeading(new Vector2d(-6, -62.5))
+                .waitSeconds(0.2)
+                .addTemporalMarker(() -> {
+                    kick();
+                })
+                //cycle 3
+                .addTemporalMarker(() -> {
+                    robot.intake.autoRED();
+                    robot.intake.intakeDown();
+                })
+                .lineToConstantHeading(new Vector2d(46, -63),   robot.drive.drive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        robot.drive.drive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .UNSTABLE_addDisplacementMarkerOffset(10, () -> {
+                    robot.intake.reverse();
+                    deposit();
+                })
+                .UNSTABLE_addDisplacementMarkerOffset(22, () -> {
+                    robot.intake.off();
+                    deposit();
+                })
+                .lineToConstantHeading(new Vector2d(-6, -63))
+                .waitSeconds(0.2)
+                .addTemporalMarker(() -> {
+                    kick();
+                })
+                //cycle 4
+                .addTemporalMarker(() -> {
+                    robot.intake.autoRED();
+                    robot.intake.intakeDown();
+                })
+                .lineToConstantHeading(new Vector2d(47, -63.5),   robot.drive.drive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        robot.drive.drive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .UNSTABLE_addDisplacementMarkerOffset(10, () -> {
+                    robot.intake.reverse();
+                    deposit();
+                })
+                .UNSTABLE_addDisplacementMarkerOffset(22, () -> {
+                    robot.intake.off();
+                    deposit();
+                })
+                .lineToConstantHeading(new Vector2d(-6, -63.5))
+                .waitSeconds(0.2)
+                .addTemporalMarker(() -> {
+                    kick();
+                })
+                //cycle 5
+                .addTemporalMarker(() -> {
+                    robot.intake.autoRED();
+                    robot.intake.intakeDown();
+                })
+                .lineToConstantHeading(new Vector2d(48, -64),   robot.drive.drive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        robot.drive.drive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .UNSTABLE_addDisplacementMarkerOffset(10, () -> {
+                    robot.intake.reverse();
+                    deposit();
+                })
+                .UNSTABLE_addDisplacementMarkerOffset(22, () -> {
+                    robot.intake.off();
+                    deposit();
+                })
+                .lineToConstantHeading(new Vector2d(-6, -64))
                 .waitSeconds(0.2)
                 .addTemporalMarker(() -> {
                     kick();
@@ -173,6 +445,7 @@ public class CycleFsm extends LinearOpMode {
             telemetry.update();
             robot.intake.intakeRight();
             robot.intake.intakeDown();
+            robot.drive.unBrake();
 
             switch (deposit) {
                 case HOME:
@@ -188,7 +461,7 @@ public class CycleFsm extends LinearOpMode {
                     robot.v4b.deposit();
                     if (depositTimer.milliseconds() > 700) {
                         robot.lift.liftHigh();
-                        robot.deposit.turretBLUESHARED();
+                        robot.deposit.turretREDSHARED();
                     }
                     break;
                 case TRANSITION:

@@ -21,9 +21,9 @@ public class Drive implements Subsystem {
     Servo leftBrake;
     Servo rightBrake;
 
-    public static double odoRDown = 0.0;
-    public static double odoLDown = 1;
-    public static double odoCDown = 0;
+    public static double odoRDown = 0.1;
+    public static double odoLDown = 0.9;
+    public static double odoCDown = 0.1;
     public static double odoRUp = 1;
     public static double odoLUp = 0;
     public static double odoCUp = 1;

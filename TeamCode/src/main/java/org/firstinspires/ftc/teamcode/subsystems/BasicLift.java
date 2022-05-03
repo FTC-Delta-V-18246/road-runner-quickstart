@@ -30,7 +30,7 @@ public class BasicLift implements Subsystem {
     public static double kP = -0.0018;
     public static double kF = -0.001;
     public static double dumpTime = 500;
-    public static double kickTime = 600;
+    public static double kickTime = 900;
     public Gamepad gamepad1;
     public Gamepad gamepad2;
     private double error = 0;

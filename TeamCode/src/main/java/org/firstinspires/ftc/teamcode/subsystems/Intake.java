@@ -22,7 +22,7 @@ public class Intake implements Subsystem {
     public static double dropTakeDown = 0.67;
     public static double dropTakeUp = 0;
     public static double intakePower = 1.0;
-    public static double autoPower = 0.65;
+    public static double autoPower = 0.9;
     public static double carouselPower = 0.3;
     public static double spin = 0.2;
     public static double speed = 0.4;
@@ -147,9 +147,8 @@ public class Intake implements Subsystem {
         intakeLeft.setPower(-intakePower);
         intakeRight.setPower(intakePower);
     }
-
     public void reverse() {
-        intakeLeft.setPower(0.7);
-        intakeRight.setPower(-0.7);
+        intakeLeft.setPower(0.8);
+        intakeRight.setPower(-0.8);
     }
 }
