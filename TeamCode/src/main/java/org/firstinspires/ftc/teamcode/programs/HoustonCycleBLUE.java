@@ -48,6 +48,7 @@ public class HoustonCycleBLUE extends LinearOpMode {
 
     ElapsedTime depositTimer = new ElapsedTime();
     ElapsedTime DumpTimer = new ElapsedTime();
+
     ElapsedTime kickTimer = new ElapsedTime();
 
     @Override

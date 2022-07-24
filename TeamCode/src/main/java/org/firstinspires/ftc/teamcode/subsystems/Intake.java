@@ -19,8 +19,8 @@ public class Intake implements Subsystem {
     Gamepad gamepad2;
     DcMotor intakeLeft;
     DcMotor intakeRight;
-    public static double dropTakeDown = 0.67;
-    public static double dropTakeUp = 0;
+    public static double dropTakeDown = 0.95;
+    public static double dropTakeUp = 0.95;
     public static double intakePower = 1.0;
     public static double autoPower = 0.9;
     public static double carouselPower = 0.3;

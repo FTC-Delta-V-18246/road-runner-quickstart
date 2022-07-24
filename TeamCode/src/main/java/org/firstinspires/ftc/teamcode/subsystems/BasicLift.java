@@ -22,7 +22,7 @@ public class BasicLift implements Subsystem {
     public static double target = 0;
     public static double HIGH = 564;
     public static double MID = 0;
-    public static double INTAKE = -25;
+    public static double INTAKE = -50;
     public static double READY = 125;
 
     public static final double TICKS_PER_REV = 28 * 13.7;
@@ -174,9 +174,10 @@ public class BasicLift implements Subsystem {
                 if (gamepad2.a) {
                     state = liftState.SHARED;
                 }
-                while (IntakeReverseTimer.milliseconds() < 200) {
+                if (IntakeReverseTimer.milliseconds() < 400) {
                     robot.intake.reverse();
                 }
+                robot.intake.off();
                 break;
             case HIGH:
                 robot.v4b.deposit();
@@ -236,8 +237,7 @@ public class BasicLift implements Subsystem {
                 robot.deposit.turretNeutral();
                 liftIntake();
                 robot.drive.rotatePower = 1.0;
-                if (lift1.getCurrentPosition() < READY && DumpTimer.milliseconds() > 500) {
-                    robot.v4b.intake(robot);
+                if (lift1.getCurrentPosition() < READY && DumpTimer.milliseconds() > 250) {
                     state = liftState.INTAKE;
                 }
                 break;

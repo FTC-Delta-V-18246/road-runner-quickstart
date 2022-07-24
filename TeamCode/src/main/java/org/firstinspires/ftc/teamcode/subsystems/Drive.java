@@ -51,11 +51,11 @@ public class Drive implements Subsystem {
 
     @Override
     public void update(Robot robot) {
-        drive.setWeightedDrivePower(new Pose2d(
+        /*drive.setWeightedDrivePower(new Pose2d(
                 -gamepad1.left_stick_y,
                 -gamepad1.left_stick_x,
                 -gamepad1.right_stick_x / rotatePower
-        ));
+        ));*/
 
         if (gamepad1.dpad_down) {
             Brake();

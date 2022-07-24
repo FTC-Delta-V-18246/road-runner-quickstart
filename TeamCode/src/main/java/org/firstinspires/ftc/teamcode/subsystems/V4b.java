@@ -17,7 +17,7 @@ public class V4b implements Subsystem {
     Servo v4bRight;
 
     public static double deposit = 0.23;
-    public static double intake = 0.69;
+    public static double intake = 0.72;
     public static double receive = 0.69;
     public static double wartime = 0.35;
     public static double shared = 0.05;
